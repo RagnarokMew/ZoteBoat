@@ -29,3 +29,8 @@ Below are the currently accepted commit types:
 
 If you belive a commit type should be included in the list above, feel free to create an Issue and/or open a PR.
 
+## Branches
+
+- ``master`` - protected branch; accepts PRs only from the ``*/dev`` branches; must be functional and play-tested
+- ``<developer_name>/dev`` - staging branches for each developer; ideally follows ``master`` closely to minimize conflicts;
+- ``<developer_name>/<branch_name>`` - branches for fixes, features and more; branches from a ``/dev`` and should be merged back into ``/dev``;
