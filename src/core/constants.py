@@ -1,0 +1,4 @@
+# --- Window ---
+SCREEN_TITLE = "ZoteBoat"
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
