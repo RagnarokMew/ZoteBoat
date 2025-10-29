@@ -42,13 +42,37 @@ class GameView(arcade.View):
         # where most player logic would reside
         self.player_sprite = arcade.Sprite(self.player_texture)
         self.player_sprite.center_x = 128
-        self.player_sprite.center_y = 128
+        self.player_sprite.center_y = 512
         self.scene.add_sprite("Player", self.player_sprite)
+
+        self.wall_list = self.tile_map.sprite_lists["Platforms"]
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
 
         self.background_color = arcade.color.AERO_BLUE
+
+        # Physics' constants would be defined later in constants
+        # Later we could probably move all the physics logic in
+        # another file, but for a base this works
+        self.physics_engine = arcade.PymunkPhysicsEngine(damping = 1, gravity = (0, -1500))
+
+        self.physics_engine.add_sprite(
+            self.player_sprite,
+            friction=1,
+            mass=500,
+            moment_of_inertia=arcade.PymunkPhysicsEngine.MOMENT_INF,
+            collision_type="player",
+            max_horizontal_velocity=500,
+            max_vertical_velocity=500,
+        )
+
+        self.physics_engine.add_sprite_list(
+            self.wall_list,
+            friction=3,
+            collision_type="wall",
+            body_type=arcade.PymunkPhysicsEngine.STATIC,
+        )
 
     def on_draw(self):
         self.clear()
@@ -60,4 +84,5 @@ class GameView(arcade.View):
         self.gui_camera.use()
 
     def on_update(self, delta_time):
+        self.physics_engine.step()
         self.camera.position = self.player_sprite.position
