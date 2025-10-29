@@ -1,4 +1,3 @@
-from typing import override
 import arcade
 
 class GameView(arcade.View):
@@ -19,11 +18,6 @@ class GameView(arcade.View):
 
         self.camera = None
         self.gui_camera = None
-
-        self.left_pressed = False
-        self.right_pressed = False
-        self.up_pressed = False
-        self.down_pressed = False
 
     def setup(self):
         self.player_list = arcade.SpriteList()
@@ -61,12 +55,12 @@ class GameView(arcade.View):
         # Physics' constants would be defined later in constants
         # Later we could probably move all the physics logic in
         # another file, but for a base this works
-        self.physics_engine = arcade.PymunkPhysicsEngine(damping = 1, gravity = (0, -10))
+        self.physics_engine = arcade.PymunkPhysicsEngine(damping = 1, gravity = (0, -1500))
 
         self.physics_engine.add_sprite(
             self.player_sprite,
             friction=1,
-            mass=1,
+            mass=500,
             moment_of_inertia=arcade.PymunkPhysicsEngine.MOMENT_INF,
             collision_type="player",
             max_horizontal_velocity=500,
@@ -80,34 +74,6 @@ class GameView(arcade.View):
             body_type=arcade.PymunkPhysicsEngine.STATIC,
         )
 
-    def on_key_press(self, key, modifiers):
-        # The keys will be changed later to match HK controls
-        if key == arcade.key.LEFT:
-            self.left_pressed = True
-
-        if key == arcade.key.RIGHT:
-            self.right_pressed = True
-
-        if key == arcade.key.UP:
-            self.up_pressed = True
-
-        if key == arcade.key.DOWN:
-            self.down_pressed = True
-
-    def on_key_release(self, key, modifiers):
-        # The keys will be changed later to match HK controls
-        if key == arcade.key.LEFT:
-            self.left_pressed = False
-
-        if key == arcade.key.RIGHT:
-            self.right_pressed = False
-
-        if key == arcade.key.UP:
-            self.up_pressed = False
-
-        if key == arcade.key.DOWN:
-            self.down_pressed = False
-
     def on_draw(self):
         self.clear()
 
@@ -118,25 +84,5 @@ class GameView(arcade.View):
         self.gui_camera.use()
 
     def on_update(self, delta_time):
-        is_on_ground = self.physics_engine.is_on_ground(self.player_sprite)
-
-        # Values will be replaced with constants later
-        # These values are random and do not represent how the constants should be
-        if self.left_pressed and not self.right_pressed:
-            force = (-500, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-
-        elif self.right_pressed and not self.left_pressed:
-            force = (500, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
- 
-        elif self.up_pressed and not self.down_pressed and is_on_ground:
-            force = (0, 1000)
-            self.physics_engine.apply_force(self.player_sprite, force)
- 
-        elif self.down_pressed and not self.up_pressed and not is_on_ground:
-            force = (0, -500)
-            self.physics_engine.apply_force(self.player_sprite, force)
- 
         self.physics_engine.step()
         self.camera.position = self.player_sprite.position
