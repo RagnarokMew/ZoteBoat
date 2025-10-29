@@ -1,3 +1,4 @@
+from typing import override
 import arcade
 
 class GameView(arcade.View):
