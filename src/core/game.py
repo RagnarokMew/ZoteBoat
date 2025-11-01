@@ -1,4 +1,5 @@
 import arcade
+from entities import player
 from core.constants import GRAVITY, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, TILE_SCALING
 
 class GameView(arcade.View):
@@ -37,24 +38,14 @@ class GameView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        # Temporary player texture for stub
-        # To be moved to a specific entity/ file
-        self.player_texture = arcade.load_texture(
-            ':resources:/images/alien/alienBlue_front.png'
-        )
-
         self.scene.add_sprite_list_after("Player", "Foreground")
 
-        # Coords are temporary, in the future they should be done
-        # using sprite sizes and aligning to a grid
-        # The sprite should be created in a entity/ file
-        # where most player logic would reside
-        self.player_sprite = arcade.Sprite(
-            self.player_texture,
-            scale=TILE_SCALING
+        # Temporary Spawn, in the future it should be based on the map
+        temp_spawn = (128, 512)
+        self.player_sprite = player.PlayerSprite(
+            temp_spawn
         )
-        self.player_sprite.center_x = 128
-        self.player_sprite.center_y = 512
+
         self.scene.add_sprite("Player", self.player_sprite)
 
         self.camera = arcade.Camera2D()
