@@ -1,4 +1,5 @@
 import arcade
+from core.constants import GRAVITY, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED
 
 class GameView(arcade.View):
     
@@ -18,6 +19,11 @@ class GameView(arcade.View):
 
         self.camera = None
         self.gui_camera = None
+
+        self.up_pressed = False
+        self.down_pressed = False
+        self.right_pressed = False
+        self.left_pressed = False
 
     def setup(self):
         self.player_list = arcade.SpriteList()
@@ -42,13 +48,17 @@ class GameView(arcade.View):
         # where most player logic would reside
         self.player_sprite = arcade.Sprite(self.player_texture)
         self.player_sprite.center_x = 128
-        self.player_sprite.center_y = 128
+        self.player_sprite.center_y = 512
         self.scene.add_sprite("Player", self.player_sprite)
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
 
         self.background_color = arcade.color.AERO_BLUE
+
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, walls=self.scene["Platforms"], gravity_constant=GRAVITY
+        )
 
     def on_draw(self):
         self.clear()
@@ -59,5 +69,39 @@ class GameView(arcade.View):
 
         self.gui_camera.use()
 
+    def on_key_release(self, key, modifiers):
+        if key == arcade.key.UP:
+            self.up_pressed = False
+
+        if key == arcade.key.DOWN:
+            self.up_pressed = False
+
+        if key == arcade.key.LEFT:
+            self.up_pressed = False
+            self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
+
+        if key == arcade.key.RIGHT:
+            self.up_pressed = False
+            self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.UP:
+            self.up_pressed = True
+
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+
+        if key == arcade.key.DOWN:
+            self.up_pressed = True
+
+        if key == arcade.key.LEFT:
+            self.up_pressed = True
+            self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
+
+        if key == arcade.key.RIGHT:
+            self.up_pressed = True
+            self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
+
     def on_update(self, delta_time):
+        self.physics_engine.update()
         self.camera.position = self.player_sprite.position
