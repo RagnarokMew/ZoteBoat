@@ -1,5 +1,5 @@
 import arcade
-from core.constants import GRAVITY, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED
+from core.constants import GRAVITY, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, TILE_SCALING
 
 class GameView(arcade.View):
     
@@ -30,7 +30,10 @@ class GameView(arcade.View):
         
         # Temporary tile map for stub creation
         temp_map_name = ":resources:tiled_maps/map2_level_1.json"
-        self.tile_map = arcade.load_tilemap(temp_map_name)
+        self.tile_map = arcade.load_tilemap(
+            temp_map_name,
+            scaling=TILE_SCALING
+        )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
@@ -46,7 +49,10 @@ class GameView(arcade.View):
         # using sprite sizes and aligning to a grid
         # The sprite should be created in a entity/ file
         # where most player logic would reside
-        self.player_sprite = arcade.Sprite(self.player_texture)
+        self.player_sprite = arcade.Sprite(
+            self.player_texture,
+            scale=TILE_SCALING
+        )
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 512
         self.scene.add_sprite("Player", self.player_sprite)
