@@ -3,6 +3,10 @@ SCREEN_TITLE = "ZoteBoat"
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+# --- Sprites ---
+CELL_SIZE = 128
+TILE_SCALING = 0.5
+
 # --- Physics ---
 GRAVITY = 1
 PLAYER_MOVEMENT_SPEED = 5
