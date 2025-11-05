@@ -43,6 +43,7 @@ class GameView(arcade.View):
         # Temporary Spawn, in the future it should be based on the map
         temp_spawn = (128, 512)
         self.player_sprite = player.PlayerSprite(
+            self.scene,
             temp_spawn
         )
 
@@ -99,6 +100,10 @@ class GameView(arcade.View):
             self.up_pressed = True
             self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
 
+        if key == arcade.key.X:
+            self.player_sprite.attack()
+
     def on_update(self, delta_time):
         self.physics_engine.update()
+        self.player_sprite.update(delta_time)
         self.camera.position = self.player_sprite.position
