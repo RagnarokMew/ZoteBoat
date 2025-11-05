@@ -55,6 +55,8 @@ class PlayerAttack(arcade.Sprite):
 
         self.base_scale_x = self.scale_x
         self.base_scale_y = self.scale_y
+        self.offset_x = 48
+        self.offset_y = -48
         self.parent = parent
         self.scene = scene
         self.damage = damage
@@ -63,19 +65,22 @@ class PlayerAttack(arcade.Sprite):
         self.scene.add_sprite("PlayerAttack", self)
 
     def update(self, delta_time):
-        # TODO: Update position based on Player
         self.remaining_duration -= delta_time
 
         self.angle = 90 * self.parent.facing_direction
 
         if (self.parent.facing_direction == SIDE_FACING):
             self.scale_x = self.base_scale_x * self.parent.direction
+            self.center_x = self.parent.center_x + self.offset_x * self.parent.direction
         else:
             self.scale_x = self.base_scale_x
             self.scale_y = self.base_scale_y * -1
 
-        self.center_x = self.parent.center_x + 32 * self.parent.direction
-        self.center_y = self.parent.center_y
+
+        self.center_y = self.parent.center_y + self.offset_y * self.parent.facing_direction
+
+        if(self.parent.facing_direction == DOWN_FACING):
+            self.center_y = self.center_y + self.offset_y
 
         if(self.remaining_duration <= 0):
             self.remove_from_sprite_lists()
