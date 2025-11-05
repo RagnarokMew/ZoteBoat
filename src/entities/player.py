@@ -12,6 +12,7 @@ class PlayerSprite(arcade.Sprite):
         self.scene = scene
         self.center_x, self.center_y = position
         self.player_attack = None
+        self.attack_cooldown = 0.0
         # TODO: Add textures for player (idle, walk, etc)
         # TODO: Should also work on logic to handle direction facing etc
         # The implementation of these features can be done later on
@@ -20,12 +21,20 @@ class PlayerSprite(arcade.Sprite):
     # The implementation of these features can be done later on
 
     def attack(self):
+        if(self.attack_cooldown > 0):
+            return
+
         self.player_attack = PlayerAttack(
             self.scene,
             self.position
         )
 
+        self.attack_cooldown = 0.5
+
     def update(self, delta_time):
+        if(self.attack_cooldown > 0):
+            self.attack_cooldown -= delta_time
+
         if(self.player_attack != None):
             self.player_attack.update(delta_time)
 
@@ -51,5 +60,4 @@ class PlayerAttack(arcade.Sprite):
 
         if(self.remaining_duration <= 0):
             self.remove_from_sprite_lists()
-
 
