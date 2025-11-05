@@ -1,6 +1,6 @@
 import arcade
 from entities import player
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING
+from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING
 
 class GameView(arcade.View):
     
@@ -21,6 +21,7 @@ class GameView(arcade.View):
         self.camera = None
         self.gui_camera = None
 
+        self.jump_pressed = False
         self.up_pressed = False
         self.down_pressed = False
         self.right_pressed = False
@@ -68,11 +69,16 @@ class GameView(arcade.View):
         self.gui_camera.use()
 
     def on_key_release(self, key, modifiers):
+        if key == arcade.key.Z:
+            self.jump_pressed = False
+
         if key == arcade.key.UP:
             self.up_pressed = False
+            self.player_sprite.facing_direction = SIDE_FACING
 
         if key == arcade.key.DOWN:
             self.down_pressed = False
+            self.player_sprite.facing_direction = SIDE_FACING
 
         if key == arcade.key.LEFT:
             self.left_pressed = False
@@ -83,14 +89,19 @@ class GameView(arcade.View):
             self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.UP:
-            self.up_pressed = True
+        if key == arcade.key.Z:
+            self.jump_pressed = True
 
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
+        if key == arcade.key.UP:
+            self.up_pressed = True
+            self.player_sprite.facing_direction = UP_FACING
+
         if key == arcade.key.DOWN:
             self.down_pressed = True
+            self.player_sprite.facing_direction = DOWN_FACING
 
         if key == arcade.key.LEFT:
             self.left_pressed = True
