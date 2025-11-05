@@ -27,10 +27,6 @@ class PlayerSprite(arcade.Sprite):
         if(self.attack_cooldown > 0):
             return
 
-        a_x, a_y = self.position
-        a_x += 100
-        a_y += 10
-
         self.player_attack = PlayerAttack(
             self.scene,
             self
