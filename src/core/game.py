@@ -72,14 +72,14 @@ class GameView(arcade.View):
             self.up_pressed = False
 
         if key == arcade.key.DOWN:
-            self.up_pressed = False
+            self.down_pressed = False
 
         if key == arcade.key.LEFT:
-            self.up_pressed = False
+            self.left_pressed = False
             self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
 
         if key == arcade.key.RIGHT:
-            self.up_pressed = False
+            self.right_pressed = False
             self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
     def on_key_press(self, key, modifiers):
@@ -90,14 +90,14 @@ class GameView(arcade.View):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
         if key == arcade.key.DOWN:
-            self.up_pressed = True
+            self.down_pressed = True
 
         if key == arcade.key.LEFT:
-            self.up_pressed = True
+            self.left_pressed = True
             self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
         if key == arcade.key.RIGHT:
-            self.up_pressed = True
+            self.right_pressed = True
             self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
 
         if key == arcade.key.X:
