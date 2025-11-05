@@ -1,6 +1,6 @@
 import arcade
 from entities import player
-from core.constants import GRAVITY, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, TILE_SCALING
+from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING
 
 class GameView(arcade.View):
     
@@ -94,10 +94,12 @@ class GameView(arcade.View):
 
         if key == arcade.key.LEFT:
             self.left_pressed = True
+            self.player_sprite.direction = LEFT_FACING
             self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
         if key == arcade.key.RIGHT:
             self.right_pressed = True
+            self.player_sprite.direction = RIGHT_FACING
             self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
 
         if key == arcade.key.X:
