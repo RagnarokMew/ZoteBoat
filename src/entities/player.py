@@ -1,5 +1,5 @@
 import arcade
-from core.constants import P_ATTACK_COOLDOWN, P_ATTACK_DAMAGE, P_HEALTH, RIGHT_FACING, LEFT_FACING
+from core.constants import P_ATTACK_COOLDOWN, P_ATTACK_DAMAGE, P_HEALTH, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
 
 class PlayerSprite(arcade.Sprite):
 
@@ -16,6 +16,7 @@ class PlayerSprite(arcade.Sprite):
         self.attack_cooldown = 0.0
         self.health = P_HEALTH
         self.direction = RIGHT_FACING
+        self.facing_direction = SIDE_FACING
         # TODO: Add textures for player (idle, walk, etc)
         # TODO: Should also work on logic to handle direction facing etc
         # The implementation of these features can be done later on
@@ -65,7 +66,13 @@ class PlayerAttack(arcade.Sprite):
         # TODO: Update position based on Player
         self.remaining_duration -= delta_time
 
-        self.scale_x = self.base_scale_x * self.parent.direction
+        self.angle = 90 * self.parent.facing_direction
+
+        if (self.parent.facing_direction == SIDE_FACING):
+            self.scale_x = self.base_scale_x * self.parent.direction
+        else:
+            self.scale_x = self.base_scale_x
+            self.scale_y = self.base_scale_y * -1
 
         self.center_x = self.parent.center_x + 32 * self.parent.direction
         self.center_y = self.parent.center_y
