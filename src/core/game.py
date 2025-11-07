@@ -1,6 +1,7 @@
 import arcade
 from entities import player
 from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING
+from core.player_stats import PlayerStats
 
 class GameView(arcade.View):
     
@@ -11,11 +12,11 @@ class GameView(arcade.View):
 
         self.player_texture = None
         self.player_sprite = None
+        self.player_stats = None
 
         self.tile_map = None
         self.scene = None
 
-        self.player_list = None
         self.wall_list = None
 
         self.camera = None
@@ -28,8 +29,6 @@ class GameView(arcade.View):
         self.left_pressed = False
 
     def setup(self):
-        self.player_list = arcade.SpriteList()
-        
         # Temporary tile map for stub creation
         temp_map_name = ":resources:tiled_maps/map2_level_1.json"
         self.tile_map = arcade.load_tilemap(
@@ -40,6 +39,8 @@ class GameView(arcade.View):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         self.scene.add_sprite_list_after("Player", "Foreground")
+
+        self.player_stats = PlayerStats()
 
         # Temporary Spawn, in the future it should be based on the map
         temp_spawn = (128, 512)
