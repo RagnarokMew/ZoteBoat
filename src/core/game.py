@@ -1,6 +1,6 @@
 import arcade
 from entities import player
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING
+from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT
 from core.player_stats import PlayerStats
 
 class GameView(arcade.View):
@@ -22,6 +22,7 @@ class GameView(arcade.View):
 
         self.camera = None
         self.gui_camera = None
+        self.health_text = None
 
         self.jump_pressed = False
         self.up_pressed = False
@@ -60,6 +61,14 @@ class GameView(arcade.View):
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
 
+        self.health_text = arcade.Text(
+            f"HP: {self.player_stats.health} / {self.player_stats.max_health}",
+            x = 5,
+            y = SCREEN_HEIGHT - 30,
+            color=arcade.color.BLACK,
+            font_size=20
+        )
+
         self.background_color = arcade.color.AERO_BLUE
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -74,6 +83,8 @@ class GameView(arcade.View):
         self.scene.draw()
 
         self.gui_camera.use()
+
+        self.health_text.draw()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.Z:
