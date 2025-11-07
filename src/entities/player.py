@@ -1,5 +1,5 @@
 import arcade
-from core.constants import P_ATTACK_COOLDOWN, P_ATTACK_DAMAGE, P_HEALTH, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
+from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
 
 class PlayerSprite(arcade.Sprite):
 
@@ -14,7 +14,6 @@ class PlayerSprite(arcade.Sprite):
         self.center_x, self.center_y = position
         self.player_attack = None
         self.attack_cooldown = 0.0
-        self.health = P_HEALTH
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
         # TODO: Add textures for player (idle, walk, etc)
@@ -46,7 +45,7 @@ class PlayerSprite(arcade.Sprite):
 
 class PlayerAttack(arcade.Sprite):
 
-    def __init__(self, scene, parent, scale=1.0, damage=P_ATTACK_DAMAGE):
+    def __init__(self, scene, parent, scale=1.0):
         super().__init__(
             # TODO: Change temp sprite with one of our own
             ":resources:/onscreen_controls/flat_dark/right.png",
@@ -59,7 +58,6 @@ class PlayerAttack(arcade.Sprite):
         self.offset_y = -48
         self.parent = parent
         self.scene = scene
-        self.damage = damage
         self.remaining_duration = P_ATTACK_COOLDOWN
 
         self.scene.add_sprite("PlayerAttack", self)
