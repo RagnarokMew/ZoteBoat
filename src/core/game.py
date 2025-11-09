@@ -1,6 +1,6 @@
 import arcade
 import time
-from entities import player
+from entities import player, enemy
 from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING
 from core.player_stats import PlayerStats
 from core.maps import map_array
@@ -40,8 +40,13 @@ class GameView(arcade.View):
         )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
-        self.scene.add_sprite_list_after("Player", "Foreground")
+        self.scene.add_sprite_list_after("Enemy", "Foreground")
+        self.scene.add_sprite_list_after("Player", "Enemy")
         self.player_stats = PlayerStats()
+
+        # optimise collision detection for load zone
+        try:    self.scene["Load Zone"].enable_spatial_hashing()
+        except: pass
 
         # Temporary Spawn, in the future it should be based on the map
         temp_spawn = (128, 512)
@@ -49,10 +54,17 @@ class GameView(arcade.View):
             self.scene,
             temp_spawn
         )
-        # restore player speed after transition
-        self.player_sprite.change_x = self.player_trans_x
 
         self.scene.add_sprite("Player", self.player_sprite)
+
+        try:
+            for enemy_spawner in self.scene["Enemy Spawn"]:
+                self.enemy_sprite = enemy.EnemySprite(
+                    self.scene,
+                    (enemy_spawner.center_x, enemy_spawner.center_y - 20)
+                )
+                self.scene.add_sprite("Enemy", self.enemy_sprite)
+        except: pass
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
@@ -60,8 +72,14 @@ class GameView(arcade.View):
         self.background_color = arcade.color.AERO_BLUE
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, walls=self.scene["Platforms"], gravity_constant=GRAVITY
+            self.player_sprite,
+            walls = self.scene["Platforms"],
+            gravity_constant = GRAVITY
         )
+
+        # restore player speed after transition
+        # TODO: change movement based on transition type
+        self.player_sprite.change_x = self.player_trans_x
 
     def on_draw(self):
         self.clear()
@@ -123,27 +141,27 @@ class GameView(arcade.View):
 
         if key == arcade.key.X:
             self.player_sprite.attack()
+        
+        if key == arcade.key.F5:
+            arcade.window_commands.close_window()
 
     def on_update(self, delta_time):
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
         self.camera.position = self.player_sprite.position
 
-        # if load zone doesn't exist in current scene, crashes, so check first
-        # (although all scenes should have a load zone eventually)
-        if "Load Zone" in self.scene:
-            loadzone = arcade.check_for_collision_with_list(
+        # (all scenes should have a load zone, for now use try if it doesn't)
+        # if a loadzone was collided with, change scene
+        try:
+            if arcade.check_for_collision_with_list(
                 self.player_sprite,
                 self.scene["Load Zone"]
-            )
-            # if a loadzone was collided with, change scene
-            if loadzone:
-                self.change_map()
+            ):  self.change_map()
+        except: pass
     
     # scene change handler
+    # TODO: improve for specific types of transitions
+    # currently only works properly for horizontals
     def change_map(self):
-    # since movement changes only on key press/release (not while holding),
-    # we must save the player speed before the transition
         self.player_trans_x = self.player_sprite.change_x
-    # then change the map (actual map list/dict wip)
         self.setup(1 - self.map_index)
