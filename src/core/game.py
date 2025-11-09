@@ -18,6 +18,7 @@ class GameView(arcade.View):
         self.scene = None
 
         self.wall_list = None
+        self.enemy_list = None
 
         self.camera = None
         self.gui_camera = None
@@ -29,6 +30,9 @@ class GameView(arcade.View):
         self.left_pressed = False
 
     def setup(self):
+        self.player_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        
         # Temporary tile map for stub creation
         temp_map_name = ":resources:tiled_maps/map2_level_1.json"
         self.tile_map = arcade.load_tilemap(
@@ -50,6 +54,8 @@ class GameView(arcade.View):
         )
 
         self.scene.add_sprite("Player", self.player_sprite)
+
+        self.scene.add_sprite_list("Enemies", sprite_list=self.enemy_list)
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
@@ -120,4 +126,5 @@ class GameView(arcade.View):
     def on_update(self, delta_time):
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
+        self.enemy_list.update(delta_time)
         self.camera.position = self.player_sprite.position
