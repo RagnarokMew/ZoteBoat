@@ -21,3 +21,25 @@ class GroundEnemy(arcade.Sprite):
         self.physics_engine.update()
         if(self.health <= 0):
             pass
+
+class FlyingEnemy(arcade.Sprite):
+    def __init__(self, scene, path=":resources:/images/enemies/bee.png", scale=1, damage=1, max_health=1, position=(128,128)):
+        super().__init__(
+            path,
+            scale=scale
+        )
+
+        self.center_x, self.center_y = position
+        self.scene = scene
+        self.max_health = max_health
+        self.health = max_health
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self, scene["Platforms"]
+        )
+
+    def update(self, delta_time):
+        self.physics_engine.update()
+        if(self.health <= 0):
+            pass
+
+
