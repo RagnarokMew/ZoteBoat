@@ -60,7 +60,10 @@ class GameView(arcade.View):
 
         self.scene.add_sprite("Player", self.player_sprite)
 
+        # Temporary enemy for testing purposes
         self.scene.add_sprite_list("Enemies", sprite_list=self.enemy_list)
+
+        self.enemy_list.append(GroundEnemy(self.scene, position=(256,256)))
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
@@ -153,3 +156,14 @@ class GameView(arcade.View):
         self.player_sprite.update(delta_time)
         self.enemy_list.update(delta_time)
         self.camera.position = self.player_sprite.position
+
+        hit_by = arcade.check_for_collision_with_list(
+            self.player_sprite, self.enemy_list
+        )
+
+        if hit_by and self.player_stats.inv_time <= 0:
+            self.player_stats.health -= hit_by[0].damage
+            self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
+            self.player_stats.inv_time = self.player_stats.max_inv_time
+        else:
+            self.player_stats.inv_time -= delta_time
