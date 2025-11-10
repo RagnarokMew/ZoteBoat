@@ -1,7 +1,7 @@
 import arcade
 import time
 from entities import player, enemy
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, DEFAULT_MAP
+from core.constants import *
 from core.player_stats import PlayerStats
 
 class GameView(arcade.View):
@@ -30,7 +30,7 @@ class GameView(arcade.View):
         self.right_pressed = False
         self.left_pressed = False
 
-    def setup(self, map_id = DEFAULT_MAP):
+    def setup(self, map_id = DEFAULT_MAP, spawn_pt = DEFAULT_SPAWN):
         print(f"changed to {map_id}")
 
         # Temporary tile map for stub creation
@@ -49,10 +49,9 @@ class GameView(arcade.View):
         except: pass
 
         # Temporary Spawn, in the future it should be based on the map
-        temp_spawn = (128, 512)
         self.player_sprite = player.PlayerSprite(
             self.scene,
-            temp_spawn
+            spawn_pt
         )
 
         self.scene.add_sprite("Player", self.player_sprite)
@@ -111,7 +110,7 @@ class GameView(arcade.View):
             self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
         
         # temp manual map switch (debug)
-        if key == arcade.key.W:
+        if key == arcade.key.R:
             self.change_map(force = True)
 
     def on_key_press(self, key, modifiers):
@@ -167,6 +166,11 @@ class GameView(arcade.View):
         if sprites_coll or force:
             self.player_trans_x = self.player_sprite.change_x
             try:
-                print(sprites_coll[0].properties["debug"])
-                self.setup(map_id = sprites_coll[0].properties["mapid"])
+                sp_x = sprites_coll[0].properties["spawn_x"]
+                sp_y = sprites_coll[0].properties["spawn_y"]
+                print(sp_x, sp_y)
+                self.setup(
+                    map_id = sprites_coll[0].properties["mapid"],
+                    spawn_pt = (sp_x, sp_y)
+                )
             except: self.setup()

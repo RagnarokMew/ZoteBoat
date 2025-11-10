@@ -25,3 +25,4 @@ PLAYER_JUMP_SPEED = 20
 
 # --- Maps ---
 DEFAULT_MAP = "map_1"
+DEFAULT_SPAWN = (200, 440)

@@ -5,6 +5,8 @@
   <properties>
    <property name="debug" type="int" value="69"/>
    <property name="mapid" value="map_2"/>
+   <property name="spawn_x" type="int" value="200"/>
+   <property name="spawn_y" type="int" value="300"/>
   </properties>
   <image source="../sprites/blue_check.png" width="64" height="64"/>
  </tile>
@@ -12,6 +14,8 @@
   <properties>
    <property name="debug" type="int" value="420"/>
    <property name="mapid" value="map_3"/>
+   <property name="spawn_x" type="int" value="200"/>
+   <property name="spawn_y" type="int" value="420"/>
   </properties>
   <image source="../sprites/blue_check.png" width="64" height="64"/>
  </tile>
