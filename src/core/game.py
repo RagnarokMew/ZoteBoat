@@ -117,6 +117,9 @@ class GameView(arcade.View):
 
         if key == arcade.key.X:
             self.player_sprite.attack()
+        
+        if key == arcade.key.F5:
+            arcade.window_commands.close_window() 
 
     def on_update(self, delta_time):
         self.physics_engine.update()
