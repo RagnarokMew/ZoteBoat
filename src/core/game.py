@@ -157,6 +157,21 @@ class GameView(arcade.View):
         self.enemy_list.update(delta_time)
         self.camera.position = self.player_sprite.position
 
+        hit = None
+
+        if self.player_sprite.player_attack:
+            hit = arcade.check_for_collision_with_list(
+                self.player_sprite.player_attack, self.enemy_list
+            )
+
+        if hit:
+            for enemy in hit:
+                enemy.health -= self.player_stats.damage
+                enemy.update_text()
+
+                if enemy.health <= 0:
+                    self.enemy_list.remove(enemy)
+
         hit_by = arcade.check_for_collision_with_list(
             self.player_sprite, self.enemy_list
         )
