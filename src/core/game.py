@@ -2,11 +2,15 @@ import arcade
 from entities import player
 from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT
 from core.player_stats import PlayerStats
+from entities.base_enemies import GroundEnemy
 
 class GameView(arcade.View):
     
     def __init__(self):
         super().__init__()
+
+        # Temp Value for setting to show enemy hp:
+        self.show_enemy_hp = True
 
         self.physics_engine = None
 
@@ -80,9 +84,19 @@ class GameView(arcade.View):
 
         self.camera.use()
 
+        # NOTE: Below this the World gets Rendered
+        # (aka everything gets rendered based on world coordinates)
+
         self.scene.draw()
 
+        if self.show_enemy_hp:
+            for enemy in self.enemy_list:
+                enemy.hp_text.draw()
+
         self.gui_camera.use()
+
+        # NOTE: Below this GUI gets rendered
+        # (aka everything gets rendered based on screen coordinates)
 
         self.health_text.draw()
 
