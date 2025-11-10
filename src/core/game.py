@@ -38,7 +38,8 @@ class GameView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.scene.add_sprite_list_after("Player", "Foreground")
+        self.scene.add_sprite_list_after("Enemy", "Foreground")
+        self.scene.add_sprite_list_after("Player", "Enemy")
 
         self.player_stats = PlayerStats()
 

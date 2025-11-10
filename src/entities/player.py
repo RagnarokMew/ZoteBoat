@@ -39,6 +39,13 @@ class PlayerSprite(arcade.Sprite):
             self.attack_cooldown -= delta_time
 
         if(self.player_attack != None):
+            # pogo :3
+            # (on enemy, can easily be expanded by adding other layer to check)
+            if arcade.check_for_collision_with_list(
+                    self.player_attack,
+                    self.scene["Enemy"]
+                ) and self.facing_direction == DOWN_FACING:
+                    self.change_y = PLAYER_JUMP_SPEED
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
 
@@ -82,4 +89,5 @@ class PlayerAttack(arcade.Sprite):
 
         if(self.remaining_duration <= 0):
             self.remove_from_sprite_lists()
+            self.parent.player_attack = None
 
