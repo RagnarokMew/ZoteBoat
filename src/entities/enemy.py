@@ -1,5 +1,6 @@
 import arcade
 
+# stub/testing enemy class, replace with ragnarokmew/base-enemies
 class EnemySprite(arcade.Sprite):
     
     def __init__(self, scene, position = (0, 0), scale = 1.0):
