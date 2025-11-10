@@ -4,6 +4,8 @@ from entities import player, enemy
 from core.constants import *
 from core.player_stats import PlayerStats
 
+# TODO: for now time is unused, likely remove import
+
 class GameView(arcade.View):
     
     def __init__(self):
@@ -30,12 +32,18 @@ class GameView(arcade.View):
         self.right_pressed = False
         self.left_pressed = False
 
-    def setup(self, map_id = DEFAULT_MAP, spawn_pt = DEFAULT_SPAWN):
-        print(f"changed to {map_id}")
+        self.map_id = DEFAULT_MAP
+        (self.sp_x, self.sp_y) = DEFAULT_SPAWN
 
-        # Temporary tile map for stub creation
+        self.fade_out = None
+        self.fade_in = None
+
+    def setup(self):
+        # DEBUG: make sure map is correct
+        # print(f"changed to {map_id}")
+
         self.tile_map = arcade.load_tilemap(
-            f"../assets/tilemaps/{map_id}.tmx",
+            f"../assets/tilemaps/{self.map_id}.tmx",
             scaling = TILE_SCALING
         )
 
@@ -48,14 +56,14 @@ class GameView(arcade.View):
         try:    self.scene["Load Zone"].enable_spatial_hashing()
         except: pass
 
-        # Temporary Spawn, in the future it should be based on the map
         self.player_sprite = player.PlayerSprite(
             self.scene,
-            spawn_pt
+            (self.sp_x, self.sp_y)
         )
 
         self.scene.add_sprite("Player", self.player_sprite)
 
+        # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
         try:
             for enemy_spawner in self.scene["Enemy Spawn"]:
                 self.enemy_sprite = enemy.EnemySprite(
@@ -79,15 +87,49 @@ class GameView(arcade.View):
         # restore player speed after transition
         # TODO: change movement based on transition type
         self.player_sprite.change_x = self.player_trans_x
+    
+    def update_fade(self):
+        if self.fade_out is not None:
+            self.fade_out += 20
+            if self.fade_out > 255:
+                self.fade_out = None
+                self.setup()
+                self.fade_in = 255
+        if self.fade_in is not None:
+            self.fade_in -= 5
+            if self.fade_in <= 0:
+                self.fade_in = None
+
+    def draw_fading(self):
+        if self.fade_out is not None:
+            arcade.draw_rect_filled(
+                arcade.XYWH(
+                    self.window.width / 2,
+                    self.window.height / 2,
+                    self.window.width,
+                    self.window.height,
+                ),
+                color = (0, 0, 0, self.fade_out)
+            )
+        if self.fade_in is not None:
+            arcade.draw_rect_filled(
+                arcade.XYWH(
+                    self.window.width / 2,
+                    self.window.height / 2,
+                    self.window.width,
+                    self.window.height,
+                ),
+                color = (0, 0, 0, self.fade_in)
+            )
+
 
     def on_draw(self):
         self.clear()
-
         self.camera.use()
-
         self.scene.draw()
-
         self.gui_camera.use()
+
+        self.draw_fading()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.Z:
@@ -109,7 +151,7 @@ class GameView(arcade.View):
             self.right_pressed = False
             self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
         
-        # temp manual map switch (debug)
+        # manual reset switch (debug)
         if key == arcade.key.R:
             self.change_map(force = True)
 
@@ -148,14 +190,15 @@ class GameView(arcade.View):
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
         self.camera.position = self.player_sprite.position
+        
         self.change_map()
+        self.update_fade()
     
     # scene change handler
-    # TODO: improve for specific types of transitions
-    # Sprite.properties can be used for map id and coords
+    # TODO: improve horizontal transition
+    # TODO: add vertical transition (up should apply force)
+    # TODO: mask transition with fade in/out
     def change_map(self, force = False):
-        # (all scenes should have a load zone, for now use try if it doesn't)
-        # if a loadzone was collided with, change scene
         sprites_coll = None
         try:
             sprites_coll = arcade.check_for_collision_with_list(
@@ -163,14 +206,15 @@ class GameView(arcade.View):
                 self.scene["Load Zone"]
             )
         except: pass
-        if sprites_coll or force:
+        if (sprites_coll or force) and (self.fade_out is None):
+            self.fade_out = 0
             self.player_trans_x = self.player_sprite.change_x
             try:
-                sp_x = sprites_coll[0].properties["spawn_x"]
-                sp_y = sprites_coll[0].properties["spawn_y"]
-                print(sp_x, sp_y)
-                self.setup(
-                    map_id = sprites_coll[0].properties["mapid"],
-                    spawn_pt = (sp_x, sp_y)
-                )
-            except: self.setup()
+                self.map_id = sprites_coll[0].properties["mapid"]
+                self.sp_x = sprites_coll[0].properties["spawn_x"]
+                self.sp_y = sprites_coll[0].properties["spawn_y"]
+                # DEBUG: make sure spawn coords are set correctly
+                # print(sp_x, sp_y)
+            except:
+                self.map_id = DEFAULT_MAP
+                (self.sp_x, self.sp_y) = DEFAULT_SPAWN
