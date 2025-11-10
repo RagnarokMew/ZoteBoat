@@ -1,9 +1,8 @@
 import arcade
 import time
 from entities import player, enemy
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING
+from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, DEFAULT_MAP
 from core.player_stats import PlayerStats
-from core.maps import map_array
 
 class GameView(arcade.View):
     
@@ -31,11 +30,12 @@ class GameView(arcade.View):
         self.right_pressed = False
         self.left_pressed = False
 
-    def setup(self, map_index):
+    def setup(self, map_id = DEFAULT_MAP):
+        print(f"changed to {map_id}")
+
         # Temporary tile map for stub creation
-        self.map_index = map_index
         self.tile_map = arcade.load_tilemap(
-            map_array[self.map_index],
+            f"../assets/tilemaps/{map_id}.tmx",
             scaling = TILE_SCALING
         )
 
@@ -112,7 +112,7 @@ class GameView(arcade.View):
         
         # temp manual map switch (debug)
         if key == arcade.key.W:
-            self.change_map()
+            self.change_map(force = True)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.Z:
@@ -149,19 +149,24 @@ class GameView(arcade.View):
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
         self.camera.position = self.player_sprite.position
-
-        # (all scenes should have a load zone, for now use try if it doesn't)
-        # if a loadzone was collided with, change scene
-        try:
-            if arcade.check_for_collision_with_list(
-                self.player_sprite,
-                self.scene["Load Zone"]
-            ):  self.change_map()
-        except: pass
+        self.change_map()
     
     # scene change handler
     # TODO: improve for specific types of transitions
-    # currently only works properly for horizontals
-    def change_map(self):
-        self.player_trans_x = self.player_sprite.change_x
-        self.setup(1 - self.map_index)
+    # Sprite.properties can be used for map id and coords
+    def change_map(self, force = False):
+        # (all scenes should have a load zone, for now use try if it doesn't)
+        # if a loadzone was collided with, change scene
+        sprites_coll = None
+        try:
+            sprites_coll = arcade.check_for_collision_with_list(
+                self.player_sprite,
+                self.scene["Load Zone"]
+            )
+        except: pass
+        if sprites_coll or force:
+            self.player_trans_x = self.player_sprite.change_x
+            try:
+                print(sprites_coll[0].properties["debug"])
+                self.setup(map_id = sprites_coll[0].properties["mapid"])
+            except: self.setup()
