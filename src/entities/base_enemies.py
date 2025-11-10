@@ -1,6 +1,6 @@
 import arcade
 from arcade.color import BLACK
-from core.constants import GRAVITY
+from core.constants import GRAVITY, CELL_SIZE
 
 class BaseEnemy(arcade.Sprite):
     def __init__(self, scene, sprite_path, position=(128, 128), scale=1, damage=1, max_health=1):
@@ -15,15 +15,20 @@ class BaseEnemy(arcade.Sprite):
         self.max_health = max_health
         self.health = max_health
         self.hp_text = arcade.Text(
-            f"{self.health}/{self.max_health}",
-            x=0,
-            y=0,
+            f"HP:{self.health}/{self.max_health}",
+            x=self.center_x,
+            y=self.center_y + 10,
             color=arcade.color.BLACK,
-            font_size=10
+            font_size=15,
+            anchor_x="center"
         )
 
     def update_text(self):
         self.hp_text.text = f"{self.health}/{self.max_health}"
+
+    def update(self, delta_time):
+        self.hp_text.x = self.center_x
+        self.hp_text.y = self.center_y + 10
 
 class GroundEnemy(BaseEnemy):
     def __init__(self, scene, sprite_path=":resources:/images/enemies/slimePurple.png", scale=1, damage=1, max_health=1, position=(128,128)):
@@ -40,8 +45,9 @@ class GroundEnemy(BaseEnemy):
             self, scene["Platforms"], GRAVITY
         )
 
-
     def update(self, delta_time):
+        super().update(delta_time)
+
         self.physics_engine.update()
         if(self.health <= 0):
             pass
@@ -63,6 +69,8 @@ class FlyingEnemy(BaseEnemy):
         )
 
     def update(self, delta_time):
+        super().update(delta_time)
+
         self.physics_engine.update()
         if(self.health <= 0):
             pass
