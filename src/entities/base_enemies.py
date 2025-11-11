@@ -9,6 +9,7 @@ class BaseEnemy(arcade.Sprite):
             scale=scale
         )
 
+        self.inv_time = 0
         self.center_x, self.center_y = position
         self.scene = scene
         self.damage = damage
@@ -24,11 +25,14 @@ class BaseEnemy(arcade.Sprite):
         )
 
     def update_text(self):
-        self.hp_text.text = f"{self.health}/{self.max_health}"
+        self.hp_text.text = f"HP:{self.health}/{self.max_health}"
 
     def update(self, delta_time):
         self.hp_text.x = self.center_x
         self.hp_text.y = self.center_y + 10
+
+        if self.inv_time >= 0:
+            self.inv_time -= delta_time
 
 class GroundEnemy(BaseEnemy):
     def __init__(self, scene, sprite_path=":resources:/images/enemies/slimePurple.png", scale=1, damage=1, max_health=1, position=(128,128)):
