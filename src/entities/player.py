@@ -82,4 +82,5 @@ class PlayerAttack(arcade.Sprite):
 
         if(self.remaining_duration <= 0):
             self.remove_from_sprite_lists()
+            self.parent.player_attack = None
 
