@@ -43,12 +43,13 @@ class PlayerSprite(arcade.Sprite):
                     self.player_attack,
                     self.scene["Enemy"]
                 ) and self.facing_direction == DOWN_FACING:
+                    # don't use phys.jump(), since pogos don't count as jumps
                     self.change_y = PLAYER_JUMP_SPEED
                     if can_dbl and self.has_pogo:
                         self.has_pogo = False
-                        phys.jumps_since_ground -= 1
-                        if phys.jumps_since_ground < 1:
-                            phys.jumps_since_ground = 1
+                        phys.jumps_since_ground = max(
+                            1, phys.jumps_since_ground - 1
+                        )
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
         else:
