@@ -166,6 +166,10 @@ class GameView(arcade.View):
 
         if hit:
             for enemy in hit:
+                if enemy.inv_time > 0:
+                    continue
+
+                enemy.inv_time = self.player_sprite.player_attack.remaining_duration
                 enemy.health -= self.player_stats.damage
                 enemy.update_text()
 
