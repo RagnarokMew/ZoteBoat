@@ -1,5 +1,5 @@
 import arcade
-from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
+from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING, PLAYER_JUMP_SPEED
 
 class PlayerSprite(arcade.Sprite):
 
@@ -16,12 +16,10 @@ class PlayerSprite(arcade.Sprite):
         self.attack_cooldown = 0.0
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
+        self.has_pogo = True
         # TODO: Add textures for player (idle, walk, etc)
         # TODO: Should also work on logic to handle direction facing etc
         # The implementation of these features can be done later on
-
-    # TODO: Should also work on logic to handle direction facing etc
-    # The implementation of these features can be done later on
 
     def attack(self):
         if(self.attack_cooldown > 0):
@@ -34,7 +32,7 @@ class PlayerSprite(arcade.Sprite):
 
         self.attack_cooldown = P_ATTACK_COOLDOWN
 
-    def update(self, delta_time):
+    def update(self, delta_time, phys, can_dbl):
         if(self.attack_cooldown > 0):
             self.attack_cooldown -= delta_time
 
@@ -46,8 +44,15 @@ class PlayerSprite(arcade.Sprite):
                     self.scene["Enemy"]
                 ) and self.facing_direction == DOWN_FACING:
                     self.change_y = PLAYER_JUMP_SPEED
+                    if can_dbl and self.has_pogo:
+                        self.has_pogo = False
+                        phys.jumps_since_ground -= 1
+                        if phys.jumps_since_ground < 1:
+                            phys.jumps_since_ground = 1
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
+        else:
+            self.has_pogo = True
 
 
 class PlayerAttack(arcade.Sprite):

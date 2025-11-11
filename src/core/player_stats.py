@@ -10,3 +10,15 @@ class PlayerStats():
         # TODO: Add other player related values
         # (e.g: has_double_jump, has_wall_jump, ...)
 
+        self.can_double_jump = False
+        self.can_dash = False
+
+    def getall(self):
+        if not self.can_double_jump:
+            self.can_double_jump = True
+            self.can_dash = True
+            # etc
+        else:
+            self.can_double_jump = False
+            self.can_dash = False
+            # etc

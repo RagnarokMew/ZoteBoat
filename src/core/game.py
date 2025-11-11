@@ -1,5 +1,5 @@
 import arcade
-from entities import player
+from entities import player, enemy
 from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING
 from core.player_stats import PlayerStats
 
@@ -33,24 +33,29 @@ class GameView(arcade.View):
         temp_map_name = ":resources:tiled_maps/map2_level_1.json"
         self.tile_map = arcade.load_tilemap(
             temp_map_name,
-            scaling=TILE_SCALING
+            scaling = TILE_SCALING
         )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         self.scene.add_sprite_list_after("Enemy", "Foreground")
         self.scene.add_sprite_list_after("Player", "Enemy")
-
         self.player_stats = PlayerStats()
 
         # Temporary Spawn, in the future it should be based on the map
-        temp_spawn = (128, 512)
+        temp_spawn = (128, 450)
         self.player_sprite = player.PlayerSprite(
             self.scene,
             temp_spawn
         )
-
         self.scene.add_sprite("Player", self.player_sprite)
+        
+        # add single enemy to test pogo
+        enemy_sprite = enemy.EnemySprite(
+            self.scene,
+            temp_spawn
+        )
+        self.scene.add_sprite("Enemy", enemy_sprite)
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
@@ -95,7 +100,7 @@ class GameView(arcade.View):
             self.jump_pressed = True
 
             if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                self.physics_engine.jump(PLAYER_JUMP_SPEED)
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -119,9 +124,21 @@ class GameView(arcade.View):
             self.player_sprite.attack()
         
         if key == arcade.key.F5:
-            arcade.window_commands.close_window() 
+            arcade.window_commands.close_window()
+        
+        # DEBUG: enable/disable all abilities
+        if key == arcade.key.W:
+            self.player_stats.getall()
+            if self.player_stats.can_double_jump:
+                self.physics_engine.enable_multi_jump(2)
+            else:
+                self.physics_engine.disable_multi_jump()
 
     def on_update(self, delta_time):
         self.physics_engine.update()
-        self.player_sprite.update(delta_time)
+        self.player_sprite.update(
+            delta_time, self.physics_engine,
+            self.player_stats.can_double_jump
+        )
         self.camera.position = self.player_sprite.position
+
