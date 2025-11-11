@@ -16,7 +16,9 @@ class GameView(arcade.View):
         self.player_texture = None
         self.player_sprite = None
         self.player_stats = None
+
         self.player_trans_x = 0
+        self.player_trans_y = 0
 
         self.tile_map = None
         self.scene = None
@@ -83,25 +85,27 @@ class GameView(arcade.View):
             walls = self.scene["Platforms"],
             gravity_constant = GRAVITY
         )
-
-        # restore player speed after transition
-        # TODO: change movement based on transition type
-        self.player_sprite.change_x = self.player_trans_x
     
     def update_fade(self):
         if self.fade_out is not None:
-            self.fade_out += 20
+            self.fade_out += 10
             if self.fade_out > 255:
                 self.fade_out = None
-                self.setup()
                 self.fade_in = 255
+                self.setup()
+    
         if self.fade_in is not None:
             self.fade_in -= 5
+            if self.fade_in == 200:
+                # restore speed after transition (incl. vertical special)
+                self.player_sprite.change_x = self.player_trans_x
+                self.player_sprite.change_y = self.player_trans_y
             if self.fade_in <= 0:
                 self.fade_in = None
 
     def draw_fading(self):
-        if self.fade_out is not None:
+        fade_factor = self.fade_out if self.fade_out else self.fade_in
+        if self.fade_out or self.fade_in:
             arcade.draw_rect_filled(
                 arcade.XYWH(
                     self.window.width / 2,
@@ -109,19 +113,8 @@ class GameView(arcade.View):
                     self.window.width,
                     self.window.height,
                 ),
-                color = (0, 0, 0, self.fade_out)
+                color = (0, 0, 0, fade_factor)
             )
-        if self.fade_in is not None:
-            arcade.draw_rect_filled(
-                arcade.XYWH(
-                    self.window.width / 2,
-                    self.window.height / 2,
-                    self.window.width,
-                    self.window.height,
-                ),
-                color = (0, 0, 0, self.fade_in)
-            )
-
 
     def on_draw(self):
         self.clear()
@@ -185,6 +178,11 @@ class GameView(arcade.View):
         
         if key == arcade.key.F5:
             arcade.window_commands.close_window()
+        
+        # movement reset hotkeu
+        # TODO: automate this to prevent slide bug
+        if key == arcade.key.Q:
+            self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
         self.physics_engine.update()
@@ -197,7 +195,6 @@ class GameView(arcade.View):
     # scene change handler
     # TODO: improve horizontal transition
     # TODO: add vertical transition (up should apply force)
-    # TODO: mask transition with fade in/out
     def change_map(self, force = False):
         sprites_coll = None
         try:
@@ -206,9 +203,10 @@ class GameView(arcade.View):
                 self.scene["Load Zone"]
             )
         except: pass
+
         if (sprites_coll or force) and (self.fade_out is None):
             self.fade_out = 0
-            self.player_trans_x = self.player_sprite.change_x
+            # set spawn in new map
             try:
                 self.map_id = sprites_coll[0].properties["mapid"]
                 self.sp_x = sprites_coll[0].properties["spawn_x"]
@@ -218,3 +216,11 @@ class GameView(arcade.View):
             except:
                 self.map_id = DEFAULT_MAP
                 (self.sp_x, self.sp_y) = DEFAULT_SPAWN
+            # set transition velocity
+            try:
+                self.player_trans_x = sprites_coll[0].properties["trans_x"]
+                self.player_trans_y = sprites_coll[0].properties["trans_y"]
+            except:
+                self.player_trans_x = self.player_trans_y = 0
+            finally:
+                self.player_trans_x += self.player_sprite.change_x
