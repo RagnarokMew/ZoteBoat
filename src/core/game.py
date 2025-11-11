@@ -157,6 +157,7 @@ class GameView(arcade.View):
         self.enemy_list.update(delta_time)
         self.camera.position = self.player_sprite.position
 
+        # TODO: Refactor the collision code at a later date
         hit = None
 
         if self.player_sprite.player_attack:
@@ -186,3 +187,9 @@ class GameView(arcade.View):
             self.player_stats.inv_time = self.player_stats.max_inv_time
         else:
             self.player_stats.inv_time -= delta_time
+
+        if self.player_stats.health <= 0:
+            # TODO: Add respawning logic once level loader is fully implemented
+            # Once more features are added, more logic would be included here
+            # Temporarily setup will be called again
+            self.setup()
