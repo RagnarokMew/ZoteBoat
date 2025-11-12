@@ -14,7 +14,7 @@ class PlayerSprite(arcade.Sprite):
         self._load_textures(":resources:images/animated_characters/robot/robot")
 
         super().__init__(
-            self.idle_textures[0],
+            self.animations["idle"][0][0],
             scale=scale
         )
 
@@ -26,6 +26,8 @@ class PlayerSprite(arcade.Sprite):
         self.facing_direction = SIDE_FACING
 
         self.current_state = "idle"
+        self.cur_textures = self.animations["idle"]
+        self.cur_tex_index = 0
 
     # TODO: Should also work on logic to handle direction facing etc
     # The implementation of these features can be done later on
@@ -62,10 +64,12 @@ class PlayerSprite(arcade.Sprite):
 
         print(self.current_state)
         # TODO: Implement texture changing
+        self.cur_textures = self.animations[self.current_state]
 
         # TODO: Advance based on time
 
         # TODO: Apply correct facing texture
+        self.texture = self.cur_textures[0][0]
 
 
     def _load_textures(self, base_path):
@@ -79,18 +83,25 @@ class PlayerSprite(arcade.Sprite):
         # dying
         # double jump
 
-        self.idle_textures = [
-            arcade.load_texture(f"{base_path}_idle.png")
+        idle_textures = [
+            load_texture_pair_h(f"{base_path}_idle.png")
         ]
-        self.walk_textures = [
+        walk_textures = [
             load_texture_pair_h(f"{base_path}_walk{i}.png") for i in range(0,8)
         ]
-        self.jump_textures = [
+        jump_textures = [
             load_texture_pair_h(f"{base_path}_jump.png")
         ]
-        self.fall_textures = [
+        fall_textures = [
             load_texture_pair_h(f"{base_path}_fall.png")
         ]
+
+        self.animations = {
+            "idle": idle_textures,
+            "walk": walk_textures,
+            "jump": jump_textures,
+            "fall": fall_textures
+        }
 
 class PlayerAttack(arcade.Sprite):
 
