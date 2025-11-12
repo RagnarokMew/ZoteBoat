@@ -1,2 +1,2 @@
-build: *.typ
+build: master.typ
 	typst compile $<
