@@ -193,3 +193,5 @@ class GameView(arcade.View):
             # Once more features are added, more logic would be included here
             # Temporarily setup will be called again
             self.setup()
+
+        self.player_sprite.update_animation(delta_time)
