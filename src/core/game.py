@@ -7,7 +7,7 @@ from entities.base_enemies import GroundEnemy
 # TODO: for now time is unused, likely remove import
 
 class GameView(arcade.View):
-    
+
     def __init__(self):
         super().__init__()
 
@@ -227,8 +227,14 @@ class GameView(arcade.View):
         self.enemy_list.update(delta_time)
         self.camera.position = self.player_sprite.position
 
-        # TODO: Refacotr change_map
-        self.change_map()
+        loadzone_collision = arcade.check_for_collision_with_list(
+                self.player_sprite,
+                self.scene["Load Zone"]
+        )
+
+        if loadzone_collision:
+            self.change_map(loadzone_collision)
+
         self.update_fade()
 
         # TODO: Refactor the collision code at a later date
@@ -271,16 +277,9 @@ class GameView(arcade.View):
     # scene change handler
     # TODO: improve horizontal transition
     # TODO: add vertical transition (up should apply force)
-    def change_map(self, force = False):
-        sprites_coll = None
-        try:
-            sprites_coll = arcade.check_for_collision_with_list(
-                self.player_sprite,
-                self.scene["Load Zone"]
-            )
-        except: pass
+    def change_map(self, sprites_coll = None):
 
-        if (sprites_coll or force) and (self.fade_out is None):
+        if self.fade_out is None:
             self.fade_out = 0
             # set spawn in new map
             try:
