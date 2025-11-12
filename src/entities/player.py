@@ -1,13 +1,13 @@
 import arcade
-from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
+from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING, PLAYER_JUMP_SPEED
 
 class PlayerSprite(arcade.Sprite):
 
-    def __init__(self, scene, position=(0, 0), scale=1.0):
+    def __init__(self, scene, position = (0, 0), scale = 1.0):
         # TODO: Change temp asset to one of our own towards the end of development
         super().__init__(
             ":resources:images/animated_characters/robot/robot_idle.png",
-            scale=scale
+            scale = scale
         )
 
         self.scene = scene
@@ -49,7 +49,7 @@ class PlayerAttack(arcade.Sprite):
         super().__init__(
             # TODO: Change temp sprite with one of our own
             ":resources:/onscreen_controls/flat_dark/right.png",
-            scale=scale
+            scale = scale
         )
 
         self.base_scale_x = self.scale_x
