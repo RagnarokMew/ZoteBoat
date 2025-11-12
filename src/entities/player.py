@@ -1,12 +1,20 @@
 import arcade
 from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
 
+def load_texture_pair_h(path):
+    return [
+        arcade.load_texture(path),
+        arcade.load_texture(path).flip_horizontally()
+    ]
+
 class PlayerSprite(arcade.Sprite):
 
     def __init__(self, scene, position=(0, 0), scale=1.0):
         # TODO: Change temp asset to one of our own towards the end of development
+        self._load_textures(":resources:images/animated_characters/robot/robot")
+
         super().__init__(
-            ":resources:images/animated_characters/robot/robot_idle.png",
+            self.idle_textures[0],
             scale=scale
         )
 
@@ -42,6 +50,29 @@ class PlayerSprite(arcade.Sprite):
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
 
+    def _load_textures(self, base_path):
+        # TODO: add animations for the following:
+        # idle
+        # walking
+        # jumping
+        # falling
+        # attacking
+        # taking damage
+        # dying
+        # double jump
+
+        self.idle_textures = [
+            arcade.load_texture(f"{base_path}_idle.png")
+        ]
+        self.walk_textures = [
+            load_texture_pair_h(f"{base_path}_walk{i}.png") for i in range(0,8)
+        ]
+        self.jump_textures = [
+            load_texture_pair_h(f"{base_path}_jump.png")
+        ]
+        self.fall_textures = [
+            load_texture_pair_h(f"{base_path}_fall.png")
+        ]
 
 class PlayerAttack(arcade.Sprite):
 
