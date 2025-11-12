@@ -28,6 +28,8 @@ class PlayerSprite(arcade.Sprite):
         self.current_state = "idle"
         self.cur_textures = self.animations["idle"]
         self.cur_tex_index = 0
+        self.frame_duration = 60
+        self.cur_frame_duration = 0
 
     # TODO: Should also work on logic to handle direction facing etc
     # The implementation of these features can be done later on
@@ -51,8 +53,11 @@ class PlayerSprite(arcade.Sprite):
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
 
+        self.update_animation(delta_time)
+
     def update_animation(self, delta_time):
-        # TODO: Add state changes
+        # TODO: finish state changes and move them
+        # outside update_animation
         if self.change_y > 0:
             self.current_state = "jump"
         elif self.change_y < 0:
@@ -62,26 +67,39 @@ class PlayerSprite(arcade.Sprite):
         else:
             self.current_state = "idle"
 
-        print(self.current_state)
-        # TODO: Implement texture changing
         self.cur_textures = self.animations[self.current_state]
 
-        # TODO: Advance based on time
+        self._next_texture(delta_time)
 
-        # TODO: Apply correct facing texture
-        self.texture = self.cur_textures[0][0]
+    def _next_texture(self, delta_time):
+        self.cur_frame_duration += delta_time
+
+        if self.cur_frame_duration * 1000 < self.frame_duration:
+            return
+
+        self.cur_frame_duration = 0
+
+        self.cur_tex_index += 1
+        self.cur_tex_index %= len(self.cur_textures)
+
+        if self.direction == LEFT_FACING:
+            self.texture = self.cur_textures[self.cur_tex_index][1]
+        else:
+            self.texture = self.cur_textures[self.cur_tex_index][0]
 
 
     def _load_textures(self, base_path):
-        # TODO: add animations for the following:
-        # idle
-        # walking
-        # jumping
-        # falling
+        # TODO: add temp animations for the following:
+        # idle - DONE
+        # walking - DONE
+        # jumping - DONE
+        # falling - DONE
         # attacking
         # taking damage
         # dying
         # double jump
+        # dashing
+        # wall climbing
 
         idle_textures = [
             load_texture_pair_h(f"{base_path}_idle.png")
