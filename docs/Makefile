@@ -1,0 +1,2 @@
+build: *.typ
+	typst compile $<
