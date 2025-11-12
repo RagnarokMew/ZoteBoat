@@ -1,12 +1,20 @@
 import arcade
 from core.constants import P_ATTACK_COOLDOWN, RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING
 
+def load_texture_pair_h(path):
+    return [
+        arcade.load_texture(path),
+        arcade.load_texture(path).flip_horizontally()
+    ]
+
 class PlayerSprite(arcade.Sprite):
 
     def __init__(self, scene, position=(0, 0), scale=1.0):
         # TODO: Change temp asset to one of our own towards the end of development
+        self._load_textures(":resources:images/animated_characters/robot/robot")
+
         super().__init__(
-            ":resources:images/animated_characters/robot/robot_idle.png",
+            self.animations["idle"][0][0],
             scale=scale
         )
 
@@ -16,9 +24,12 @@ class PlayerSprite(arcade.Sprite):
         self.attack_cooldown = 0.0
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
-        # TODO: Add textures for player (idle, walk, etc)
-        # TODO: Should also work on logic to handle direction facing etc
-        # The implementation of these features can be done later on
+
+        self.current_state = "idle"
+        self.cur_textures = self.animations["idle"]
+        self.cur_tex_index = 0
+        self.frame_duration = 60
+        self.cur_frame_duration = 0
 
     # TODO: Should also work on logic to handle direction facing etc
     # The implementation of these features can be done later on
@@ -42,6 +53,73 @@ class PlayerSprite(arcade.Sprite):
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
 
+        self.update_animation(delta_time)
+
+    def update_animation(self, delta_time):
+        # TODO: finish state changes and move them
+        # outside update_animation
+        if self.change_y > 0:
+            self.current_state = "jump"
+        elif self.change_y < 0:
+            self.current_state = "fall"
+        elif self.change_x != 0:
+            self.current_state = "walk"
+        else:
+            self.current_state = "idle"
+
+        self.cur_textures = self.animations[self.current_state]
+
+        self._next_texture(delta_time)
+
+    def _next_texture(self, delta_time):
+        self.cur_frame_duration += delta_time
+
+        if self.cur_frame_duration * 1000 < self.frame_duration:
+            return
+
+        self.cur_frame_duration = 0
+
+        self.cur_tex_index += 1
+        self.cur_tex_index %= len(self.cur_textures)
+
+        if self.direction == LEFT_FACING:
+            self.texture = self.cur_textures[self.cur_tex_index][1]
+        else:
+            self.texture = self.cur_textures[self.cur_tex_index][0]
+
+
+    def _load_textures(self, base_path):
+        # TODO: add temp animations for the following:
+        # idle - DONE
+        # walking - DONE
+        # jumping - DONE
+        # falling - DONE
+        # attacking
+        # taking damage
+        # dying
+        # double jump
+        # dashing
+        # wall climbing
+
+        idle_textures = [
+            load_texture_pair_h(f"{base_path}_idle.png")
+        ]
+        walk_textures = [
+            load_texture_pair_h(f"{base_path}_walk{i}.png") for i in range(0,8)
+        ]
+        jump_textures = [
+            load_texture_pair_h(f"{base_path}_jump.png")
+        ]
+        fall_textures = [
+            load_texture_pair_h(f"{base_path}_fall.png")
+        ]
+
+        self.animations = {
+            "idle": idle_textures,
+            "walk": walk_textures,
+            "jump": jump_textures,
+            "fall": fall_textures
+        }
 
 class PlayerAttack(arcade.Sprite):
 
