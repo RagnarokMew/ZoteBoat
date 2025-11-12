@@ -148,6 +148,10 @@ class GameView(arcade.View):
             for enemy in self.enemy_list:
                 enemy.hp_text.draw()
 
+        if self.show_enemy_hp:
+            for enemy in self.enemy_list:
+                enemy.hp_text.draw()
+
         self.gui_camera.use()
 
         # NOTE: Below this GUI gets rendered
