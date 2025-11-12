@@ -24,9 +24,8 @@ class PlayerSprite(arcade.Sprite):
         self.attack_cooldown = 0.0
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
-        # TODO: Add textures for player (idle, walk, etc)
-        # TODO: Should also work on logic to handle direction facing etc
-        # The implementation of these features can be done later on
+
+        self.current_state = "idle"
 
     # TODO: Should also work on logic to handle direction facing etc
     # The implementation of these features can be done later on
@@ -49,6 +48,25 @@ class PlayerSprite(arcade.Sprite):
         if(self.player_attack != None):
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
+
+    def update_animation(self, delta_time):
+        # TODO: Add state changes
+        if self.change_y > 0:
+            self.current_state = "jump"
+        elif self.change_y < 0:
+            self.current_state = "fall"
+        elif self.change_x != 0:
+            self.current_state = "walk"
+        else:
+            self.current_state = "idle"
+
+        print(self.current_state)
+        # TODO: Implement texture changing
+
+        # TODO: Advance based on time
+
+        # TODO: Apply correct facing texture
+
 
     def _load_textures(self, base_path):
         # TODO: add animations for the following:
