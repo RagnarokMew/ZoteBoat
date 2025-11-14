@@ -36,6 +36,7 @@
 = Introduction
 #include "introduction.typ"
 = System Overview
+#include "overview.typ"
 = Detailed Component Design
 = Requirements
 = Conclusion
