@@ -38,5 +38,6 @@
 = System Overview
 #include "overview.typ"
 = Detailed Component Design
+#include "components.typ"
 = Requirements
 = Conclusion
