@@ -16,7 +16,7 @@
 )
 
 #set par(
-  first-line-indent: (amount: 1.2em, all: true),
+  //first-line-indent: (amount: 1.2em, all: true),
   justify: true
 )
 
@@ -34,6 +34,7 @@
 ]))
 
 = Introduction
+#include "introduction.typ"
 = System Overview
 = Detailed Component Design
 = Requirements
