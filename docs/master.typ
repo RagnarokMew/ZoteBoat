@@ -40,4 +40,6 @@
 = Detailed Component Design
 #include "components.typ"
 = Requirements
+#include "requirements.typ"
 = Conclusion
+#include "conclusion.typ"
