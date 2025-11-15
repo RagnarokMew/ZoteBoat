@@ -9,9 +9,3 @@ metroidvania enthusiasts.
 ZoteBoat is implemented using the Python Arcade Library and has the following 
 requirements:
 
-// TODO: Better format requiremens
-
-+ >= Python 3.9
-+ Graphics drivers with support for either:
-  - OpenGL 3.3+
-  - GLES 3.1+ with extensions on SBCs
