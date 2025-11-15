@@ -1,11 +1,11 @@
-ZoteBoat is a Hollow Knight metroidvania fan-game that seeks to replicate the 
-feel that the original Hollow Knight game provided from a gameplay perspective.
+ZoteBoat is a Metroidvania fan-game that seeks to replicate the feel of the
+original Hollow Knight game, provided from a gameplay perspective.
 
 // TODO: Add planned features
 
-ZoteBoat is addressed to Hollow Knight fans primarily but also to other 
-metroidvania enthusiasts.
+This project is addressed primarily to Hollow Knight fans, as well as to other 
+Metroidvania enthusiasts.
 
-ZoteBoat is implemented using the Python Arcade Library and has the following 
-requirements:
-
+The game is programmed entirely in Python, implementing features from
+the #link("https://api.arcade.academy/en/stable")[Arcade library]
+and using #link("https://mapeditor.org")[Tiled] for creating the levels/maps.

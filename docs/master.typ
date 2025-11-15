@@ -27,6 +27,8 @@
 
 #set heading(numbering: "1.")
 
+#show link: underline
+
 // Main Title
 #pad(bottom: 1em,
   align(center, text(20pt)[
