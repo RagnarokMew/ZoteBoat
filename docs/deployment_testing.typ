@@ -1,9 +1,8 @@
-As ZoteBoat runs directly on the user's machine, therefore deployment is not 
-required.
-ZoteBoat has the following requirements:
+As ZoteBoat runs directly on the user's machine, there is no need for deployment.
+Running the game has the following requirements:
 
-+ Keyboard: required for game controls
-+ >= Python 3.9
++ Keyboard (for game control)
++ Python 3.9+
 + Graphics drivers with support for either:
   - OpenGL 3.3+
   - GLES 3.1+ with extensions on SBCs
