@@ -39,7 +39,7 @@
 #include "overview.typ"
 = Detailed Component Design
 #include "components.typ"
-= Requirements
-#include "requirements.typ"
+= Deployment and Testing
+#include "deployment_testing.typ"
 = Conclusion
 #include "conclusion.typ"
