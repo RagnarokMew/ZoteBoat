@@ -1,6 +1,5 @@
 == Player Character
-The player character is mostly implemented in the entities module
-The Player character has 3 important classes `PlayerSprite`, `PlayerAttack` in `entities.player` and `PlayerStats` in `core.player_stats`.
+The player character is mostly implemented in the entities module and has 3 important classes `PlayerSprite`, `PlayerAttack` in `entities.player` and `PlayerStats` in `core.player_stats`.
 
 // TODO: Update the PlayerSprite section by mentioning abilities
 `PlayerSprite` is derived from `arcade.Sprite` and implements the following functions:
@@ -16,7 +15,7 @@ The Player character has 3 important classes `PlayerSprite`, `PlayerAttack` in `
 - `update()`: changes the scale and position of the attack based on player directionality and despawns the attack when its duration has expired
 
 `PlayerStats` is a helper that holds important player statistics that 
-shouldn't reset when a scene changes. Its field include but aren't limited to:
+shouldn't reset when a scene changes. Its fields include but aren't limited to:
 
 - `inv_time`: how much invincibility time the player still has left after taking damage
 - `damage`: the amount of damage the player deals to enemies with attacks
