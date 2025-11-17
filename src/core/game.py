@@ -110,6 +110,7 @@ class GameView(arcade.View):
             if self.fade_out > 255:
                 self.fade_out = None
                 self.fade_in = 255
+                self.player_trans_x += self.player_sprite.change_x
                 self.setup()
 
         if self.fade_in is not None:
@@ -297,6 +298,4 @@ class GameView(arcade.View):
                 self.player_trans_y = sprites_coll[0].properties["trans_y"]
             except:
                 self.player_trans_x = self.player_trans_y = 0
-            finally:
-                self.player_trans_x += self.player_sprite.change_x
 
