@@ -12,7 +12,7 @@ class GameView(arcade.View):
 
         self.player_texture = None
         self.player_sprite = None
-        self.player_stats = None
+        self.player_stats = PlayerStats()
 
         self.tile_map = None
         self.scene = None
@@ -40,14 +40,17 @@ class GameView(arcade.View):
 
         self.scene.add_sprite_list_after("Enemy", "Foreground")
         self.scene.add_sprite_list_after("Player", "Enemy")
-        self.player_stats = PlayerStats()
+
+        try:    self.scene["Wall Jump"].enable_spatial_hashing()
+        except: pass
 
         # Temporary Spawn, in the future it should be based on the map
-        temp_spawn = (128, 450)
+        temp_spawn = (128, 400)
         self.player_sprite = player.PlayerSprite(
             self.scene,
             temp_spawn
         )
+        self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
         
         # add single enemy to test pogo
@@ -99,8 +102,7 @@ class GameView(arcade.View):
         if key == arcade.key.Z:
             self.jump_pressed = True
 
-            if self.physics_engine.can_jump():
-                self.physics_engine.jump(PLAYER_JUMP_SPEED)
+            self.player_sprite.jump(self.physics_engine)
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -129,6 +131,7 @@ class GameView(arcade.View):
         # DEBUG: enable/disable all abilities
         if key == arcade.key.W:
             self.player_stats.getall()
+            self.player_sprite.stats = self.player_stats
             if self.player_stats.can_double_jump:
                 self.physics_engine.enable_multi_jump(2)
             else:
@@ -137,8 +140,7 @@ class GameView(arcade.View):
     def on_update(self, delta_time):
         self.physics_engine.update()
         self.player_sprite.update(
-            delta_time, self.physics_engine,
-            self.player_stats.can_double_jump
+            delta_time, self.physics_engine
         )
         self.camera.position = self.player_sprite.position
 

@@ -16,6 +16,8 @@ class PlayerSprite(arcade.Sprite):
         self.attack_cooldown = 0.0
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
+
+        self.stats = None
         self.has_pogo = True
         # TODO: Add textures for player (idle, walk, etc)
         # TODO: Should also work on logic to handle direction facing etc
@@ -31,8 +33,21 @@ class PlayerSprite(arcade.Sprite):
         )
 
         self.attack_cooldown = P_ATTACK_COOLDOWN
+    
+    def jump(self, phys):
+        ok = False
+        if "Wall Jump" in self.scene and self.stats.can_wall_jump:
+            if arcade.check_for_collision_with_list(
+                self, self.scene["Wall Jump"], method = 1
+            ): ok = True
+        if ok:
+            print("wall")
+            self.change_y = PLAYER_JUMP_SPEED
+        elif phys.can_jump():
+            print("Jumping")
+            phys.jump(PLAYER_JUMP_SPEED)
 
-    def update(self, delta_time, phys, can_dbl):
+    def update(self, delta_time, phys):
         if(self.attack_cooldown > 0):
             self.attack_cooldown -= delta_time
 
@@ -45,7 +60,7 @@ class PlayerSprite(arcade.Sprite):
                 ) and self.facing_direction == DOWN_FACING:
                     # don't use phys.jump(), since pogos don't count as jumps
                     self.change_y = PLAYER_JUMP_SPEED
-                    if can_dbl and self.has_pogo:
+                    if self.stats.can_double_jump and self.has_pogo:
                         self.has_pogo = False
                         phys.jumps_since_ground = max(
                             1, phys.jumps_since_ground - 1
