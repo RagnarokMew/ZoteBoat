@@ -230,7 +230,8 @@ class GameView(arcade.View):
 
         loadzone_collision = arcade.check_for_collision_with_list(
                 self.player_sprite,
-                self.scene["Load Zone"]
+                self.scene["Load Zone"],
+                method = 1
         )
 
         if loadzone_collision:
