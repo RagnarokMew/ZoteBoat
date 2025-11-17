@@ -1,8 +1,9 @@
 import arcade
 from entities import player
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT, DEFAULT_MAP, DEFAULT_SPAWN
+from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT, DEFAULT_MAP, DEFAULT_SPAWN, P_GAMEPLAY, P_DIALOGUE, P_SHOP
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
+from entities.base_npc import BaseNpc, DialogueMenu
 
 # TODO: for now time is unused, likely remove import
 
@@ -45,6 +46,10 @@ class GameView(arcade.View):
         self.fade_out = None
         self.fade_in = None
 
+        self.player_interaction_state = P_GAMEPLAY
+        self.npc = None
+        self.active_menu = None
+
     def setup(self):
         # DEBUG: make sure map is correct
         # print(f"changed to {map_id}")
@@ -84,6 +89,11 @@ class GameView(arcade.View):
                     )
                 )
         except: pass
+
+        # NOTE: NPC test start
+        self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
+        self.scene.add_sprite("NPC", self.npc)
+        # NOTE: NPC test end
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
@@ -161,70 +171,89 @@ class GameView(arcade.View):
 
         self.health_text.draw()
 
+        if self.active_menu:
+            self.active_menu.draw()
+
     def on_key_release(self, key, modifiers):
-        if key == arcade.key.Z:
-            self.jump_pressed = False
+        if self.player_interaction_state == P_GAMEPLAY:
+            if key == arcade.key.Z:
+                self.jump_pressed = False
 
-        if key == arcade.key.UP:
-            self.up_pressed = False
-            self.player_sprite.facing_direction = SIDE_FACING
+            if key == arcade.key.UP:
+                self.up_pressed = False
+                self.player_sprite.facing_direction = SIDE_FACING
 
-        if key == arcade.key.DOWN:
-            self.down_pressed = False
-            self.player_sprite.facing_direction = SIDE_FACING
+            if key == arcade.key.DOWN:
+                self.down_pressed = False
+                self.player_sprite.facing_direction = SIDE_FACING
 
-        if key == arcade.key.LEFT:
-            self.left_pressed = False
-            self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
+            if key == arcade.key.LEFT:
+                self.left_pressed = False
+                self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
 
-        if key == arcade.key.RIGHT:
-            self.right_pressed = False
-            self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
+            if key == arcade.key.RIGHT:
+                self.right_pressed = False
+                self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
-        # manual reset switch (debug)
-        if key == arcade.key.R:
-            self.change_map(force = True)
+            # manual reset switch (debug)
+            if key == arcade.key.R:
+                self.change_map(force = True)
+        elif self.player_interaction_state == P_DIALOGUE:
+            pass
+        elif self.player_interaction_state == P_SHOP:
+            pass
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.Z:
-            self.jump_pressed = True
+        if self.player_interaction_state == P_GAMEPLAY:
+            if key == arcade.key.Z:
+                self.jump_pressed = True
 
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                if self.physics_engine.can_jump():
+                    self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
-        if key == arcade.key.UP:
-            self.up_pressed = True
-            self.player_sprite.facing_direction = UP_FACING
+            if key == arcade.key.UP:
+                self.up_pressed = True
+                self.player_sprite.facing_direction = UP_FACING
 
-        if key == arcade.key.DOWN:
-            self.down_pressed = True
-            self.player_sprite.facing_direction = DOWN_FACING
+                if arcade.check_for_collision(self.player_sprite, self.npc):
+                    if not self.active_menu:
+                        self.active_menu = DialogueMenu()
 
-        if key == arcade.key.LEFT:
-            self.left_pressed = True
-            self.player_sprite.direction = LEFT_FACING
-            self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
-        if key == arcade.key.RIGHT:
-            self.right_pressed = True
-            self.player_sprite.direction = RIGHT_FACING
-            self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
+            if key == arcade.key.DOWN:
+                self.down_pressed = True
+                self.player_sprite.facing_direction = DOWN_FACING
 
-        if key == arcade.key.X:
-            self.player_sprite.attack()
+            if key == arcade.key.LEFT:
+                self.left_pressed = True
+                self.player_sprite.direction = LEFT_FACING
+                self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
 
-        if key == arcade.key.F5:
-            arcade.window_commands.close_window()
+            if key == arcade.key.RIGHT:
+                self.right_pressed = True
+                self.player_sprite.direction = RIGHT_FACING
+                self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
 
-        # movement reset hotkeu
-        # TODO: automate this to prevent slide bug
-        if key == arcade.key.Q:
-            self.player_sprite.change_x = 0
+            if key == arcade.key.X:
+                self.player_sprite.attack()
+
+            if key == arcade.key.F5:
+                arcade.window_commands.close_window()
+
+            # movement reset hotkeu
+            # TODO: automate this to prevent slide bug
+            if key == arcade.key.Q:
+                self.player_sprite.change_x = 0
+        elif self.player_interaction_state == P_DIALOGUE:
+            pass
+        elif self.player_interaction_state == P_SHOP:
+            pass
 
     def on_update(self, delta_time):
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
         self.enemy_list.update(delta_time)
+        self.npc.update(delta_time)
         self.camera.position = self.player_sprite.position
 
         loadzone_collision = arcade.check_for_collision_with_list(
