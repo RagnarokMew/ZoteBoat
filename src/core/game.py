@@ -215,10 +215,11 @@ class GameView(arcade.View):
                 self.up_pressed = True
                 self.player_sprite.facing_direction = UP_FACING
 
+                # NOTE: Starts dialogue
                 if arcade.check_for_collision(self.player_sprite, self.npc):
                     if not self.active_menu:
                         self.active_menu = DialogueMenu()
-
+                        self.player_interaction_state = P_DIALOGUE
 
             if key == arcade.key.DOWN:
                 self.down_pressed = True
@@ -245,7 +246,17 @@ class GameView(arcade.View):
             if key == arcade.key.Q:
                 self.player_sprite.change_x = 0
         elif self.player_interaction_state == P_DIALOGUE:
-            pass
+            # NOTE: Not using match bc in docs we put Python >=3.9
+            # But match case was introduced in Python 3.10
+            if (key == arcade.key.A) or \
+                (key == arcade.key.Z) or \
+                (key == arcade.key.X):
+
+                if self.active_menu:
+                    if not self.active_menu.next():
+                        self.active_menu = None
+                        self.player_interaction_state = P_GAMEPLAY
+
         elif self.player_interaction_state == P_SHOP:
             pass
 
