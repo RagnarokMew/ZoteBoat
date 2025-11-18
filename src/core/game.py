@@ -76,7 +76,7 @@ class GameView(arcade.View):
             font_size=20
         )
 
-        self.background_color = arcade.color.AERO_BLUE
+        self.background_color = arcade.color.BLUE
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, walls=self.scene["Platforms"], gravity_constant=GRAVITY
