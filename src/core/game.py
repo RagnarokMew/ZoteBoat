@@ -28,6 +28,7 @@ class GameView(arcade.View):
         self.scene = None
 
         self.enemy_list = None
+        self.npc_list = None
 
         self.camera = None
         self.gui_camera = None
@@ -46,7 +47,6 @@ class GameView(arcade.View):
         self.fade_in = None
 
         self.player_interaction_state = P_GAMEPLAY
-        self.npc = None
         self.active_menu = None
 
     def setup(self):
@@ -54,6 +54,7 @@ class GameView(arcade.View):
         # print(f"changed to {map_id}")
 
         self.enemy_list = arcade.SpriteList()
+        self.npc_list = arcade.SpriteList()
 
         self.tile_map = arcade.load_tilemap(
             f"../assets/tilemaps/{self.map_id}.tmx",
@@ -88,9 +89,26 @@ class GameView(arcade.View):
                 )
         except: pass
 
+        # TODO: Implement NPC spawn
+        try:
+            for spawn in self.scene["Npc Spawn"]:
+                # TODO: When npc spawning gets implemented the dialogue content
+                # name, and title will have to be fetched someplace
+                # currently the dialogue isn't saved anywhere and a default
+                # gets loaded
+                self.npc_list.append(
+                    BaseNpc(
+                        self.scene,
+                        position=(spawn.center_x, spawn.center_y)
+                    )
+                )
+        except: pass
+
         # NOTE: NPC test start
-        self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
-        self.scene.add_sprite("NPC", self.npc)
+        # Uncomment to spawn the test npc
+        #
+        #self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
+        #self.npc_list.append(self.npc)
         # NOTE: NPC test end
 
         self.camera = arcade.Camera2D()
@@ -151,6 +169,7 @@ class GameView(arcade.View):
 
         self.scene.draw()
         self.enemy_list.draw()
+        self.npc_list.draw()
 
         if self.show_enemy_hp:
             for enemy in self.enemy_list:
@@ -218,10 +237,19 @@ class GameView(arcade.View):
                 self.player_sprite.facing_direction = UP_FACING
 
                 # NOTE: Starts dialogue
-                if arcade.check_for_collision(self.player_sprite, self.npc):
-                    if not self.active_menu:
-                        self.active_menu = DialogueMenu()
-                        self.player_interaction_state = P_DIALOGUE
+                npc = arcade.check_for_collision_with_list(
+                    self.player_sprite,
+                    self.npc_list
+                )
+
+                if npc and not self.active_menu:
+                    # TODO: When we actually add dialogue text the content
+                    # should be added as an array to DialogueMenu in content
+                    self.active_menu = DialogueMenu(
+                        npc_name=npc[0].name,
+                        npc_title=npc[0].title
+                    )
+                    self.player_interaction_state = P_DIALOGUE
 
             if key == arcade.key.DOWN:
                 self.down_pressed = True
@@ -275,7 +303,7 @@ class GameView(arcade.View):
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
         self.enemy_list.update(delta_time)
-        self.npc.update(delta_time)
+        self.npc_list.update(delta_time)
         self.camera.position = self.player_sprite.position
 
         loadzone_collision = arcade.check_for_collision_with_list(
