@@ -175,6 +175,12 @@ class GameView(arcade.View):
             self.active_menu.draw()
 
     def on_key_release(self, key, modifiers):
+        if key == arcade.key.LEFT:
+            self.left_pressed = False
+
+        if key == arcade.key.RIGHT:
+            self.right_pressed = False
+
         if self.player_interaction_state == P_GAMEPLAY:
             if key == arcade.key.Z:
                 self.jump_pressed = False
@@ -187,14 +193,6 @@ class GameView(arcade.View):
                 self.down_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-            if key == arcade.key.LEFT:
-                self.left_pressed = False
-                self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
-
-            if key == arcade.key.RIGHT:
-                self.right_pressed = False
-                self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
-
             # manual reset switch (debug)
             if key == arcade.key.R:
                 self.change_map(force = True)
@@ -204,6 +202,12 @@ class GameView(arcade.View):
             pass
 
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.LEFT:
+            self.left_pressed = True
+
+        if key == arcade.key.RIGHT:
+            self.right_pressed = True
+
         if self.player_interaction_state == P_GAMEPLAY:
             if key == arcade.key.Z:
                 self.jump_pressed = True
@@ -225,16 +229,6 @@ class GameView(arcade.View):
                 self.down_pressed = True
                 self.player_sprite.facing_direction = DOWN_FACING
 
-            if key == arcade.key.LEFT:
-                self.left_pressed = True
-                self.player_sprite.direction = LEFT_FACING
-                self.player_sprite.change_x -= PLAYER_MOVEMENT_SPEED
-
-            if key == arcade.key.RIGHT:
-                self.right_pressed = True
-                self.player_sprite.direction = RIGHT_FACING
-                self.player_sprite.change_x += PLAYER_MOVEMENT_SPEED
-
             if key == arcade.key.X:
                 self.player_sprite.attack()
 
@@ -245,6 +239,7 @@ class GameView(arcade.View):
             # TODO: automate this to prevent slide bug
             if key == arcade.key.Q:
                 self.player_sprite.change_x = 0
+
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
             # But match case was introduced in Python 3.10
@@ -261,6 +256,24 @@ class GameView(arcade.View):
             pass
 
     def on_update(self, delta_time):
+        # NOTE: New left-right movement handler moved here
+        # to fix all movement related bugs
+        if self.player_interaction_state == P_GAMEPLAY:
+            if self.left_pressed and not self.right_pressed:
+                self.player_sprite.direction = LEFT_FACING
+                self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+
+            elif self.right_pressed and not self.left_pressed:
+                self.player_sprite.direction = RIGHT_FACING
+                self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
+            else:
+                self.player_sprite.change_x = 0
+
+        else:
+            self.player_sprite.change_x = 0
+
+
         self.physics_engine.update()
         self.player_sprite.update(delta_time)
         self.enemy_list.update(delta_time)
@@ -337,6 +350,4 @@ class GameView(arcade.View):
                 self.player_trans_y = sprites_coll[0].properties["trans_y"]
             except:
                 self.player_trans_x = self.player_trans_y = 0
-            finally:
-                self.player_trans_x += self.player_sprite.change_x
 
