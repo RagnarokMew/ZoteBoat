@@ -27,7 +27,6 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
 
-        self.wall_list = None
         self.enemy_list = None
 
         self.camera = None
@@ -54,7 +53,6 @@ class GameView(arcade.View):
         # DEBUG: make sure map is correct
         # print(f"changed to {map_id}")
 
-        self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
 
         self.tile_map = arcade.load_tilemap(
