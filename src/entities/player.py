@@ -124,16 +124,19 @@ class PlayerSprite(arcade.Sprite):
 class PlayerAttack(arcade.Sprite):
 
     def __init__(self, scene, parent, scale=1.0):
+        self.attack_textures = self._load_textures("../assets/player/attack/")
+        self.cur_tex_index = 0
         super().__init__(
             # TODO: Change temp sprite with one of our own
-            ":resources:/onscreen_controls/flat_dark/right.png",
+            self.attack_textures[self.cur_tex_index],
+            #":resources:/onscreen_controls/flat_dark/right.png",
             scale=scale
         )
 
         self.base_scale_x = self.scale_x
         self.base_scale_y = self.scale_y
         self.offset_x = 48
-        self.offset_y = -48
+        self.offset_y = -24
         self.parent = parent
         self.scene = scene
         self.remaining_duration = P_ATTACK_COOLDOWN
@@ -142,6 +145,8 @@ class PlayerAttack(arcade.Sprite):
 
     def update(self, delta_time):
         self.remaining_duration -= delta_time
+
+        self.update_animation(delta_time)
 
         self.angle = 90 * self.parent.facing_direction
 
@@ -161,4 +166,21 @@ class PlayerAttack(arcade.Sprite):
         if(self.remaining_duration <= 0):
             self.remove_from_sprite_lists()
             self.parent.player_attack = None
+
+    def update_animation(self, delta_time):
+        # TODO: Tweak this if necessary
+        if self.remaining_duration < P_ATTACK_COOLDOWN / 3:
+            self.cur_tex_index = 1
+        else:
+            self.cur_tex_index = 0
+
+        self.texture = self.attack_textures[self.cur_tex_index]
+
+
+    def _load_textures(self, base_path):
+        textures = [
+            arcade.load_texture(f"{base_path}attack{i}.png") for i in range(2,4)
+        ]
+
+        return textures
 
