@@ -334,6 +334,10 @@ class GameView(arcade.View):
                 enemy.update_text()
 
                 if enemy.health <= 0:
+                    self.player_stats.currency_1 += enemy.drop_curr1
+                    self.player_stats.currency_2 += enemy.drop_curr2
+                    self.player_stats.currency_3 += enemy.drop_curr3
+                    self.player_stats.currency_4 += enemy.drop_curr4
                     self.enemy_list.remove(enemy)
 
         hit_by = arcade.check_for_collision_with_list(
