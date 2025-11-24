@@ -40,5 +40,5 @@ class FadingText(arcade.Text):
 
     def reset(self):
         self.duration = self.max_duration
-        self.trans_duration = self.max_duration
+        self.trans_duration = self.trans_max_duration
 
