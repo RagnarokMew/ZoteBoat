@@ -5,6 +5,7 @@ from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
+from core.shop import ShopMenu
 
 # TODO: for now time is unused, likely remove import
 
@@ -109,8 +110,8 @@ class GameView(arcade.View):
         # NOTE: NPC test start
         # Uncomment to spawn the test npc
         #
-        #self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
-        #self.npc_list.append(self.npc)
+        self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500), has_shop=True)
+        self.npc_list.append(self.npc)
         # NOTE: NPC test end
 
         self.camera = arcade.Camera2D()
@@ -260,7 +261,8 @@ class GameView(arcade.View):
                     # should be added as an array to DialogueMenu in content
                     self.active_menu = DialogueMenu(
                         npc_name=npc[0].name,
-                        npc_title=npc[0].title
+                        npc_title=npc[0].title,
+                        before_shop_interaction = npc[0].has_shop
                     )
                     self.player_interaction_state = P_DIALOGUE
 
@@ -286,13 +288,33 @@ class GameView(arcade.View):
                 (key == arcade.key.Z) or \
                 (key == arcade.key.X):
 
+                # TODO: Add a way to load the items for each npc shop
+                # A possible way to do this would be for each npc to hold
+                # all the items it can have in its shop
+
+                # NOTE: The current implementation is very ugly and should be refactored
+                # Currently it works the following way:
+                # When a dialogue ends it checks if it leads to a shop interaction
+                # If it does it spawns a shop and loads its items
                 if self.active_menu:
                     if not self.active_menu.next():
-                        self.active_menu = None
-                        self.player_interaction_state = P_GAMEPLAY
+                        if self.active_menu.before_shop_interation:
+                            self.active_menu = ShopMenu(
+                                [], # TODO: add items
+                                self.player_stats,
+                                f"{self.active_menu.npc_name}'s Shop"
+                            )
+                            self.player_interaction_state = P_SHOP
+                        else:
+                            self.active_menu = None
+                            self.player_interaction_state = P_GAMEPLAY
 
         elif self.player_interaction_state == P_SHOP:
-            pass
+            if key == arcade.key.Z:
+                pass
+            elif key == arcade.key.X:
+                self.active_menu = None
+                self.player_interaction_state = P_GAMEPLAY
 
     def on_update(self, delta_time):
         # NOTE: New left-right movement handler moved here
