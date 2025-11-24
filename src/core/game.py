@@ -4,6 +4,7 @@ from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_J
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
+from ui.text import FadingText
 
 # TODO: for now time is unused, likely remove import
 
@@ -33,6 +34,7 @@ class GameView(arcade.View):
         self.camera = None
         self.gui_camera = None
         self.health_text = None
+        self.currency_text = None
 
         self.jump_pressed = False
         self.up_pressed = False
@@ -122,6 +124,15 @@ class GameView(arcade.View):
             font_size=20
         )
 
+        self.currency_text = FadingText(
+            f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
+            x = 5,
+            y = SCREEN_HEIGHT - 60,
+            duration=2
+        )
+        self.currency_text.duration = self.currency_text.trans_duration = 0
+
+
         self.background_color = arcade.color.AERO_BLUE
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -187,6 +198,8 @@ class GameView(arcade.View):
         self.draw_fading()
 
         self.health_text.draw()
+        if self.currency_text:
+            self.currency_text.draw()
 
         if self.active_menu:
             self.active_menu.draw()
@@ -338,6 +351,10 @@ class GameView(arcade.View):
                     self.player_stats.currency_2 += enemy.drop_curr2
                     self.player_stats.currency_3 += enemy.drop_curr3
                     self.player_stats.currency_4 += enemy.drop_curr4
+
+                    self.currency_text.text = f"currency1: {self.player_stats.currency_1} (+{enemy.drop_curr1})\ncurrency2: {self.player_stats.currency_2} (+{enemy.drop_curr2})\ncurrency3: {self.player_stats.currency_3} (+{enemy.drop_curr3})\ncurrency4: {self.player_stats.currency_4} (+{enemy.drop_curr4})"
+                    self.currency_text.reset()
+
                     self.enemy_list.remove(enemy)
 
         hit_by = arcade.check_for_collision_with_list(
@@ -350,6 +367,9 @@ class GameView(arcade.View):
             self.player_stats.inv_time = self.player_stats.max_inv_time
         else:
             self.player_stats.inv_time -= delta_time
+
+        if self.currency_text:
+            self.currency_text.update(delta_time)
 
         if self.player_stats.health <= 0:
             # TODO: Add respawning logic once level loader is fully implemented
