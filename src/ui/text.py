@@ -33,8 +33,6 @@ class FadingText(arcade.Text):
         elif self.trans_duration > 0:
             self.trans_duration -= delta_time
 
-        print(f"{self.duration} , {self.trans_duration}")
-
         self.cur_alpha = max(0, int(self.alpha * (self.trans_duration / self.trans_max_duration)))
         self.color = (self.r, self.g, self.b, self.cur_alpha)
 
