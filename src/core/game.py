@@ -38,7 +38,7 @@ class GameView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.scene.add_sprite_list_after("Enemy", "Foreground")
+        self.scene.add_sprite_list_before("Enemy", "Foreground")
         self.scene.add_sprite_list_after("Player", "Enemy")
 
         try:    self.scene["Wall Jump"].enable_spatial_hashing()
@@ -54,10 +54,7 @@ class GameView(arcade.View):
         self.scene.add_sprite("Player", self.player_sprite)
         
         # add single enemy to test pogo
-        enemy_sprite = enemy.EnemySprite(
-            self.scene,
-            temp_spawn
-        )
+        enemy_sprite = enemy.EnemySprite(self.scene, temp_spawn)
         self.scene.add_sprite("Enemy", enemy_sprite)
 
         self.camera = arcade.Camera2D()
@@ -101,7 +98,6 @@ class GameView(arcade.View):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.Z:
             self.jump_pressed = True
-
             self.player_sprite.jump(self.physics_engine)
 
         if key == arcade.key.UP:
