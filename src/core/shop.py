@@ -177,7 +177,31 @@ class ShopMenu:
             self._update_text()
 
     def purchase(self):
-        pass
+        if self.items[self.active_index].currency == "?":
+            return
+
+        if not self.handler.decrease_currency(
+            self.items[self.active_index].price,
+            self.items[self.active_index].currency
+        ):
+            return
+
+        self.items.pop(self.active_index)
+
+
+        if len(self.items) == 0:
+            self.items.append(ShopItem(
+                name="No more items left...",
+                currency="?",
+                price=0,
+                description="Wow! You've bought everything my shop had to offer. Thank you so much Zote! I'll make sure to go and deposit all this currency at the nearest bank as soon as possible."
+            ))
+        if self.active_index >= len(self.items):
+            self.active_index -= 1
+
+        self._update_text()
+
+        self.handler.unlock(self.items[self.active_index].name)
 
     def _update_text(self):
         self.active_item_text.text = self.items[self.active_index].name
@@ -200,9 +224,38 @@ class ShopHandler:
         self.stats = player_stats
 
     # TODO: Find better name for this
-    def do(self, action):
+    def unlock(self, item):
+        """Unlocks a shop item for the player.
+
+        Args:
+            item(str): The name of the shop item.
+
+        """
         pass
 
     def check_owned(self, item):
+        """Checks if an item from the shop is already owned by the player.
+
+        Args:
+            item(str): The name of the shop item.
+
+        Returns:
+            bool: True if the item is owned, False if not.
+
+        """
         pass
 
+    def decrease_currency(self, amount, currency):
+        """Decreases an amount of currency from the player.
+
+        Tries to decrease currency from the player without going into negatives.
+
+        Args:
+            amount(int): The amount of currency to be decreased.
+            currency(str): Which currency to be decreased.
+
+        Returns:
+            bool: True if the currency was decreased, False if not.
+
+        """
+        pass
