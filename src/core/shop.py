@@ -40,7 +40,7 @@ class ShopMenu:
         # NOTE: Below are the Text names of the "scrollable" items
 
         self.prev_item_text = arcade.Text(
-            "ZoteBoat The Biography",
+            "",
             x = SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
             y = SCREEN_HEIGHT // 2 + SCREEN_HEIGHT * 3 // 4 // 4 + 10,
             color=arcade.color.WHITE,
@@ -51,7 +51,7 @@ class ShopMenu:
         )
 
         self.active_item_text = arcade.Text(
-            "ZoteBoat The Biography",
+            "",
             x = SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
             y = SCREEN_HEIGHT // 2,
             color=arcade.color.WHITE,
@@ -62,7 +62,7 @@ class ShopMenu:
         )
 
         self.next_item_text = arcade.Text(
-            "ZoteBoat The Biography",
+            "",
             x = SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
             y = SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 3 // 4 // 4 - 10,
             color=arcade.color.WHITE,
@@ -108,7 +108,8 @@ class ShopMenu:
         )
 
         # TODO: go through items and check if player owns it already
-        # TODO: Set up Text strings based on shop items and active item
+
+        self._update_text()
 
     def draw(self):
         # Main Shop Window
@@ -129,26 +130,28 @@ class ShopMenu:
         )
 
         # Prev Item Window
-        arcade.draw_rect_filled(
-            arcade.rect.XYWH(
-                SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
-                SCREEN_HEIGHT // 2 + SCREEN_HEIGHT * 3 // 4 // 4 + 10,
-                SCREEN_WIDTH * 3 // 4 // 2 - 120,
-                SCREEN_HEIGHT * 3 // 4 // 4 // 1.5
-            ),
-            arcade.color.BLUE
-        )
+        if self.active_index > 0:
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(
+                    SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
+                    SCREEN_HEIGHT // 2 + SCREEN_HEIGHT * 3 // 4 // 4 + 10,
+                    SCREEN_WIDTH * 3 // 4 // 2 - 120,
+                    SCREEN_HEIGHT * 3 // 4 // 4 // 1.5
+                ),
+                arcade.color.BLUE
+            )
 
         # Next Item Window
-        arcade.draw_rect_filled(
-            arcade.rect.XYWH(
-                SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
-                SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 3 // 4 // 4 - 10,
-                SCREEN_WIDTH * 3 // 4 // 2 - 120,
-                SCREEN_HEIGHT * 3 // 4 // 4 // 1.5
-            ),
-            arcade.color.BLUE
-        )
+        if self.active_index < len(self.items) -1:
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(
+                    SCREEN_WIDTH // 2 - SCREEN_WIDTH * 3 // 4 // 2 // 2 + 40,
+                    SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 3 // 4 // 4 - 10,
+                    SCREEN_WIDTH * 3 // 4 // 2 - 120,
+                    SCREEN_HEIGHT * 3 // 4 // 4 // 1.5
+                ),
+                arcade.color.BLUE
+            )
 
         # Active Item Window
         arcade.draw_rect_filled(
@@ -164,13 +167,33 @@ class ShopMenu:
         self.batch.draw()
 
     def next_item(self):
-        pass
+        if self.active_index < len(self.items) - 1:
+            self.active_index += 1
+            self._update_text()
 
     def previous_item(self):
-        pass
+        if self.active_index > 0:
+            self.active_index -= 1
+            self._update_text()
 
     def purchase(self):
         pass
+
+    def _update_text(self):
+        self.active_item_text.text = self.items[self.active_index].name
+        self.item_name_text.text = self.items[self.active_index].name
+        self.item_desc_text.text = self.items[self.active_index].description
+        self.item_price_text.text = f"PRICE: {self.items[self.active_index].price} {self.items[self.active_index].currency}"
+
+        if self.active_index > 0:
+            self.prev_item_text.text = self.items[self.active_index - 1].name
+        else:
+            self.prev_item_text.text = ""
+
+        if self.active_index < len(self.items) - 1:
+            self.next_item_text.text = self.items[self.active_index + 1].name
+        else:
+            self.next_item_text.text = ""
 
 class ShopHandler:
     def __init__(self, player_stats):
