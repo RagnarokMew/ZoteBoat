@@ -17,8 +17,14 @@ class PlayerSprite(arcade.Sprite):
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
 
-        self.wjump_timer = 0
+        self.wjump_timer = 0.0
+        # NOTE: maybe add a bool to avoid type changes if annotation is implemented
         self.wj_x = False
+
+        self.dash_timer = 0.0
+        self.dash_cooldown = 0.0
+        self.dash_dir = 0
+        self.did_dash = False
 
         self.stats = None
         self.has_pogo = True
@@ -40,19 +46,28 @@ class PlayerSprite(arcade.Sprite):
     def jump(self, phys):
         wj = False
 
-        try: wj = arcade.check_for_collision_with_list(
-                self, self.scene["Wall Jump"], method = 1
-            )
-        except: pass
+        if self.stats.can_wjump:
+            try: wj = arcade.check_for_collision_with_list(
+                    self, self.scene["Wall Jump"], method = 1
+                )
+            except: pass
+        
+            if wj:
+                self.wj_x = wj[0].properties["side"]
+                self.change_x += self.wj_x * P_WJUMP_SPEED
+                self.change_y = PLAYER_JUMP_SPEED
+                self.wjump_timer = P_WJUMP_TIME
     
-        if wj:
-            self.wj_x = wj[0].properties["side"]
-            self.change_x += self.wj_x * P_WJUMP_SPEED
-            self.change_y = PLAYER_JUMP_SPEED
-            self.wjump_timer = P_WJUMP_COOLDOWN
-    
-        elif phys.can_jump():
+        if (not wj or not self.stats.can_wjump) and phys.can_jump():
             phys.jump(PLAYER_JUMP_SPEED)
+    
+    def dash(self):
+        if self.stats.can_dash and self.dash_cooldown <= 0:
+            self.dash_dir = self.direction
+            self.change_x += P_DASH_SPEED * self.dash_dir
+            self.dash_timer = P_DASH_TIME
+            self.dash_cooldown = P_DASH_COOLDOWN
+            self.did_dash = True
 
     def update(self, delta_time, phys):
         # TODO: is this check necessary?
@@ -64,11 +79,17 @@ class PlayerSprite(arcade.Sprite):
         if self.wjump_timer <= 0 and self.wj_x:
             self.change_x -= self.wj_x * P_WJUMP_SPEED
             self.wj_x = False
+        
+        self.dash_timer -= delta_time
+        if self.dash_timer <= 0 and self.did_dash:
+            self.change_x -= P_DASH_SPEED * self.dash_dir
+            self.did_dash = False
+        else:
+            self.dash_cooldown = max(
+                0.0, self.dash_cooldown - delta_time 
+            )
 
         if self.player_attack is not None:
-            self.player_attack.position = self.position
-            self.player_attack.update(delta_time)
-
             # pogo :3
             if arcade.check_for_collision_with_list(
                     self.player_attack,
@@ -79,7 +100,7 @@ class PlayerSprite(arcade.Sprite):
                     self.change_y = PLAYER_JUMP_SPEED
 
                     # after pogo, add a double jump
-                    if self.stats.can_double_jump and self.has_pogo:
+                    if self.stats.can_djump and self.has_pogo:
                         self.has_pogo = False
                         phys.jumps_since_ground = max(
                             1, phys.jumps_since_ground - 1
@@ -88,6 +109,10 @@ class PlayerSprite(arcade.Sprite):
             # this is necessary to prevent multiple pogos per pogo
             else: self.has_pogo = True
 
+            # update attack last, in order to
+            # prevent deleting it before checking collision
+            self.player_attack.position = self.position
+            self.player_attack.update(delta_time)
 
 class PlayerAttack(arcade.Sprite):
 

@@ -120,6 +120,9 @@ class GameView(arcade.View):
 
         if key == arcade.key.X:
             self.player_sprite.attack()
+
+        if key == arcade.key.C:
+            self.player_sprite.dash()
         
         if key == arcade.key.F5:
             arcade.window_commands.close_window()
@@ -128,7 +131,7 @@ class GameView(arcade.View):
         if key == arcade.key.W:
             self.player_stats.getall()
             self.player_sprite.stats = self.player_stats
-            if self.player_stats.can_double_jump:
+            if self.player_stats.can_djump:
                 self.physics_engine.enable_multi_jump(2)
             else:
                 self.physics_engine.disable_multi_jump()

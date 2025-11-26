@@ -10,18 +10,19 @@ class PlayerStats():
         # TODO: Add other player related values
         # (e.g: has_double_jump, has_wall_jump, ...)
 
-        self.can_double_jump = False
-        self.can_wall_jump = False
+        self.can_djump = False
+        self.can_wjump = False
         self.can_dash = False
 
+    # DEBUG: get/remove all abilities
     def getall(self):
-        if not self.can_double_jump:
-            self.can_double_jump = True
-            self.can_wall_jump = True
+        if not self.can_djump:
+            self.can_djump = True
+            self.can_wjump = True
             self.can_dash = True
             # etc
         else:
-            self.can_double_jump = False
-            self.can_wall_jump = False
+            self.can_djump = False
+            self.can_wjump = False
             self.can_dash = False
             # etc
