@@ -311,10 +311,14 @@ class GameView(arcade.View):
 
         elif self.player_interaction_state == P_SHOP:
             if key == arcade.key.Z:
-                pass
+                self.active_menu.purchase()
             elif key == arcade.key.X:
                 self.active_menu = None
                 self.player_interaction_state = P_GAMEPLAY
+            elif key == arcade.key.UP:
+                self.active_menu.previous_item()
+            elif key == arcade.key.DOWN:
+                self.active_menu.next_item()
 
     def on_update(self, delta_time):
         # NOTE: New left-right movement handler moved here

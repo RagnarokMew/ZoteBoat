@@ -163,6 +163,15 @@ class ShopMenu:
 
         self.batch.draw()
 
+    def next_item(self):
+        pass
+
+    def previous_item(self):
+        pass
+
+    def purchase(self):
+        pass
+
 class ShopHandler:
     def __init__(self, player_stats):
         self.stats = player_stats
