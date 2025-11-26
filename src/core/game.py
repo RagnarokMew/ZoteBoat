@@ -60,8 +60,7 @@ class GameView(arcade.View):
         self.npc_list = arcade.SpriteList()
 
         self.tile_map = arcade.load_tilemap(
-            #f"../assets/tilemaps/{self.map_id}.tmx",
-            ":resources:tiled_maps/map2_level_1.json",
+            f"../assets/tilemaps/{self.map_id}.tmx",
             scaling = TILE_SCALING
         )
 
@@ -117,8 +116,8 @@ class GameView(arcade.View):
         # NOTE: NPC test start
         # Uncomment to spawn the test npc
         #
-        #self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
-        #self.npc_list.append(self.npc)
+        # self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
+        # self.npc_list.append(self.npc)
         # NOTE: NPC test end
 
         self.camera = arcade.Camera2D()

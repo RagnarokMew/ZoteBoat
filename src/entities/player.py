@@ -25,7 +25,6 @@ class PlayerSprite(arcade.Sprite):
         self.dash_dir = 0
 
         self.stats = None
-        self.has_pogo = True
         # TODO: Add textures for player (idle, walk, etc)
         # TODO: Should also work on logic to handle direction facing etc
         # The implementation of these features can be done later on
@@ -71,14 +70,11 @@ class PlayerSprite(arcade.Sprite):
             self.change_y = PLAYER_JUMP_SPEED
             
             # after pogo, add a double jump
-            if self.stats.can_djump and self.has_pogo:
-                self.has_pogo = False
+            # the max disallows multiple pogos per pogo
+            if self.stats.can_djump:
                 phys.jumps_since_ground = max(
                     1, phys.jumps_since_ground - 1
                 )
-
-        # this is necessary to prevent multiple pogos per pogo
-        else: self.has_pogo = True
 
     def update(self, delta_time):
         # TODO: is this check necessary?
