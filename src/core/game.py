@@ -305,6 +305,7 @@ class GameView(arcade.View):
                                 f"{self.active_menu.npc_name}'s Shop"
                             )
                             self.player_interaction_state = P_SHOP
+                            self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
                             self.currency_text.reset()
                             self.currency_text.update(0)
                         else:
@@ -315,6 +316,7 @@ class GameView(arcade.View):
             if key == arcade.key.Z:
                 self.active_menu.purchase()
                 self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
+                self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
             elif key == arcade.key.X:
                 self.active_menu = None
                 self.player_interaction_state = P_GAMEPLAY
