@@ -3,8 +3,9 @@ from pyglet.graphics import Batch
 from core.constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 class ShopItem:
-    def __init__(self, name, currency, price, description=""):
-        self.name = name
+    def __init__(self, name, id, currency, price, description=""):
+        self.display_name = name
+        self.id = id
         self.description = description
         self.currency = currency
         self.price = price
@@ -12,9 +13,9 @@ class ShopItem:
 class ShopMenu:
     def __init__(self, items, player_stats, title):
         self.batch = Batch()
-        self.items = items
-        self.active_index = 0
         self.handler = ShopHandler(player_stats)
+        self.items = [ item for item in items if not self.handler.check_owned(item.id) ]
+        self.active_index = 0
 
         self.title = arcade.Text(
             title,
@@ -75,7 +76,7 @@ class ShopMenu:
         # NOTE: Below are the stats of the active (selected) item
 
         self.item_name_text = arcade.Text(
-            "ZoteBoat The Biography",
+            "",
             x = SCREEN_WIDTH // 2 + SCREEN_WIDTH * 3 // 4 // 2 // 2 + 20,
             y = SCREEN_HEIGHT * 3 // 4,
             color = arcade.color.WHITE,
@@ -86,7 +87,7 @@ class ShopMenu:
         )
 
         self.item_desc_text = arcade.Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "",
             x = SCREEN_WIDTH // 2 + SCREEN_WIDTH * 3 // 4 // 2 // 2 + 20,
             y = SCREEN_HEIGHT * 3 // 4 - 16 * 3,
             color = arcade.color.WHITE,
@@ -99,7 +100,7 @@ class ShopMenu:
         )
 
         self.item_price_text = arcade.Text(
-            "PRICE: 1500 currency1",
+            "",
             x = SCREEN_WIDTH // 2 + SCREEN_WIDTH * 3 // 4 // 4 // 2 - 16,
             y = SCREEN_HEIGHT // 4 - 16,
             color = arcade.color.WHITE,
@@ -107,7 +108,14 @@ class ShopMenu:
             batch=self.batch
         )
 
-        # TODO: go through items and check if player owns it already
+        if len(self.items) == 0:
+            self.items.append(ShopItem(
+                name="No more items left...",
+                id="Null",
+                currency="?",
+                price=0,
+                description="Wow! You've bought everything my shop had to offer. Thank you so much Zote! I'll make sure to go and deposit all this currency at the nearest bank as soon as possible."
+            ))
 
         self._update_text()
 
@@ -186,12 +194,14 @@ class ShopMenu:
         ):
             return
 
-        self.items.pop(self.active_index)
+        self.handler.unlock(self.items[self.active_index].id)
 
+        self.items.pop(self.active_index)
 
         if len(self.items) == 0:
             self.items.append(ShopItem(
                 name="No more items left...",
+                id="Null",
                 currency="?",
                 price=0,
                 description="Wow! You've bought everything my shop had to offer. Thank you so much Zote! I'll make sure to go and deposit all this currency at the nearest bank as soon as possible."
@@ -201,21 +211,19 @@ class ShopMenu:
 
         self._update_text()
 
-        self.handler.unlock(self.items[self.active_index].name)
-
     def _update_text(self):
-        self.active_item_text.text = self.items[self.active_index].name
-        self.item_name_text.text = self.items[self.active_index].name
+        self.active_item_text.text = self.items[self.active_index].display_name
+        self.item_name_text.text = self.items[self.active_index].display_name
         self.item_desc_text.text = self.items[self.active_index].description
         self.item_price_text.text = f"PRICE: {self.items[self.active_index].price} {self.items[self.active_index].currency}"
 
         if self.active_index > 0:
-            self.prev_item_text.text = self.items[self.active_index - 1].name
+            self.prev_item_text.text = self.items[self.active_index - 1].display_name
         else:
             self.prev_item_text.text = ""
 
         if self.active_index < len(self.items) - 1:
-            self.next_item_text.text = self.items[self.active_index + 1].name
+            self.next_item_text.text = self.items[self.active_index + 1].display_name
         else:
             self.next_item_text.text = ""
 
@@ -228,22 +236,58 @@ class ShopHandler:
         """Unlocks a shop item for the player.
 
         Args:
-            item(str): The name of the shop item.
+            item(str): The id of the shop item.
 
         """
-        pass
+        # TODO: Add unlocks for all features
+
+        unlock_handler = {
+            "Mask_1": self.stats.increase_max_hp,
+            "Mask_2": self.stats.increase_max_hp,
+            "Mask_3": self.stats.increase_max_hp,
+            "Mask_4": self.stats.increase_max_hp,
+            "Nail_Upgrade_Kit_1": self.stats.increase_damage,
+            "Nail_Upgrade_Kit_2": self.stats.increase_damage,
+            "Wall_Jump": self.stats.mark_unlocked,
+            "Double_Jump": self.stats.mark_unlocked,
+            "Dash": self.stats.mark_unlocked
+        }
+
+        unlock_value = {
+            "Mask_1": 1,
+            "Mask_2": 1,
+            "Mask_3": 1,
+            "Mask_4": 1,
+            "Nail_Upgrade_Kit_1": 2,
+            "Nail_Upgrade_Kit_2": 2,
+            "Wall_Jump": True,
+            "Double_Jump": True,
+            "Dash": True
+        }
+
+        try:
+            # TODO: Fix duplicate logic
+            # currently the duplicate is needed because some unlocks increase
+            # stats while some don't but all need to be marked as unlocked.
+            unlock_handler[item](unlock_value[item])
+            self.stats.unlocks[item] = True
+        except: pass
 
     def check_owned(self, item):
         """Checks if an item from the shop is already owned by the player.
 
         Args:
-            item(str): The name of the shop item.
+            item(str): The id of the shop item.
 
         Returns:
             bool: True if the item is owned, False if not.
 
         """
-        pass
+
+        try:
+            return self.stats.unlocks[item]
+        except:
+            return False
 
     def decrease_currency(self, amount, currency):
         """Decreases an amount of currency from the player.
@@ -258,4 +302,28 @@ class ShopHandler:
             bool: True if the currency was decreased, False if not.
 
         """
-        pass
+
+        if currency == "currency1":
+            if self.stats.currency_1 < amount:
+                return False
+            self.stats.currency_1 -= amount
+
+        elif currency == "currency2":
+            if self.stats.currency_2 < amount:
+                return False
+            self.stats.currency_2 -= amount
+
+        elif currency == "currency3":
+            if self.stats.currency_3 < amount:
+                return False
+            self.stats.currency_3 -= amount
+
+        elif currency == "currency4":
+            if self.stats.currency_4 < amount:
+                return False
+            self.stats.currency_4 -= amount
+
+        else:
+            return False
+
+        return True
