@@ -110,13 +110,6 @@ class GameView(arcade.View):
                 )
         except: pass
 
-        # NOTE: NPC test start
-        # Uncomment to spawn the test npc
-        #
-        self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500), has_shop=True)
-        self.npc_list.append(self.npc)
-        # NOTE: NPC test end
-
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
 
