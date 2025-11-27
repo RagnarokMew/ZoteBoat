@@ -53,8 +53,7 @@ class GameView(arcade.View):
         # print(f"changed to {map_id}")
 
         self.tile_map = arcade.load_tilemap(
-            #f"../assets/tilemaps/{self.map_id}.tmx",
-            ":resources:tiled_maps/map2_level_1.json",
+            f"../assets/tilemaps/{self.map_id}.tmx",
             scaling = TILE_SCALING
         )
 
