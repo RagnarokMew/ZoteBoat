@@ -7,6 +7,9 @@ from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
 
+# NOTE: Temporary Import
+from core.shop import ShopItem
+
 # TODO: for now time is unused, likely remove import
 
 class GameView(arcade.View):
@@ -21,7 +24,8 @@ class GameView(arcade.View):
 
         self.player_texture = None
         self.player_sprite = None
-        self.player_stats = None
+        # TODO: Load player stats based on savefile
+        self.player_stats = PlayerStats()
 
         self.player_trans_x = 0
         self.player_trans_y = 0
@@ -67,7 +71,6 @@ class GameView(arcade.View):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         self.scene.add_sprite_list_after("Enemy", "Foreground")
         self.scene.add_sprite_list_after("Player", "Enemy")
-        self.player_stats = PlayerStats()
 
         # optimise collision detection for load zone
         try:    self.scene["Load Zone"].enable_spatial_hashing()
@@ -288,23 +291,22 @@ class GameView(arcade.View):
                 (key == arcade.key.Z) or \
                 (key == arcade.key.X):
 
-                # TODO: Add a way to load the items for each npc shop
-                # A possible way to do this would be for each npc to hold
-                # all the items it can have in its shop
-
                 # NOTE: The current implementation is very ugly and should be refactored
                 # Currently it works the following way:
                 # When a dialogue ends it checks if it leads to a shop interaction
                 # If it does it spawns a shop and loads its items
+                # TODO: Load shop items based on npc json
                 if self.active_menu:
                     if not self.active_menu.next():
                         if self.active_menu.before_shop_interation:
                             self.active_menu = ShopMenu(
-                                [], # TODO: add items
+                                [],
                                 self.player_stats,
                                 f"{self.active_menu.npc_name}'s Shop"
                             )
                             self.player_interaction_state = P_SHOP
+                            self.currency_text.reset()
+                            self.currency_text.update(0)
                         else:
                             self.active_menu = None
                             self.player_interaction_state = P_GAMEPLAY
@@ -312,6 +314,7 @@ class GameView(arcade.View):
         elif self.player_interaction_state == P_SHOP:
             if key == arcade.key.Z:
                 self.active_menu.purchase()
+                self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
             elif key == arcade.key.X:
                 self.active_menu = None
                 self.player_interaction_state = P_GAMEPLAY
@@ -394,13 +397,14 @@ class GameView(arcade.View):
         else:
             self.player_stats.inv_time -= delta_time
 
-        if self.currency_text:
+        if self.currency_text and self.player_interaction_state != P_SHOP:
             self.currency_text.update(delta_time)
 
         if self.player_stats.health <= 0:
             # TODO: Add respawning logic once level loader is fully implemented
             # Once more features are added, more logic would be included here
             # Temporarily setup will be called again
+            self.player_stats.health = self.player_stats.max_health
             self.setup()
 
     # scene change handler
