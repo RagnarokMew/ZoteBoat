@@ -33,19 +33,18 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
 
-        self.enemy_list = None
-        self.npc_list = None
-
         self.camera = None
         self.gui_camera = None
         self.health_text = None
         self.currency_text = None
 
-        self.jump_pressed = False
         self.up_pressed = False
         self.down_pressed = False
         self.right_pressed = False
         self.left_pressed = False
+        
+        self.jump_pressed = False
+        self.dash_pressed = False
 
         self.map_id = DEFAULT_MAP
         (self.sp_x, self.sp_y) = DEFAULT_SPAWN
@@ -60,37 +59,41 @@ class GameView(arcade.View):
         # DEBUG: make sure map is correct
         # print(f"changed to {map_id}")
 
-        self.enemy_list = arcade.SpriteList()
-        self.npc_list = arcade.SpriteList()
-
         self.tile_map = arcade.load_tilemap(
             f"../assets/tilemaps/{self.map_id}.tmx",
+            #":resources:tiled_maps/map2_level_1.json", # NOTE: Test map
             scaling = TILE_SCALING
         )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
-        self.scene.add_sprite_list_after("Enemy", "Foreground")
+
+        self.scene.add_sprite_list_before("NPC", "Foreground")
+        self.scene.add_sprite_list_after("Enemy", "NPC")
         self.scene.add_sprite_list_after("Player", "Enemy")
 
-        # optimise collision detection for load zone
-        try:    self.scene["Load Zone"].enable_spatial_hashing()
-        except: pass
+        # optimise collision detection
+        self.scene["Load Zone"].enable_spatial_hashing()
+        if "Wall Jump" in self.scene:
+            self.scene["Wall Jump"].enable_spatial_hashing()
 
+        # Temporary Spawn, in the future it should be based on the map
+        temp_spawn = (128, 400)
         self.player_sprite = player.PlayerSprite(
             self.scene,
             (self.sp_x, self.sp_y)
         )
-
+        self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
 
         # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
         try:
             for spawn in self.scene["Enemy Spawn"]:
                 # TODO: make spawned enemy type be decided based on spawn
-                self.enemy_list.append(
-                    GroundEnemy(
+                self.scene.add_sprite(
+                    "Enemy", GroundEnemy(
                         self.scene,
-                        position=(spawn.center_x, spawn.center_y)
+                        position = (spawn.center_x, spawn.center_y),
+                        max_health = 1
                     )
                 )
         except: pass
@@ -102,10 +105,10 @@ class GameView(arcade.View):
                 # name, and title will have to be fetched someplace
                 # currently the dialogue isn't saved anywhere and a default
                 # gets loaded
-                self.npc_list.append(
-                    BaseNpc(
+                self.scene.add_sprite(
+                    "NPC", BaseNpc(
                         self.scene,
-                        position=(spawn.center_x, spawn.center_y)
+                        position = (spawn.center_x, spawn.center_y)
                     )
                 )
         except: pass
@@ -117,8 +120,8 @@ class GameView(arcade.View):
             f"HP: {self.player_stats.health} / {self.player_stats.max_health}",
             x = 5,
             y = SCREEN_HEIGHT - 30,
-            color=arcade.color.BLACK,
-            font_size=20
+            color = arcade.color.BLACK,
+            font_size = 20
         )
 
         self.currency_text = FadingText(
@@ -137,6 +140,9 @@ class GameView(arcade.View):
             walls = self.scene["Platforms"],
             gravity_constant = GRAVITY
         )
+        # by default, double jumping is disabled
+        if self.player_stats.unlocks["Double_Jump"]:
+            self.physics_engine.enable_multi_jump(2)
 
     def update_fade(self):
         if self.fade_out is not None:
@@ -176,15 +182,9 @@ class GameView(arcade.View):
         # (aka everything gets rendered based on world coordinates)
 
         self.scene.draw()
-        self.enemy_list.draw()
-        self.npc_list.draw()
 
         if self.show_enemy_hp:
-            for enemy in self.enemy_list:
-                enemy.hp_text.draw()
-
-        if self.show_enemy_hp:
-            for enemy in self.enemy_list:
+            for enemy in self.scene["Enemy"]:
                 enemy.hp_text.draw()
 
         self.gui_camera.use()
@@ -222,7 +222,7 @@ class GameView(arcade.View):
 
             # manual reset switch (debug)
             if key == arcade.key.R:
-                self.change_map(force = True)
+                self.change_map()
         elif self.player_interaction_state == P_DIALOGUE:
             pass
         elif self.player_interaction_state == P_SHOP:
@@ -238,9 +238,7 @@ class GameView(arcade.View):
         if self.player_interaction_state == P_GAMEPLAY:
             if key == arcade.key.Z:
                 self.jump_pressed = True
-
-                if self.physics_engine.can_jump():
-                    self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                self.player_sprite.jump(self.physics_engine)
 
             if key == arcade.key.UP:
                 self.up_pressed = True
@@ -249,7 +247,7 @@ class GameView(arcade.View):
                 # NOTE: Starts dialogue
                 npc = arcade.check_for_collision_with_list(
                     self.player_sprite,
-                    self.npc_list
+                    self.scene["NPC"]
                 )
 
                 if npc and not self.active_menu:
@@ -312,13 +310,25 @@ class GameView(arcade.View):
                 self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
             elif key == arcade.key.X:
                 self.active_menu = None
+
+                if self.player_stats.unlocks["Double_Jump"]:
+                    self.physics_engine.enable_multi_jump(2)
                 self.player_interaction_state = P_GAMEPLAY
             elif key == arcade.key.UP:
                 self.active_menu.previous_item()
             elif key == arcade.key.DOWN:
                 self.active_menu.next_item()
 
+        if key == arcade.key.C and self.player_interaction_state == P_GAMEPLAY:
+                self.dash_pressed = True
+
+        if key == arcade.key.F5:
+            arcade.window_commands.close_window()
+
     def on_update(self, delta_time):
+        self.physics_engine.update()
+        px_upd = self.player_sprite.update(delta_time)
+
         # NOTE: New left-right movement handler moved here
         # to fix all movement related bugs
         if self.player_interaction_state == P_GAMEPLAY:
@@ -333,19 +343,23 @@ class GameView(arcade.View):
             else:
                 self.player_sprite.change_x = 0
 
+            if self.dash_pressed:
+                self.player_sprite.dash()
+                self.dash_pressed = False
+            self.player_sprite.change_x += px_upd
+
         else:
             self.player_sprite.change_x = 0
 
+        self.scene["Enemy"].update(delta_time)
+        self.scene["NPC"].update(delta_time)
 
-        self.physics_engine.update()
-        self.player_sprite.update(delta_time)
-        self.enemy_list.update(delta_time)
-        self.npc_list.update(delta_time)
         self.camera.position = self.player_sprite.position
 
         loadzone_collision = arcade.check_for_collision_with_list(
                 self.player_sprite,
-                self.scene["Load Zone"]
+                self.scene["Load Zone"],
+                method = 1
         )
 
         if loadzone_collision:
@@ -358,10 +372,12 @@ class GameView(arcade.View):
 
         if self.player_sprite.player_attack:
             hit = arcade.check_for_collision_with_list(
-                self.player_sprite.player_attack, self.enemy_list
+                self.player_sprite.player_attack, self.scene["Enemy"]
             )
 
         if hit:
+            self.player_sprite.pogo(self.physics_engine)
+
             for enemy in hit:
                 if enemy.inv_time > 0:
                     continue
@@ -379,10 +395,10 @@ class GameView(arcade.View):
                     self.currency_text.text = f"currency1: {self.player_stats.currency_1} (+{enemy.drop_curr1})\ncurrency2: {self.player_stats.currency_2} (+{enemy.drop_curr2})\ncurrency3: {self.player_stats.currency_3} (+{enemy.drop_curr3})\ncurrency4: {self.player_stats.currency_4} (+{enemy.drop_curr4})"
                     self.currency_text.reset()
 
-                    self.enemy_list.remove(enemy)
+                    self.scene["Enemy"].remove(enemy)
 
         hit_by = arcade.check_for_collision_with_list(
-            self.player_sprite, self.enemy_list
+            self.player_sprite, self.scene["Enemy"]
         )
 
         if hit_by and self.player_stats.inv_time <= 0:
@@ -425,4 +441,3 @@ class GameView(arcade.View):
                 self.player_trans_y = sprites_coll[0].properties["trans_y"]
             except:
                 self.player_trans_x = self.player_trans_y = 0
-

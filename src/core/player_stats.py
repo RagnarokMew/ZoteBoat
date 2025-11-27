@@ -38,3 +38,4 @@ class PlayerStats():
 
     def mark_locked(self, upgrade):
         self.unlocks[upgrade] = False
+
