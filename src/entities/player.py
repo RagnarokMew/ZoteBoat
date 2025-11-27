@@ -40,26 +40,32 @@ class PlayerSprite(arcade.Sprite):
 
         self.attack_cooldown = P_ATTACK_COOLDOWN
     
-    def jump(self, phys):
-        wj = False
-
-        if self.stats.can_wjump:
-            try: wj = arcade.check_for_collision_with_list(
-                    self, self.scene["Wall Jump"], method = 1
-                )
-            except: pass
-        
-            if wj:
-                self.wj_x = wj[0].properties["side"]
-                self.change_y = PLAYER_JUMP_SPEED
-                self.wjump_timer = P_WJUMP_TIME
+    def is_on_wall(self):
+        try: return arcade.check_for_collision_with_list(
+            self, self.scene["Wall Jump"], method = 1
+        )
+        except: return None
     
-        if (not wj or not self.stats.can_wjump) and phys.can_jump():
+    def jump(self, phys):
+        wj = self.is_on_wall()
+
+        if self.stats.can_wjump and wj:
+            self.wj_x = wj[0].properties["side"]
+            self.change_y = PLAYER_JUMP_SPEED
+            self.wjump_timer = P_WJUMP_TIME
+
+        elif phys.can_jump():
             phys.jump(PLAYER_JUMP_SPEED)
     
     def dash(self):
         if self.stats.can_dash and self.dash_cooldown <= 0:
-            self.dash_dir = self.direction
+            wj = self.is_on_wall()
+
+            if self.stats.can_wjump and wj:
+                self.dash_dir = wj[0].properties["side"]
+            else:
+                self.dash_dir = self.direction
+
             self.dash_timer = P_DASH_TIME
             self.dash_cooldown = P_DASH_COOLDOWN
 

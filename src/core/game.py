@@ -27,9 +27,6 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
 
-        self.enemy_list = None
-        self.npc_list = None
-
         self.camera = None
         self.gui_camera = None
         self.health_text = None
@@ -41,7 +38,6 @@ class GameView(arcade.View):
         
         self.jump_pressed = False
         self.dash_pressed = False
-        self.dash_x = 0
 
         self.map_id = DEFAULT_MAP
         (self.sp_x, self.sp_y) = DEFAULT_SPAWN
@@ -56,19 +52,16 @@ class GameView(arcade.View):
         # DEBUG: make sure map is correct
         # print(f"changed to {map_id}")
 
-        self.enemy_list = arcade.SpriteList()
-        self.npc_list = arcade.SpriteList()
-
         self.tile_map = arcade.load_tilemap(
-            f"../assets/tilemaps/{self.map_id}.tmx",
+            #f"../assets/tilemaps/{self.map_id}.tmx",
+            ":resources:tiled_maps/map2_level_1.json",
             scaling = TILE_SCALING
         )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.scene.add_sprite_list_before(
-            "Enemy", "Foreground", sprite_list = self.enemy_list
-        )
+        self.scene.add_sprite_list_before("NPC", "Foreground")
+        self.scene.add_sprite_list_after("Enemy", "NPC")
         self.scene.add_sprite_list_after("Player", "Enemy")
 
         # optimise collision detection
@@ -89,8 +82,8 @@ class GameView(arcade.View):
         try:
             for spawn in self.scene["Enemy Spawn"]:
                 # TODO: make spawned enemy type be decided based on spawn
-                self.enemy_list.append(
-                    GroundEnemy(
+                self.scene.add_sprite(
+                    "Enemy", GroundEnemy(
                         self.scene,
                         position = (spawn.center_x, spawn.center_y),
                         max_health = 1
@@ -105,10 +98,10 @@ class GameView(arcade.View):
                 # name, and title will have to be fetched someplace
                 # currently the dialogue isn't saved anywhere and a default
                 # gets loaded
-                self.npc_list.append(
-                    BaseNpc(
+                self.scene.add_sprite(
+                    "NPC", BaseNpc(
                         self.scene,
-                        position=(spawn.center_x, spawn.center_y)
+                        position = (spawn.center_x, spawn.center_y)
                     )
                 )
         except: pass
@@ -116,8 +109,8 @@ class GameView(arcade.View):
         # NOTE: NPC test start
         # Uncomment to spawn the test npc
         #
-        # self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(500, 500))
-        # self.npc_list.append(self.npc)
+        self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position = (500, 500))
+        self.scene.add_sprite("NPC", self.npc)
         # NOTE: NPC test end
 
         self.camera = arcade.Camera2D()
@@ -127,8 +120,8 @@ class GameView(arcade.View):
             f"HP: {self.player_stats.health} / {self.player_stats.max_health}",
             x = 5,
             y = SCREEN_HEIGHT - 30,
-            color=arcade.color.BLACK,
-            font_size=20
+            color = arcade.color.BLACK,
+            font_size = 20
         )
 
         self.background_color = arcade.color.AERO_BLUE
@@ -180,15 +173,9 @@ class GameView(arcade.View):
         # (aka everything gets rendered based on world coordinates)
 
         self.scene.draw()
-        self.enemy_list.draw()
-        self.npc_list.draw()
 
         if self.show_enemy_hp:
-            for enemy in self.enemy_list:
-                enemy.hp_text.draw()
-
-        if self.show_enemy_hp:
-            for enemy in self.enemy_list:
+            for enemy in self.scene["Enemy"]:
                 enemy.hp_text.draw()
 
         self.gui_camera.use()
@@ -249,7 +236,7 @@ class GameView(arcade.View):
                 # NOTE: Starts dialogue
                 npc = arcade.check_for_collision_with_list(
                     self.player_sprite,
-                    self.npc_list
+                    self.scene["NPC"]
                 )
 
                 if npc and not self.active_menu:
@@ -291,8 +278,8 @@ class GameView(arcade.View):
         elif self.player_interaction_state == P_SHOP:
             pass
 
-        if key == arcade.key.C:
-            self.dash_pressed = True
+        if key == arcade.key.C and self.player_interaction_state == P_GAMEPLAY:
+                self.dash_pressed = True
         
         if key == arcade.key.F5:
             arcade.window_commands.close_window()
@@ -333,8 +320,8 @@ class GameView(arcade.View):
         else:
             self.player_sprite.change_x = 0
 
-        self.enemy_list.update(delta_time)
-        self.npc_list.update(delta_time)
+        self.scene["Enemy"].update(delta_time)
+        self.scene["NPC"].update(delta_time)
         
         self.camera.position = self.player_sprite.position
 
@@ -354,7 +341,7 @@ class GameView(arcade.View):
 
         if self.player_sprite.player_attack:
             hit = arcade.check_for_collision_with_list(
-                self.player_sprite.player_attack, self.enemy_list
+                self.player_sprite.player_attack, self.scene["Enemy"]
             )
 
         if hit:
@@ -369,10 +356,10 @@ class GameView(arcade.View):
                 enemy.update_text()
 
                 if enemy.health <= 0:
-                    self.enemy_list.remove(enemy)
+                    self.scene["Enemy"].remove(enemy)
 
         hit_by = arcade.check_for_collision_with_list(
-            self.player_sprite, self.enemy_list
+            self.player_sprite, self.scene["Enemy"]
         )
 
         if hit_by and self.player_stats.inv_time <= 0:
@@ -386,6 +373,7 @@ class GameView(arcade.View):
             # TODO: Add respawning logic once level loader is fully implemented
             # Once more features are added, more logic would be included here
             # Temporarily setup will be called again
+            self.player_stats.health = self.player_stats.max_health
             self.setup()
 
     # scene change handler
