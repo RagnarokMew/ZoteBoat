@@ -49,19 +49,24 @@ class PlayerSprite(arcade.Sprite):
     def jump(self, phys):
         wj = self.is_on_wall()
 
-        if self.stats.can_wjump and wj:
+        if self.stats.unlocks["Wall_Jump"] and wj:
             self.wj_x = wj[0].properties["side"]
             self.change_y = PLAYER_JUMP_SPEED
             self.wjump_timer = P_WJUMP_TIME
 
+            if self.stats.unlocks["Double_Jump"]:
+                phys.jumps_since_ground = max(
+                    1, phys.jumps_since_ground - 1
+                )
+
         elif phys.can_jump():
             phys.jump(PLAYER_JUMP_SPEED)
-    
+
     def dash(self):
-        if self.stats.can_dash and self.dash_cooldown <= 0:
+        if self.stats.unlocks["Dash"] and self.dash_cooldown <= 0:
             wj = self.is_on_wall()
 
-            if self.stats.can_wjump and wj:
+            if self.stats.unlocks["Wall_Jump"] and wj:
                 self.dash_dir = wj[0].properties["side"]
             else:
                 self.dash_dir = self.direction
@@ -77,7 +82,7 @@ class PlayerSprite(arcade.Sprite):
             
             # after pogo, add a double jump
             # the max disallows multiple pogos per pogo
-            if self.stats.can_djump:
+            if self.stats.unlocks["Double_Jump"]:
                 phys.jumps_since_ground = max(
                     1, phys.jumps_since_ground - 1
                 )

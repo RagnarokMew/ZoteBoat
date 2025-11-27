@@ -3,7 +3,7 @@ from pyglet.graphics import Batch
 from core.constants import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
 
 class BaseNpc(arcade.Sprite):
-    def __init__(self, scene, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title"):
+    def __init__(self, scene, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title", has_shop=False):
         super().__init__(
             sprite_path,
             scale=scale
@@ -11,6 +11,7 @@ class BaseNpc(arcade.Sprite):
 
         self.name = name
         self.title = title
+        self.has_shop = has_shop
         self.scene = scene
         self.center_x, self.center_y = position
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -24,8 +25,11 @@ class DialogueMenu():
     def __init__(self,
                  content=["This is a dialogue text", "Another text"],
                  npc_name="NPC_NAME",
-                 npc_title="NPC_TITLE"
+                 npc_title="NPC_TITLE",
+                 before_shop_interaction=False
                  ):
+        self.npc_name = npc_name
+        self.before_shop_interation = before_shop_interaction
         self.content = content
         self.text = None
         self.text_index = 0

@@ -4,6 +4,11 @@ from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_J
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
+from ui.text import FadingText
+from core.shop import ShopMenu
+
+# NOTE: Temporary Import
+from core.shop import ShopItem
 
 # TODO: for now time is unused, likely remove import
 
@@ -19,6 +24,7 @@ class GameView(arcade.View):
 
         self.player_texture = None
         self.player_sprite = None
+        # TODO: Load player stats based on savefile
         self.player_stats = PlayerStats()
 
         self.player_trans_x = 0
@@ -30,6 +36,7 @@ class GameView(arcade.View):
         self.camera = None
         self.gui_camera = None
         self.health_text = None
+        self.currency_text = None
 
         self.up_pressed = False
         self.down_pressed = False
@@ -54,6 +61,7 @@ class GameView(arcade.View):
 
         self.tile_map = arcade.load_tilemap(
             f"../assets/tilemaps/{self.map_id}.tmx",
+            #":resources:tiled_maps/map2_level_1.json", # NOTE: Test map
             scaling = TILE_SCALING
         )
 
@@ -105,13 +113,6 @@ class GameView(arcade.View):
                 )
         except: pass
 
-        # NOTE: NPC test start
-        # Uncomment to spawn the test npc
-        #
-        self.npc = BaseNpc(self.scene, ":resources:/images/animated_characters/male_person/malePerson_idle.png", position = (500, 500))
-        self.scene.add_sprite("NPC", self.npc)
-        # NOTE: NPC test end
-
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
 
@@ -123,6 +124,15 @@ class GameView(arcade.View):
             font_size = 20
         )
 
+        self.currency_text = FadingText(
+            f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
+            x = 5,
+            y = SCREEN_HEIGHT - 60,
+            duration=2
+        )
+        self.currency_text.duration = self.currency_text.trans_duration = 0
+
+
         self.background_color = arcade.color.AERO_BLUE
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -131,7 +141,7 @@ class GameView(arcade.View):
             gravity_constant = GRAVITY
         )
         # by default, double jumping is disabled
-        if self.player_stats.can_djump:
+        if self.player_stats.unlocks["Double_Jump"]:
             self.physics_engine.enable_multi_jump(2)
 
     def update_fade(self):
@@ -185,6 +195,8 @@ class GameView(arcade.View):
         self.draw_fading()
 
         self.health_text.draw()
+        if self.currency_text:
+            self.currency_text.draw()
 
         if self.active_menu:
             self.active_menu.draw()
@@ -242,8 +254,9 @@ class GameView(arcade.View):
                     # TODO: When we actually add dialogue text the content
                     # should be added as an array to DialogueMenu in content
                     self.active_menu = DialogueMenu(
-                        npc_name = npc[0].name,
-                        npc_title = npc[0].title
+                        npc_name=npc[0].name,
+                        npc_title=npc[0].title,
+                        before_shop_interaction = npc[0].has_shop
                     )
                     self.player_interaction_state = P_DIALOGUE
 
@@ -269,29 +282,48 @@ class GameView(arcade.View):
                 (key == arcade.key.Z) or \
                 (key == arcade.key.X):
 
+                # NOTE: The current implementation is very ugly and should be refactored
+                # Currently it works the following way:
+                # When a dialogue ends it checks if it leads to a shop interaction
+                # If it does it spawns a shop and loads its items
+                # TODO: Load shop items based on npc json
                 if self.active_menu:
                     if not self.active_menu.next():
-                        self.active_menu = None
-                        self.player_interaction_state = P_GAMEPLAY
+                        if self.active_menu.before_shop_interation:
+                            self.active_menu = ShopMenu(
+                                [],
+                                self.player_stats,
+                                f"{self.active_menu.npc_name}'s Shop"
+                            )
+                            self.player_interaction_state = P_SHOP
+                            self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
+                            self.currency_text.reset()
+                            self.currency_text.update(0)
+                        else:
+                            self.active_menu = None
+                            self.player_interaction_state = P_GAMEPLAY
 
         elif self.player_interaction_state == P_SHOP:
-            pass
+            if key == arcade.key.Z:
+                self.active_menu.purchase()
+                self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
+                self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
+            elif key == arcade.key.X:
+                self.active_menu = None
+
+                if self.player_stats.unlocks["Double_Jump"]:
+                    self.physics_engine.enable_multi_jump(2)
+                self.player_interaction_state = P_GAMEPLAY
+            elif key == arcade.key.UP:
+                self.active_menu.previous_item()
+            elif key == arcade.key.DOWN:
+                self.active_menu.next_item()
 
         if key == arcade.key.C and self.player_interaction_state == P_GAMEPLAY:
                 self.dash_pressed = True
-        
+
         if key == arcade.key.F5:
             arcade.window_commands.close_window()
-        
-        # DEBUG: enable/disable all abilities
-        if key == arcade.key.W:
-            self.player_stats.getall()
-            self.player_sprite.stats = self.player_stats
-
-            if self.player_stats.can_djump:
-                self.physics_engine.enable_multi_jump(2)
-            else:
-                self.physics_engine.disable_multi_jump()
 
     def on_update(self, delta_time):
         self.physics_engine.update()
@@ -321,7 +353,7 @@ class GameView(arcade.View):
 
         self.scene["Enemy"].update(delta_time)
         self.scene["NPC"].update(delta_time)
-        
+
         self.camera.position = self.player_sprite.position
 
         loadzone_collision = arcade.check_for_collision_with_list(
@@ -355,6 +387,14 @@ class GameView(arcade.View):
                 enemy.update_text()
 
                 if enemy.health <= 0:
+                    self.player_stats.currency_1 += enemy.drop_curr1
+                    self.player_stats.currency_2 += enemy.drop_curr2
+                    self.player_stats.currency_3 += enemy.drop_curr3
+                    self.player_stats.currency_4 += enemy.drop_curr4
+
+                    self.currency_text.text = f"currency1: {self.player_stats.currency_1} (+{enemy.drop_curr1})\ncurrency2: {self.player_stats.currency_2} (+{enemy.drop_curr2})\ncurrency3: {self.player_stats.currency_3} (+{enemy.drop_curr3})\ncurrency4: {self.player_stats.currency_4} (+{enemy.drop_curr4})"
+                    self.currency_text.reset()
+
                     self.scene["Enemy"].remove(enemy)
 
         hit_by = arcade.check_for_collision_with_list(
@@ -367,6 +407,9 @@ class GameView(arcade.View):
             self.player_stats.inv_time = self.player_stats.max_inv_time
         else:
             self.player_stats.inv_time -= delta_time
+
+        if self.currency_text and self.player_interaction_state != P_SHOP:
+            self.currency_text.update(delta_time)
 
         if self.player_stats.health <= 0:
             # TODO: Add respawning logic once level loader is fully implemented
