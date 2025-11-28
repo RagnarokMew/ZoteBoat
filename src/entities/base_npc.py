@@ -3,12 +3,13 @@ from pyglet.graphics import Batch
 from core.constants import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
 
 class BaseNpc(arcade.Sprite):
-    def __init__(self, scene, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title", has_shop=False):
+    def __init__(self, scene, id, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title", has_shop=False):
         super().__init__(
             sprite_path,
             scale=scale
         )
 
+        self.id = id
         self.name = name
         self.title = title
         self.has_shop = has_shop
