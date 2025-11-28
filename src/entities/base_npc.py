@@ -24,11 +24,13 @@ class BaseNpc(arcade.Sprite):
 
 class DialogueMenu():
     def __init__(self,
+                 id,
                  content=["This is a dialogue text", "Another text"],
                  npc_name="NPC_NAME",
                  npc_title="NPC_TITLE",
                  before_shop_interaction=False
                  ):
+        self.npc_id = id
         self.npc_name = npc_name
         self.before_shop_interation = before_shop_interaction
         self.content = content
