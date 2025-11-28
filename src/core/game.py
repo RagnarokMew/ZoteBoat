@@ -201,25 +201,20 @@ class GameView(arcade.View):
         if key == arcade.key.RIGHT:
             self.right_pressed = False
 
-        if self.player_interaction_state == P_GAMEPLAY:
-            if key == arcade.key.Z:
+        if key == arcade.key.Z:
                 self.jump_pressed = False
 
-            if key == arcade.key.UP:
+        if key == arcade.key.UP:
                 self.up_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-            if key == arcade.key.DOWN:
+        if key == arcade.key.DOWN:
                 self.down_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-            # manual reset switch (debug)
-            if key == arcade.key.R:
-                self.change_map()
-        elif self.player_interaction_state == P_DIALOGUE:
-            pass
-        elif self.player_interaction_state == P_SHOP:
-            pass
+        # manual reset switch (debug)
+        if key == arcade.key.R:
+            self.change_map()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
