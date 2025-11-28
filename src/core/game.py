@@ -6,6 +6,7 @@ from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
+from core.utils import load_npc, load_dialogue, load_shop_items
 
 # NOTE: Temporary Import
 from core.shop import ShopItem
@@ -101,16 +102,8 @@ class GameView(arcade.View):
         # TODO: Implement NPC spawn
         try:
             for spawn in self.scene["Npc Spawn"]:
-                # TODO: When npc spawning gets implemented the dialogue content
-                # name, and title will have to be fetched someplace
-                # currently the dialogue isn't saved anywhere and a default
-                # gets loaded
-                self.scene.add_sprite(
-                    "NPC", BaseNpc(
-                        self.scene,
-                        position = (spawn.center_x, spawn.center_y)
-                    )
-                )
+                # TODO: Get npc id based on npc spawn sprite
+                load_npc("Example_Npc", self.scene, (spawn.center_x, spawn.center_y))
         except: pass
 
         self.camera = arcade.Camera2D()
@@ -254,8 +247,10 @@ class GameView(arcade.View):
                     # TODO: When we actually add dialogue text the content
                     # should be added as an array to DialogueMenu in content
                     self.active_menu = DialogueMenu(
-                        npc_name=npc[0].name,
-                        npc_title=npc[0].title,
+                        id = npc[0].id,
+                        content = load_dialogue(npc[0].id),
+                        npc_name = npc[0].name,
+                        npc_title = npc[0].title,
                         before_shop_interaction = npc[0].has_shop
                     )
                     self.player_interaction_state = P_DIALOGUE
@@ -291,7 +286,7 @@ class GameView(arcade.View):
                     if not self.active_menu.next():
                         if self.active_menu.before_shop_interation:
                             self.active_menu = ShopMenu(
-                                [],
+                                load_shop_items(self.active_menu.npc_id),
                                 self.player_stats,
                                 f"{self.active_menu.npc_name}'s Shop"
                             )
