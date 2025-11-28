@@ -8,11 +8,6 @@ from ui.text import FadingText
 from core.shop import ShopMenu
 from core.utils import load_npc, load_dialogue, load_shop_items
 
-# NOTE: Temporary Import
-from core.shop import ShopItem
-
-# TODO: for now time is unused, likely remove import
-
 class GameView(arcade.View):
 
     def __init__(self):
@@ -239,8 +234,6 @@ class GameView(arcade.View):
                 )
 
                 if npc and not self.active_menu:
-                    # TODO: When we actually add dialogue text the content
-                    # should be added as an array to DialogueMenu in content
                     self.active_menu = DialogueMenu(
                         id = npc[0].id,
                         content = load_dialogue(npc[0].id),
@@ -260,11 +253,6 @@ class GameView(arcade.View):
             if key == arcade.key.F5:
                 arcade.window_commands.close_window()
 
-            # movement reset hotkeu
-            # TODO: automate this to prevent slide bug
-            if key == arcade.key.Q:
-                self.player_sprite.change_x = 0
-
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
             # But match case was introduced in Python 3.10
@@ -276,7 +264,6 @@ class GameView(arcade.View):
                 # Currently it works the following way:
                 # When a dialogue ends it checks if it leads to a shop interaction
                 # If it does it spawns a shop and loads its items
-                # TODO: Load shop items based on npc json
                 if self.active_menu:
                     if not self.active_menu.next():
                         if self.active_menu.before_shop_interation:
