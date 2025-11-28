@@ -25,3 +25,14 @@ def load_npc(id, scene, position):
         scene.add_sprite("NPC", npc)
         print(position)
 
+def load_dialogue(id):
+    try:
+        with open("../assets/data/dialogue.json", "r") as file:
+            data = json.load(file)
+
+        print(data[id])
+        return data[id]
+    except Exception as e:
+        print(f"{e}")
+        return ["Sorry, I got nothing to say."]
+
