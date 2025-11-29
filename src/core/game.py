@@ -6,7 +6,7 @@ from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
-from core.utils import load_npc, load_dialogue, load_shop_items
+from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items
 
 class GameView(arcade.View):
 
@@ -84,13 +84,11 @@ class GameView(arcade.View):
         # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
         try:
             for spawn in self.scene["Enemy Spawn"]:
-                # TODO: make spawned enemy type be decided based on spawn
-                self.scene.add_sprite(
-                    "Enemy", GroundEnemy(
-                        self.scene,
-                        position = (spawn.center_x, spawn.center_y),
-                        max_health = 1
-                    )
+                # TODO: Get enemy id based on enemy spawn sprite
+                load_enemy(
+                    id = "Example_Enemy_2",
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y)
                 )
         except: pass
 
@@ -98,7 +96,11 @@ class GameView(arcade.View):
         try:
             for spawn in self.scene["Npc Spawn"]:
                 # TODO: Get npc id based on npc spawn sprite
-                load_npc("Example_Npc", self.scene, (spawn.center_x, spawn.center_y))
+                load_npc(
+                    id = "Example_Npc",
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y)
+                )
         except: pass
 
         self.camera = arcade.Camera2D()
