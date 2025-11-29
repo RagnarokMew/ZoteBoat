@@ -1,5 +1,6 @@
 import arcade
 from entities.base_npc import BaseNpc
+from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
 from core.shop import ShopItem
 import json
 
@@ -66,3 +67,34 @@ def load_shop_items(id):
         )]
     finally:
         return items
+
+def load_enemy(id, scene, position):
+    # TODO: Add more enemy types as they get implemented
+    enemies = {
+        "GroundEnemy": GroundEnemy,
+        "FlyingEnemy": FlyingEnemy
+    }
+    try:
+        with open("../assets/data/enemies.json", "r") as file:
+            data = json.load(file)
+
+        npc = enemies[data[id]["type"]](
+                scene=scene,
+                sprite_path=data[id]["sprite_path"],
+                position=position,
+                scale=data[id]["scale"],
+                max_health=data[id]["max_health"],
+                damage=data[id]["damage"],
+                drop_curr1=data[id]["drop_curr1"],
+                drop_curr2=data[id]["drop_curr2"],
+                drop_curr3=data[id]["drop_curr3"],
+                drop_curr4=data[id]["drop_curr4"]
+            )
+    except Exception as e:
+        print(f"Error Load Enemy: {e}")
+        npc = GroundEnemy(
+            scene=scene
+        )
+    finally:
+        scene.add_sprite("Enemy", npc)
+
