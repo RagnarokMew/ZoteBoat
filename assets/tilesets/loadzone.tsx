@@ -3,21 +3,13 @@
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <properties>
-   <property name="debug" type="int" value="69"/>
-   <property name="mapid" value="map_2"/>
-   <property name="spawn_x" type="int" value="200"/>
-   <property name="spawn_y" type="int" value="300"/>
-   <property name="trans_x" type="int" value="0"/>
-   <property name="trans_y" type="int" value="25"/>
+   <property name="map_id" value="map_2"/>
   </properties>
   <image source="../sprites/blue_check.png" width="64" height="64"/>
  </tile>
  <tile id="1">
   <properties>
-   <property name="debug" type="int" value="420"/>
-   <property name="mapid" value="map_3"/>
-   <property name="spawn_x" type="int" value="200"/>
-   <property name="spawn_y" type="int" value="420"/>
+   <property name="map_id" value="map_3"/>
   </properties>
   <image source="../sprites/blue_check.png" width="64" height="64"/>
  </tile>
