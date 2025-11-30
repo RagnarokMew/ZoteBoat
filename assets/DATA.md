@@ -84,3 +84,21 @@ An example dialogue would be:
 ```
 
 ## Shops
+
+Found in `assets/data/shops.json`, which contains all the shops in the game.
+All shops must be identifiable by a unique id with a one-to-one relation to
+an npc id, who has `has_shop` set to `true`, otherwise the shop will never
+be accessible.
+
+A shop object is an array / list of Item ids which the shop contains.
+
+An example shop would be:
+
+```json
+"Example_Npc": [
+  "Mask_1",
+  "Mask_2",
+  "Mask_3"
+]
+```
+
