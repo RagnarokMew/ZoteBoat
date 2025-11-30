@@ -38,6 +38,7 @@ You will notice that so far, all tiles will live on the same layer. To give our 
 
 * Foreground
 * Enemy Spawn <i style="font-size:11px;">&emsp;&emsp;(optional)</i>
+* Npc Spawn <i style="font-size:11px;">&ensp;&emsp;&emsp;&emsp;(optional)</i>
 * Load Zone
 * Wall Jump <i style="font-size:11px;">&emsp;&emsp;&emsp;&emsp;(optional)</i>
 * Platforms
@@ -49,13 +50,8 @@ Quite obviously, the `Platforms` layer contains the platforms: ground and walls.
 ## Specil Tiles
 
 ### Loadzones
-The `loadzone.tsx` file (or a similar one) will contain sprites for handling scene transitions. Technically, the sprites can be anything, as they will be hidden anyway. The only important part is having the following attributes:
 
-* `mapid` : name of the next room
-* `spawn_x` , `spawn_y` : spawn coordinates
-* `trans_x` , `trans_y` : transition speed (optional)
-
-These attributes should be of type `int`, with the exception of the first one, which is `string`. Importantly, the map name is ***the same*** as the tilemap file's name, without the `.tmx` extension.
+The `load.tsx` file (or a similar one) will contain sprites for handling scene transitions. Technically, the sprites can be anything, as they will be hidden anyway. The only important part is having the attribute `map_id`, representing the name of the next room. This name is ***the same*** as the tilemap file's name, without the `.tmx` extension.
 
 To create a new transition, simply add a new sprite to the set using the plus button: <img src="doc_img/new_load.png" style="padding: 1em">
 
@@ -65,11 +61,12 @@ Finally, place the tiles on the `Load Zone` layer of your map.
 
 ### Enemy Spawning
 
-The enemy spawn tiles are *very* similar to the transition tiles. The only exception is the attribute, which should be called `enemy_type` and be of type `string`. This will contain the name of the enemy to be spawned, which will be referenced in code.
+The enemy spawn tiles are very similar to the transition tiles. The only exception is the attribute, which should be called `enemy_type` and be of type `string`. This will contain the name of the enemy to be spawned, which will be referenced in code.
 
 ### Wall Jumping
 
-Lastly, wall jump tiles. There will be exactly two of these (left and right). There are no special properties or other information about these tiles, as there is no need to create any more besides the two. Just use them whenever needed! :)
+Lastly, wall jump tiles. There will be exactly two of these (left and right). There is no need to create any more besides the two, just place them next to a wall (on the `Wall Jump` layer) whenever needed! :)
+<img src="doc_img/wall_jump.png" style="padding: 1em">
 
 ## Ending Notes
 
