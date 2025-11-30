@@ -66,4 +66,21 @@ An example npc would be:
 
 ## Dialogue
 
+Found in `assets/data/dialogue.json`, which contains all the dialogue in the
+game. All dialogues must be identifiable by a unique id with a one-to-one
+relation to an npc id.
+
+A dialogue object is an array / list of strings, where each string represents
+a line said by the npc.
+
+An example dialogue would be:
+
+```json
+"Tiso": [
+  "This is the first dialogue line of this npc.",
+  "This is the second dialogue line of this npc. It can of course be a lot longer than this.",
+  "This is the last dialogue line of this npc."
+]
+```
+
 ## Shops
