@@ -102,3 +102,41 @@ An example shop would be:
 ]
 ```
 
+## Enemies
+
+!!! IMPORTANT NOTICE !!!
+
+As the implementation of the enemies isn't yet finalised this section is
+subject to change and parts of the information provided may be out of date.
+As of 30.11.2025, 13:56 the information provided is up to date.
+
+Found in `assets/data/enemies.json`, which contains all the enemies in the game.
+All enemies must be identifiable by a unique id.
+
+An enemy object must contain:
+
+- `type`: string, the type of enemy that needs to be loaded (check `src/core/utils.py` enemies dict for possible options)
+- `sprite_path`: string representing path to the sprite of the enemy
+- `scale`: a double by which the npc sprite is scaled
+- `max_health`: int, the max health of the enemy
+- `damage`: int, the damage dealt by the enemy to the player on contact
+- `drop_curr1`: int, the amount of `currency1` awarded to the player when the enemy is killed
+- `drop_curr2`: int, the amount of `currency2` awarded to the player when the enemy is killed
+- `drop_curr3`: int, the amount of `currency3` awarded to the player when the enemy is killed
+- `drop_curr4`: int, the amount of `currency4` awarded to the player when the enemy is killed
+
+An example enemy would be:
+
+```json
+"Example_Enemy_1": {
+	"type": "GroundEnemy",
+	"sprite_path": "../assets/sprites/crawler/walk_0.png",
+	"scale": 0.7,
+	"max_health": 1,
+	"damage": 1,
+	"drop_curr1": 1,
+	"drop_curr2": 1,
+	"drop_curr3": 1,
+	"drop_curr4": 1
+}
+```
