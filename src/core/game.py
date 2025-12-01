@@ -6,12 +6,7 @@ from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
-from core.utils import load_spawn
-
-# NOTE: Temporary Import
-from core.shop import ShopItem
-
-# TODO: for now time is unused, likely remove import
+from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn
 
 class GameView(arcade.View):
 
@@ -88,28 +83,22 @@ class GameView(arcade.View):
         # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
         try:
             for spawn in self.scene["Enemy Spawn"]:
-                # TODO: make spawned enemy type be decided based on spawn
-                self.scene.add_sprite(
-                    "Enemy", GroundEnemy(
-                        self.scene,
-                        position = (spawn.center_x, spawn.center_y),
-                        max_health = 1
-                    )
+                # TODO: Get enemy id based on enemy spawn sprite
+                load_enemy(
+                    id = "Example_Enemy_2",
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y)
                 )
         except: pass
 
         # TODO: Implement NPC spawn
         try:
             for spawn in self.scene["Npc Spawn"]:
-                # TODO: When npc spawning gets implemented the dialogue content
-                # name, and title will have to be fetched someplace
-                # currently the dialogue isn't saved anywhere and a default
-                # gets loaded
-                self.scene.add_sprite(
-                    "NPC", BaseNpc(
-                        self.scene,
-                        position = (spawn.center_x, spawn.center_y)
-                    )
+                # TODO: Get npc id based on npc spawn sprite
+                load_npc(
+                    id = "Example_Npc",
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y)
                 )
         except: pass
 
@@ -204,25 +193,20 @@ class GameView(arcade.View):
         if key == arcade.key.RIGHT:
             self.right_pressed = False
 
-        if self.player_interaction_state == P_GAMEPLAY:
-            if key == arcade.key.Z:
+        if key == arcade.key.Z:
                 self.jump_pressed = False
 
-            if key == arcade.key.UP:
+        if key == arcade.key.UP:
                 self.up_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-            if key == arcade.key.DOWN:
+        if key == arcade.key.DOWN:
                 self.down_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-            # manual reset switch (debug)
-            if key == arcade.key.R:
-                self.change_map()
-        elif self.player_interaction_state == P_DIALOGUE:
-            pass
-        elif self.player_interaction_state == P_SHOP:
-            pass
+        # manual reset switch (debug)
+        if key == arcade.key.R:
+            self.change_map()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
@@ -247,11 +231,11 @@ class GameView(arcade.View):
                 )
 
                 if npc and not self.active_menu:
-                    # TODO: When we actually add dialogue text the content
-                    # should be added as an array to DialogueMenu in content
                     self.active_menu = DialogueMenu(
-                        npc_name=npc[0].name,
-                        npc_title=npc[0].title,
+                        id = npc[0].id,
+                        content = load_dialogue(npc[0].id),
+                        npc_name = npc[0].name,
+                        npc_title = npc[0].title,
                         before_shop_interaction = npc[0].has_shop
                     )
                     self.player_interaction_state = P_DIALOGUE
@@ -267,11 +251,6 @@ class GameView(arcade.View):
                 arcade.window_commands.close_window()
                 exit(0)
 
-            # movement reset hotkeu
-            # TODO: automate this to prevent slide bug
-            if key == arcade.key.Q:
-                self.player_sprite.change_x = 0
-
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
             # But match case was introduced in Python 3.10
@@ -283,12 +262,11 @@ class GameView(arcade.View):
                 # Currently it works the following way:
                 # When a dialogue ends it checks if it leads to a shop interaction
                 # If it does it spawns a shop and loads its items
-                # TODO: Load shop items based on npc json
                 if self.active_menu:
                     if not self.active_menu.next():
                         if self.active_menu.before_shop_interation:
                             self.active_menu = ShopMenu(
-                                [],
+                                load_shop_items(self.active_menu.npc_id),
                                 self.player_stats,
                                 f"{self.active_menu.npc_name}'s Shop"
                             )
