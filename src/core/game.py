@@ -6,7 +6,7 @@ from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
-from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items
+from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn
 
 class GameView(arcade.View):
 
@@ -22,9 +22,6 @@ class GameView(arcade.View):
         self.player_sprite = None
         # TODO: Load player stats based on savefile
         self.player_stats = PlayerStats()
-
-        self.player_trans_x = 0
-        self.player_trans_y = 0
 
         self.tile_map = None
         self.scene = None
@@ -43,7 +40,6 @@ class GameView(arcade.View):
         self.dash_pressed = False
 
         self.map_id = DEFAULT_MAP
-        (self.sp_x, self.sp_y) = DEFAULT_SPAWN
 
         self.fade_out = None
         self.fade_in = None
@@ -72,14 +68,17 @@ class GameView(arcade.View):
         if "Wall Jump" in self.scene:
             self.scene["Wall Jump"].enable_spatial_hashing()
 
-        # Temporary Spawn, in the future it should be based on the map
-        temp_spawn = (128, 400)
+        player_spawn = load_spawn(self.map_id)
+        if not player_spawn:
+            print(f"\033[91mThe room you tried to enter does not exist :(\033[0m")
+            exit(1)
+
         self.player_sprite = player.PlayerSprite(
-            self.scene,
-            (self.sp_x, self.sp_y)
+            self.scene, player_spawn[0]
         )
         self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
+        self.player_sprite.change_y = player_spawn[1]
 
         # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
         try:
@@ -144,10 +143,6 @@ class GameView(arcade.View):
 
         if self.fade_in is not None:
             self.fade_in -= 5
-            if self.fade_in == 200:
-                # restore speed after transition (incl. vertical special)
-                self.player_sprite.change_x = self.player_trans_x
-                self.player_sprite.change_y = self.player_trans_y
             if self.fade_in <= 0:
                 self.fade_in = None
 
@@ -254,6 +249,7 @@ class GameView(arcade.View):
 
             if key == arcade.key.F5:
                 arcade.window_commands.close_window()
+                exit(0)
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
@@ -397,26 +393,11 @@ class GameView(arcade.View):
             self.player_stats.health = self.player_stats.max_health
             self.setup()
 
-    # scene change handler
-    # TODO: improve horizontal transition
-    # TODO: add vertical transition (up should apply force)
+    # scene change handler (set new map id)
     def change_map(self, sprites_coll = None):
-
         if self.fade_out is None:
             self.fade_out = 0
-            # set spawn in new map
             try:
-                self.map_id = sprites_coll[0].properties["mapid"]
-                self.sp_x = sprites_coll[0].properties["spawn_x"]
-                self.sp_y = sprites_coll[0].properties["spawn_y"]
-                # DEBUG: make sure spawn coords are set correctly
-                # print(sp_x, sp_y)
+                self.map_id = sprites_coll[0].properties["map_id"]
             except:
                 self.map_id = DEFAULT_MAP
-                (self.sp_x, self.sp_y) = DEFAULT_SPAWN
-            # set transition velocity
-            try:
-                self.player_trans_x = sprites_coll[0].properties["trans_x"]
-                self.player_trans_y = sprites_coll[0].properties["trans_y"]
-            except:
-                self.player_trans_x = self.player_trans_y = 0
