@@ -27,9 +27,6 @@ class GameView(arcade.View):
         # TODO: Load player stats based on savefile
         self.player_stats = PlayerStats()
 
-        self.player_trans_x = 0
-        self.player_trans_y = 0
-
         self.tile_map = None
         self.scene = None
 
@@ -47,7 +44,6 @@ class GameView(arcade.View):
         self.dash_pressed = False
 
         self.map_id = DEFAULT_MAP
-        (self.sp_x, self.sp_y) = DEFAULT_SPAWN
 
         self.fade_out = None
         self.fade_in = None
@@ -75,12 +71,13 @@ class GameView(arcade.View):
         self.scene["Load Zone"].enable_spatial_hashing()
         if "Wall Jump" in self.scene:
             self.scene["Wall Jump"].enable_spatial_hashing()
+            self.scene["Wall Jump"].visible = False
 
         # Temporary Spawn, in the future it should be based on the map
-        temp_spawn = (128, 400)
+        temp_spawn = DEFAULT_SPAWN
         self.player_sprite = player.PlayerSprite(
             self.scene,
-            (self.sp_x, self.sp_y)
+            temp_spawn
         )
         self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
@@ -128,7 +125,7 @@ class GameView(arcade.View):
             f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
             x = 5,
             y = SCREEN_HEIGHT - 60,
-            duration=2
+            duration = 2
         )
         self.currency_text.duration = self.currency_text.trans_duration = 0
 
@@ -154,10 +151,6 @@ class GameView(arcade.View):
 
         if self.fade_in is not None:
             self.fade_in -= 5
-            if self.fade_in == 200:
-                # restore speed after transition (incl. vertical special)
-                self.player_sprite.change_x = self.player_trans_x
-                self.player_sprite.change_y = self.player_trans_y
             if self.fade_in <= 0:
                 self.fade_in = None
 
@@ -418,26 +411,11 @@ class GameView(arcade.View):
             self.player_stats.health = self.player_stats.max_health
             self.setup()
 
-    # scene change handler
-    # TODO: improve horizontal transition
-    # TODO: add vertical transition (up should apply force)
+    # scene change handler (set new map id)
     def change_map(self, sprites_coll = None):
-
         if self.fade_out is None:
             self.fade_out = 0
-            # set spawn in new map
             try:
-                self.map_id = sprites_coll[0].properties["mapid"]
-                self.sp_x = sprites_coll[0].properties["spawn_x"]
-                self.sp_y = sprites_coll[0].properties["spawn_y"]
-                # DEBUG: make sure spawn coords are set correctly
-                # print(sp_x, sp_y)
+                self.map_id = sprites_coll[0].properties["map_id"]
             except:
                 self.map_id = DEFAULT_MAP
-                (self.sp_x, self.sp_y) = DEFAULT_SPAWN
-            # set transition velocity
-            try:
-                self.player_trans_x = sprites_coll[0].properties["trans_x"]
-                self.player_trans_y = sprites_coll[0].properties["trans_y"]
-            except:
-                self.player_trans_x = self.player_trans_y = 0
