@@ -1,6 +1,7 @@
 import arcade
 from entities.base_npc import BaseNpc
 from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
+from entities.enemies import IdleGround, IdleFlying, ChaserGround, ChaserFlying
 from core.shop import ShopItem
 import json
 
@@ -88,7 +89,11 @@ def load_enemy(id, scene, position):
     # TODO: Add more enemy types as they get implemented
     enemies = {
         "GroundEnemy": GroundEnemy,
-        "FlyingEnemy": FlyingEnemy
+        "FlyingEnemy": FlyingEnemy,
+        "IdleGround": IdleGround,
+        "IdleFlying": IdleFlying,
+        "ChaserGround": ChaserGround,
+        "ChaserFlying": ChaserFlying
     }
     try:
         with open("../assets/data/enemies.json", "r") as file:
@@ -97,6 +102,7 @@ def load_enemy(id, scene, position):
         npc = enemies[data[id]["type"]](
                 scene=scene,
                 sprite_path=data[id]["sprite_path"],
+                target=None,
                 position=position,
                 scale=data[id]["scale"],
                 max_health=data[id]["max_health"],
