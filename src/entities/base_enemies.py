@@ -50,7 +50,7 @@ class BaseEnemy(arcade.Sprite):
 
     def update(self, delta_time):
         self.hp_text.x = self.center_x
-        self.hp_text.y = self.center_y + 10
+        self.hp_text.y = self.center_y + self.texture.height // 2 + 10
 
         if self.inv_time >= 0:
             self.inv_time -= delta_time
