@@ -47,6 +47,17 @@ class BaseEnemy(arcade.Sprite):
         if self.inv_time >= 0:
             self.inv_time -= delta_time
 
+        self.update_animation(delta_time)
+
+    def update_animation(self, delta_time):
+        pass
+
+    def _next_texture(self, delta_time):
+        pass
+
+    def _load_texture(self, base_path):
+        pass
+
 class GroundEnemy(BaseEnemy):
     def __init__(self, scene,
                  sprite_path=":resources:/images/enemies/slimePurple.png",
