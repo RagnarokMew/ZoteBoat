@@ -104,7 +104,8 @@ def load_enemy(id, scene, position):
                 drop_curr1=data[id]["drop_curr1"],
                 drop_curr2=data[id]["drop_curr2"],
                 drop_curr3=data[id]["drop_curr3"],
-                drop_curr4=data[id]["drop_curr4"]
+                drop_curr4=data[id]["drop_curr4"],
+                frame_duration=data[id]["frame_duration"]
             )
     except Exception as e:
         print(f"Error Load Enemy: {e}")
