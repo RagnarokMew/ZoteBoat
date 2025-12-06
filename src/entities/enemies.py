@@ -1,5 +1,6 @@
 import arcade
 from entities.base_enemies import GroundEnemy, FlyingEnemy
+import math
 
 class IdleGround(GroundEnemy):
     def __init__(self, scene, sprite_path, target, speed, wander_range,
@@ -158,4 +159,47 @@ class ChaserFlying(FlyingEnemy):
                     drop_curr4=drop_curr4,
                     frame_duration=frame_duration
                 )
+        self.target = target
+        self.movement_speed = speed
+        self.change_x = self.movement_speed
+        self.wander_range = wander_range
+        self.change_y = 0
+
+    def update(self, delta_time):
+        self.update_ai()
+
+        if self.ai_state == "chase":
+            angle = math.atan2(self.target.center_y - self.center_y,
+                               self.target.center_x - self.center_x)
+
+            self.change_x = self.movement_speed * math.cos(angle)
+            self.change_y = self.movement_speed * math.sin(angle)
+
+        elif self.ai_state == "idle":
+
+            if self.center_x > self.spawn_x + self.wander_range and self.change_x >= 0:
+                self.change_x = -self.movement_speed
+            elif self.center_x < self.spawn_x - self.wander_range and self.change_x <= 0:
+                self.change_x = self.movement_speed
+
+            if self.center_y > self.spawn_y and self.change_y >= 0:
+                self.change_y = -self.movement_speed
+            elif self.center_y < self.spawn_y and self.change_y <= 0:
+                self.change_y = self.movement_speed
+
+        super().update(delta_time)
+
+    def update_ai(self):
+        if self.target == None:
+            self.ai_state == "idle"
+            return
+
+        target_distance = math.sqrt((self.center_x - self.target.center_x) ** 2 +
+                                (self.center_y - self.target.center_y) ** 2)
+
+        # Aggro range is currently set to the wander_range
+        if target_distance < self.wander_range * 3:
+            self.ai_state = "chase"
+        else:
+            self.ai_state = "idle"
 
