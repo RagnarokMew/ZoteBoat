@@ -4,7 +4,7 @@ from core.constants import GRAVITY, CELL_SIZE
 from entities.utils import load_texture_pair_h, count_files
 
 class BaseEnemy(arcade.Sprite):
-    def __init__(self, scene, sprite_path, target,
+    def __init__(self, scene, sprite_path,
                  position=(128, 128),
                  scale=1,
                  damage=1,
@@ -46,7 +46,6 @@ class BaseEnemy(arcade.Sprite):
         self.animation_state = "wander"
         self.frame_duration = frame_duration
 
-        self.target = target
         self.spawn_x, self.spawn_y = position
         self.ai_state = "idle"
 
@@ -96,7 +95,7 @@ class BaseEnemy(arcade.Sprite):
         }
 
 class GroundEnemy(BaseEnemy):
-    def __init__(self, scene, sprite_path, target,
+    def __init__(self, scene, sprite_path,
                  scale=1,
                  damage=1,
                  max_health=1,
@@ -110,7 +109,6 @@ class GroundEnemy(BaseEnemy):
         super().__init__(
             scene,
             sprite_path,
-            target,
             scale=scale,
             max_health=max_health,
             position=position,
@@ -134,7 +132,7 @@ class GroundEnemy(BaseEnemy):
             pass
 
 class FlyingEnemy(BaseEnemy):
-    def __init__(self, scene, sprite_path, target,
+    def __init__(self, scene, sprite_path,
                  scale=1,
                  damage=1,
                  max_health=1,
@@ -147,7 +145,6 @@ class FlyingEnemy(BaseEnemy):
         super().__init__(
             scene,
             sprite_path,
-            target,
             scale=scale,
             max_health=max_health,
             position=position,
