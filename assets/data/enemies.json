@@ -1,6 +1,6 @@
 {
 	"Example_Enemy_1": {
-		"type": "GroundEnemy",
+		"type": "IdleGround",
 		"sprite_path": "../assets/sprites/crawler/",
 		"scale": 0.7,
 		"max_health": 1,
@@ -9,7 +9,9 @@
 		"drop_curr2": 1,
 		"drop_curr3": 1,
 		"drop_curr4": 1,
-		"frame_duration": 60
+		"frame_duration": 60,
+		"speed": 3,
+		"wander_range": 200
 	},
 	"Example_Enemy_2": {
 		"type": "FlyingEnemy",
@@ -21,6 +23,8 @@
 		"drop_curr2": 1,
 		"drop_curr3": 1,
 		"drop_curr4": 1,
-		"frame_duration": 110
+		"frame_duration": 110,
+		"speed": 3,
+		"wander_range": 200
 	}
 }
