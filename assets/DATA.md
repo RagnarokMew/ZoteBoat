@@ -108,7 +108,7 @@ An example shop would be:
 
 As the implementation of the enemies isn't yet finalised this section is
 subject to change and parts of the information provided may be out of date.
-As of 06.12.2025, 15:58 the information provided is up to date.
+As of 06.12.2025, 16:38 the information provided is up to date.
 
 Found in `assets/data/enemies.json`, which contains all the enemies in the game.
 All enemies must be identifiable by a unique id.
@@ -125,13 +125,15 @@ An enemy object must contain:
 - `drop_curr3`: int, the amount of `currency3` awarded to the player when the enemy is killed
 - `drop_curr4`: int, the amount of `currency4` awarded to the player when the enemy is killed
 - `frame_duration`: int, the duration of a single frame of the enemy animation
+- `speed`: int, the movement speed of the enemy
+- `wander_range`: int, the max horizontal distance the enemy will move in either direction from its spawn point
 
 An example enemy would be:
 
 ```json
 "Example_Enemy_1": {
-	"type": "GroundEnemy",
-	"sprite_path": "../assets/sprites/crawler/walk_0.png",
+	"type": "IdleGround",
+	"sprite_path": "../assets/sprites/crawler/",
 	"scale": 0.7,
 	"max_health": 1,
 	"damage": 1,
@@ -139,6 +141,8 @@ An example enemy would be:
 	"drop_curr2": 1,
 	"drop_curr3": 1,
 	"drop_curr4": 1,
-    "frame_duration": 80
+    "frame_duration": 80,
+    "speed": 3,
+    "wander_range": 200
 }
 ```
