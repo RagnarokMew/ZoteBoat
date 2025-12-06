@@ -1,6 +1,10 @@
 import arcade
 from entities import player
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT, DEFAULT_MAP, DEFAULT_SPAWN, P_GAMEPLAY, P_DIALOGUE, P_SHOP
+from core.constants import SCREEN_HEIGHT, TILE_SCALING,\
+    P_FACE_RIGHT, P_FACE_LEFT, P_FACE_UP, P_FACE_DOWN, P_FACE_SIDE,\
+    P_GAMEPLAY, P_DIALOGUE, P_SHOP,\
+    GRAVITY, P_MOVE_SPD, P_JUMP_SPD, P_SLIDE,\
+    DEFAULT_MAP, DEFAULT_SPAWN
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
@@ -139,7 +143,6 @@ class GameView(arcade.View):
             if self.fade_out > 255:
                 self.fade_out = None
                 self.fade_in = 255
-                self.player_trans_x += self.player_sprite.change_x
                 self.setup()
 
         if self.fade_in is not None:
@@ -199,11 +202,11 @@ class GameView(arcade.View):
 
         if key == arcade.key.UP:
                 self.up_pressed = False
-                self.player_sprite.facing_direction = SIDE_FACING
+                self.player_sprite.facing_direction = P_FACE_SIDE
 
         if key == arcade.key.DOWN:
                 self.down_pressed = False
-                self.player_sprite.facing_direction = SIDE_FACING
+                self.player_sprite.facing_direction = P_FACE_SIDE
 
         # manual reset switch (debug)
         if key == arcade.key.R:
@@ -223,7 +226,7 @@ class GameView(arcade.View):
 
             if key == arcade.key.UP:
                 self.up_pressed = True
-                self.player_sprite.facing_direction = UP_FACING
+                self.player_sprite.facing_direction = P_FACE_UP
 
                 # NOTE: Starts dialogue
                 npc = arcade.check_for_collision_with_list(
@@ -243,14 +246,13 @@ class GameView(arcade.View):
 
             if key == arcade.key.DOWN:
                 self.down_pressed = True
-                self.player_sprite.facing_direction = DOWN_FACING
+                self.player_sprite.facing_direction = P_FACE_DOWN
 
             if key == arcade.key.X:
                 self.player_sprite.attack()
 
-            if key == arcade.key.F5:
-                arcade.window_commands.close_window()
-                exit(0)
+            if key == arcade.key.C:
+                self.dash_pressed = True
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
@@ -295,9 +297,6 @@ class GameView(arcade.View):
             elif key == arcade.key.DOWN:
                 self.active_menu.next_item()
 
-        if key == arcade.key.C and self.player_interaction_state == P_GAMEPLAY:
-                self.dash_pressed = True
-
         if key == arcade.key.F5:
             arcade.window_commands.close_window()
 
@@ -309,15 +308,30 @@ class GameView(arcade.View):
         # to fix all movement related bugs
         if self.player_interaction_state == P_GAMEPLAY:
             if self.left_pressed and not self.right_pressed:
-                self.player_sprite.direction = LEFT_FACING
-                self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+                self.player_sprite.direction = P_FACE_LEFT
+                self.player_sprite.change_x = -P_MOVE_SPD
 
             elif self.right_pressed and not self.left_pressed:
-                self.player_sprite.direction = RIGHT_FACING
-                self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+                self.player_sprite.direction = P_FACE_RIGHT
+                self.player_sprite.change_x = P_MOVE_SPD
 
             else:
                 self.player_sprite.change_x = 0
+
+            try:
+                no_entry = arcade.check_for_collision_with_list(
+                    self.player_sprite,
+                    self.scene["Wall Jump"],
+                    method = 1
+                )
+                no_entry_spr = no_entry[0]
+                
+                if no_entry_spr.properties["side"] == 0:
+                    if self.player_sprite.center_x - no_entry_spr.center_x < 0:
+                        self.player_sprite.change_x -= P_SLIDE
+                    else:
+                        self.player_sprite.change_x += P_SLIDE
+            except: pass
 
             if self.dash_pressed:
                 self.player_sprite.dash()
@@ -347,6 +361,10 @@ class GameView(arcade.View):
         hit = None
 
         if self.player_sprite.player_attack:
+            if "Hazard" in self.scene and arcade.check_for_collision_with_list(
+                self.player_sprite.player_attack, self.scene["Hazard"]
+            ):  self.player_sprite.pogo(self.physics_engine)
+
             hit = arcade.check_for_collision_with_list(
                 self.player_sprite.player_attack, self.scene["Enemy"]
             )

@@ -1,5 +1,6 @@
 import arcade
-from core.constants import RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING, P_ATTACK_COOLDOWN, P_WJUMP_SPEED, P_WJUMP_TIME, P_DASH_SPEED, P_DASH_TIME, P_DASH_COOLDOWN, PLAYER_JUMP_SPEED
+from core.constants import P_FACE_RIGHT, P_FACE_LEFT, P_FACE_UP, P_FACE_DOWN, P_FACE_SIDE,\
+    P_ATK_CD, P_WJUMP_SPD, P_WJUMP_TIME, P_DASH_SPD, P_DASH_TIME, P_DASH_CD, P_JUMP_SPD
 
 class PlayerSprite(arcade.Sprite):
 
@@ -14,8 +15,8 @@ class PlayerSprite(arcade.Sprite):
         self.center_x, self.center_y = position
         self.player_attack = None
         self.attack_cooldown = 0.0
-        self.direction = RIGHT_FACING
-        self.facing_direction = SIDE_FACING
+        self.direction = P_FACE_RIGHT
+        self.facing_direction = P_FACE_SIDE
 
         self.wjump_timer = 0.0
         self.wj_x = 0
@@ -30,15 +31,16 @@ class PlayerSprite(arcade.Sprite):
         # The implementation of these features can be done later on
 
     def attack(self):
-        if(self.attack_cooldown > 0):
+        if self.attack_cooldown > 0:
+            return
+        
+        # prevent down attack when grounded
+        if self.facing_direction == P_FACE_DOWN and self.change_y == 0:
             return
 
-        self.player_attack = PlayerAttack(
-            self.scene,
-            self
-        )
+        self.player_attack = PlayerAttack(self.scene, self)
 
-        self.attack_cooldown = P_ATTACK_COOLDOWN
+        self.attack_cooldown = P_ATK_CD
     
     def is_on_wall(self):
         try: return arcade.check_for_collision_with_list(
@@ -51,7 +53,7 @@ class PlayerSprite(arcade.Sprite):
 
         if self.stats.unlocks["Wall_Jump"] and wj:
             self.wj_x = wj[0].properties["side"]
-            self.change_y = PLAYER_JUMP_SPEED
+            self.change_y = P_JUMP_SPD
             self.wjump_timer = P_WJUMP_TIME
 
             if self.stats.unlocks["Double_Jump"]:
@@ -60,7 +62,7 @@ class PlayerSprite(arcade.Sprite):
                 )
 
         elif phys.can_jump():
-            phys.jump(PLAYER_JUMP_SPEED)
+            phys.jump(P_JUMP_SPD)
 
     def dash(self):
         if self.stats.unlocks["Dash"] and self.dash_cooldown <= 0:
@@ -72,16 +74,16 @@ class PlayerSprite(arcade.Sprite):
                 self.dash_dir = self.direction
 
             self.dash_timer = P_DASH_TIME
-            self.dash_cooldown = P_DASH_COOLDOWN
+            self.dash_cooldown = P_DASH_CD
 
     def pogo(self, phys):
         # pogo :3
-        if self.facing_direction == DOWN_FACING:
+        if self.facing_direction == P_FACE_DOWN:
             # don't use phys.jump(), since pogos don't count as jumps
-            self.change_y = PLAYER_JUMP_SPEED
+            self.change_y = P_JUMP_SPD
             
             # after pogo, add a double jump
-            # the max disallows multiple pogos per pogo
+            # the max prevents multiple pogos per pogo
             if self.stats.unlocks["Double_Jump"]:
                 phys.jumps_since_ground = max(
                     1, phys.jumps_since_ground - 1
@@ -111,7 +113,7 @@ class PlayerSprite(arcade.Sprite):
             self.player_attack.position = self.position
             self.player_attack.update(delta_time)
         
-        return self.wj_x * P_WJUMP_SPEED + self.dash_dir * P_DASH_SPEED
+        return self.wj_x * P_WJUMP_SPD + self.dash_dir * P_DASH_SPD
 
 class PlayerAttack(arcade.Sprite):
 
@@ -128,7 +130,7 @@ class PlayerAttack(arcade.Sprite):
         self.offset_y = -48
         self.parent = parent
         self.scene = scene
-        self.remaining_duration = P_ATTACK_COOLDOWN
+        self.remaining_duration = P_ATK_CD
 
         self.scene.add_sprite("PlayerAttack", self)
 
@@ -137,7 +139,7 @@ class PlayerAttack(arcade.Sprite):
 
         self.angle = 90 * self.parent.facing_direction
 
-        if self.parent.facing_direction == SIDE_FACING:
+        if self.parent.facing_direction == P_FACE_SIDE:
             self.scale_x = self.base_scale_x * self.parent.direction
             self.center_x = self.parent.center_x + self.offset_x * self.parent.direction
         else:
@@ -147,7 +149,7 @@ class PlayerAttack(arcade.Sprite):
 
         self.center_y = self.parent.center_y + self.offset_y * self.parent.facing_direction
 
-        if self.parent.facing_direction == DOWN_FACING:
+        if self.parent.facing_direction == P_FACE_DOWN:
             self.center_y = self.center_y + self.offset_y
 
         if self.remaining_duration <= 0:
