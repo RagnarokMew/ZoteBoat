@@ -18,7 +18,7 @@ Once Tiled is run, you will be greeted by this screen:
 
 To begin, click `File > Open File or Project...` or `Ctrl+O` and open `zoteboat.tiled-project`. This file doesn't do much, except enable you to navigate the filesystem in the built-in panel on the left.
 
-Then, to create a new map for whatever area you want, click `New Map...` (or `File > New`) and save it under `assets/tilemaps` with the `.tmx` extension. The tile size should be 128x128 px. The map size can be infinite, since it doesn't affect performance, although you could restrain yourself if you want :)
+Then, to create a new map for whatever area you want, click `New Map...` (or `File > New`) and save it under `assets/tilemaps` with the `.tmx` extension. The tile size should be 128x128 px. The map size can be infinite while building it (which is recommended), but make sure to limit the map size before trying to play in it. To do so, go to `Map > Map Properties..` and uncheck the `Infinite` attribute.
 
 To move around the main view, use the scroll bars on the right and below (sadly, touchpad scrolling seems inconsistent). To zoom in/out, `Ctrl+scroll` will do the trick.
 
