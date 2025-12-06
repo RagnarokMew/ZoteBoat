@@ -108,7 +108,7 @@ An example shop would be:
 
 As the implementation of the enemies isn't yet finalised this section is
 subject to change and parts of the information provided may be out of date.
-As of 30.11.2025, 13:56 the information provided is up to date.
+As of 06.12.2025, 15:58 the information provided is up to date.
 
 Found in `assets/data/enemies.json`, which contains all the enemies in the game.
 All enemies must be identifiable by a unique id.
@@ -116,7 +116,7 @@ All enemies must be identifiable by a unique id.
 An enemy object must contain:
 
 - `type`: string, the type of enemy that needs to be loaded (check `src/core/utils.py` enemies dict for possible options)
-- `sprite_path`: string representing path to the sprite of the enemy
+- `sprite_path`: string representing the path to the folder that contains all the sprites of the enemy
 - `scale`: a double by which the npc sprite is scaled
 - `max_health`: int, the max health of the enemy
 - `damage`: int, the damage dealt by the enemy to the player on contact
@@ -124,6 +124,7 @@ An enemy object must contain:
 - `drop_curr2`: int, the amount of `currency2` awarded to the player when the enemy is killed
 - `drop_curr3`: int, the amount of `currency3` awarded to the player when the enemy is killed
 - `drop_curr4`: int, the amount of `currency4` awarded to the player when the enemy is killed
+- `frame_duration`: int, the duration of a single frame of the enemy animation
 
 An example enemy would be:
 
@@ -137,6 +138,7 @@ An example enemy would be:
 	"drop_curr1": 1,
 	"drop_curr2": 1,
 	"drop_curr3": 1,
-	"drop_curr4": 1
+	"drop_curr4": 1,
+    "frame_duration": 80
 }
 ```
