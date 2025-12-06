@@ -4,7 +4,7 @@ from core.constants import GRAVITY, CELL_SIZE
 from entities.utils import load_texture_pair_h, count_files
 
 class BaseEnemy(arcade.Sprite):
-    def __init__(self, scene, sprite_path,
+    def __init__(self, scene, sprite_path, target,
                  position=(128, 128),
                  scale=1,
                  damage=1,
@@ -45,6 +45,10 @@ class BaseEnemy(arcade.Sprite):
         self.cur_frame_duration = 0
         self.animation_state = "wander"
         self.frame_duration = frame_duration
+
+        self.target = target
+        self.spawn_x, self.spawn_y = position
+        self.ai_state = "idle"
 
     def update_text(self):
         self.hp_text.text = f"HP:{self.health}/{self.max_health}"
@@ -92,8 +96,7 @@ class BaseEnemy(arcade.Sprite):
         }
 
 class GroundEnemy(BaseEnemy):
-    def __init__(self, scene,
-                 sprite_path=":resources:/images/enemies/slimePurple.png",
+    def __init__(self, scene, sprite_path, target,
                  scale=1,
                  damage=1,
                  max_health=1,
@@ -107,6 +110,7 @@ class GroundEnemy(BaseEnemy):
         super().__init__(
             scene,
             sprite_path,
+            target,
             scale=scale,
             max_health=max_health,
             position=position,
@@ -130,8 +134,7 @@ class GroundEnemy(BaseEnemy):
             pass
 
 class FlyingEnemy(BaseEnemy):
-    def __init__(self, scene,
-                 sprite_path=":resources:/images/enemies/bee.png",
+    def __init__(self, scene, sprite_path, target,
                  scale=1,
                  damage=1,
                  max_health=1,
@@ -144,6 +147,7 @@ class FlyingEnemy(BaseEnemy):
         super().__init__(
             scene,
             sprite_path,
+            target,
             scale=scale,
             max_health=max_health,
             position=position,
