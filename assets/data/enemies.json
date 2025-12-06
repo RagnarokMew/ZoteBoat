@@ -8,7 +8,8 @@
 		"drop_curr1": 1,
 		"drop_curr2": 1,
 		"drop_curr3": 1,
-		"drop_curr4": 1
+		"drop_curr4": 1,
+		"frame_duration": 60
 	},
 	"Example_Enemy_2": {
 		"type": "FlyingEnemy",
@@ -19,6 +20,7 @@
 		"drop_curr1": 1,
 		"drop_curr2": 1,
 		"drop_curr3": 1,
-		"drop_curr4": 1
+		"drop_curr4": 1,
+		"frame_duration": 110
 	}
 }
