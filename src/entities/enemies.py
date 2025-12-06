@@ -2,7 +2,7 @@ import arcade
 from entities.base_enemies import GroundEnemy, FlyingEnemy
 
 class IdleGround(GroundEnemy):
-    def __init__(self, scene, sprite_path,
+    def __init__(self, scene, sprite_path, target, speed, wander_range,
                  position=(128, 128),
                  scale=1,
                  damage=1,
@@ -25,9 +25,21 @@ class IdleGround(GroundEnemy):
                     drop_curr4=drop_curr4,
                     frame_duration=frame_duration
                 )
+        self.target = target
+        self.movement_speed = speed
+        self.change_x = self.movement_speed
+        self.wander_range = wander_range
+
+    def update(self, delta_time):
+        if self.center_x > self.spawn_x + self.wander_range and self.change_x >= 0:
+            self.change_x = -self.movement_speed
+        elif self.center_x < self.spawn_x - self.wander_range and self.change_x <= 0:
+            self.change_x = self.movement_speed
+
+        super().update(delta_time)
 
 class ChaserGround(GroundEnemy):
-    def __init__(self, scene, sprite_path,
+    def __init__(self, scene, sprite_path, target, speed, wander_range,
                  position=(128, 128),
                  scale=1,
                  damage=1,
@@ -53,7 +65,7 @@ class ChaserGround(GroundEnemy):
 
 
 class IdleFlying(FlyingEnemy):
-    def __init__(self, scene, sprite_path,
+    def __init__(self, scene, sprite_path, target, speed, wander_range,
                  position=(128, 128),
                  scale=1,
                  damage=1,
@@ -76,10 +88,21 @@ class IdleFlying(FlyingEnemy):
                     drop_curr4=drop_curr4,
                     frame_duration=frame_duration
                 )
+        self.target = target
+        self.movement_speed = speed
+        self.change_x = self.movement_speed
+        self.wander_range = wander_range
 
+    def update(self, delta_time):
+        if self.center_x > self.spawn_x + self.wander_range and self.change_x >= 0:
+            self.change_x = -self.movement_speed
+        elif self.center_x < self.spawn_x - self.wander_range and self.change_x <= 0:
+            self.change_x = self.movement_speed
+
+        super().update(delta_time)
 
 class ChaserFlying(FlyingEnemy):
-    def __init__(self, scene, sprite_path,
+    def __init__(self, scene, sprite_path, target, speed, wander_range,
                  position=(128, 128),
                  scale=1,
                  damage=1,
