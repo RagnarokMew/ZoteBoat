@@ -103,6 +103,8 @@ def load_enemy(id, scene, position):
                 scene=scene,
                 sprite_path=data[id]["sprite_path"],
                 target=None,
+                speed=data[id]["speed"],
+                wander_range=data[id]["wander_range"],
                 position=position,
                 scale=data[id]["scale"],
                 max_health=data[id]["max_health"],
