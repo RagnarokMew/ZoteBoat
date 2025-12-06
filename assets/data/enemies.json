@@ -1,7 +1,7 @@
 {
 	"Example_Enemy_1": {
 		"type": "GroundEnemy",
-		"sprite_path": "../assets/sprites/crawler/walk_0.png",
+		"sprite_path": "../assets/sprites/crawler/",
 		"scale": 0.7,
 		"max_health": 1,
 		"damage": 1,
@@ -12,7 +12,7 @@
 	},
 	"Example_Enemy_2": {
 		"type": "FlyingEnemy",
-		"sprite_path": "../assets/sprites/fly/fly_0.png",
+		"sprite_path": "../assets/sprites/fly/",
 		"scale": 1,
 		"max_health": 1,
 		"damage": 1,
