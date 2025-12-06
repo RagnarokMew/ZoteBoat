@@ -4,6 +4,12 @@ from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
 from core.shop import ShopItem
 import json
 
+def load_texture_pair_h(path):
+    return [
+        arcade.load_texture(path),
+        arcade.load_texture(path).flip_horizontally()
+    ]
+
 def load_spawn(id):
     try:
         with open("../assets/data/maps.json", "r") as file:
