@@ -12,7 +12,8 @@ class BaseEnemy(arcade.Sprite):
                  drop_curr1=1,
                  drop_curr2=1,
                  drop_curr3=1,
-                 drop_curr4=1):
+                 drop_curr4=1,
+                 frame_duration=100):
         self._load_texture(sprite_path)
         super().__init__(
             self.animations["wander"][0][0],
@@ -43,7 +44,7 @@ class BaseEnemy(arcade.Sprite):
         self.cur_tex_index = 0
         self.cur_frame_duration = 0
         self.animation_state = "wander"
-        self.frame_duration = 100
+        self.frame_duration = frame_duration
 
     def update_text(self):
         self.hp_text.text = f"HP:{self.health}/{self.max_health}"
@@ -86,8 +87,6 @@ class BaseEnemy(arcade.Sprite):
             load_texture_pair_h(f"{base_path}wander_{i}.png") for i in range(0, count_files(base_path, "wander"))
         ]
 
-        print(wander_textures)
-
         self.animations = {
             "wander": wander_textures
         }
@@ -102,7 +101,8 @@ class GroundEnemy(BaseEnemy):
                  drop_curr1=1,
                  drop_curr2=1,
                  drop_curr3=1,
-                 drop_curr4=1):
+                 drop_curr4=1,
+                 frame_duration=100):
 
         super().__init__(
             scene,
@@ -114,7 +114,8 @@ class GroundEnemy(BaseEnemy):
             drop_curr1=drop_curr1,
             drop_curr2=drop_curr2,
             drop_curr3=drop_curr3,
-            drop_curr4=drop_curr4
+            drop_curr4=drop_curr4,
+            frame_duration=frame_duration
         )
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -138,7 +139,8 @@ class FlyingEnemy(BaseEnemy):
                  drop_curr1=1,
                  drop_curr2=1,
                  drop_curr3=1,
-                 drop_curr4=1):
+                 drop_curr4=1,
+                 frame_duration=100):
         super().__init__(
             scene,
             sprite_path,
@@ -149,7 +151,8 @@ class FlyingEnemy(BaseEnemy):
             drop_curr1=drop_curr1,
             drop_curr2=drop_curr2,
             drop_curr3=drop_curr3,
-            drop_curr4=drop_curr4
+            drop_curr4=drop_curr4,
+            frame_duration=frame_duration
         )
 
         self.physics_engine = arcade.PhysicsEngineSimple(
