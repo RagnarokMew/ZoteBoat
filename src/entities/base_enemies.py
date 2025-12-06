@@ -1,6 +1,7 @@
 import arcade
 from arcade.color import BLACK
 from core.constants import GRAVITY, CELL_SIZE
+from entities.utils import load_texture_pair_h, count_files
 
 class BaseEnemy(arcade.Sprite):
     def __init__(self, scene, sprite_path,
@@ -12,8 +13,9 @@ class BaseEnemy(arcade.Sprite):
                  drop_curr2=1,
                  drop_curr3=1,
                  drop_curr4=1):
+        self._load_texture(sprite_path)
         super().__init__(
-            sprite_path,
+            self.animations["wander"][0][0],
             scale=scale
         )
 
@@ -56,7 +58,17 @@ class BaseEnemy(arcade.Sprite):
         pass
 
     def _load_texture(self, base_path):
-        pass
+        wander_path = f"{base_path}wander"
+
+        wander_textures = [
+            load_texture_pair_h(f"{base_path}wander_{i}.png") for i in range(0, count_files(base_path, "wander"))
+        ]
+
+        print(wander_textures)
+
+        self.animations = {
+            "wander": wander_textures
+        }
 
 class GroundEnemy(BaseEnemy):
     def __init__(self, scene,
