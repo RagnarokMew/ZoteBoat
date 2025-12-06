@@ -1,0 +1,24 @@
+{
+	"Example_Enemy_1": {
+		"type": "GroundEnemy",
+		"sprite_path": "../assets/sprites/crawler/walk_0.png",
+		"scale": 0.7,
+		"max_health": 1,
+		"damage": 1,
+		"drop_curr1": 1,
+		"drop_curr2": 1,
+		"drop_curr3": 1,
+		"drop_curr4": 1
+	},
+	"Example_Enemy_2": {
+		"type": "FlyingEnemy",
+		"sprite_path": "../assets/sprites/fly/fly_0.png",
+		"scale": 1,
+		"max_health": 1,
+		"damage": 1,
+		"drop_curr1": 1,
+		"drop_curr2": 1,
+		"drop_curr3": 1,
+		"drop_curr4": 1
+	}
+}

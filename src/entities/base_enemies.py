@@ -3,7 +3,15 @@ from arcade.color import BLACK
 from core.constants import GRAVITY, CELL_SIZE
 
 class BaseEnemy(arcade.Sprite):
-    def __init__(self, scene, sprite_path, position=(128, 128), scale=1, damage=1, max_health=1):
+    def __init__(self, scene, sprite_path,
+                 position=(128, 128),
+                 scale=1,
+                 damage=1,
+                 max_health=1,
+                 drop_curr1=1,
+                 drop_curr2=1,
+                 drop_curr3=1,
+                 drop_curr4=1):
         super().__init__(
             sprite_path,
             scale=scale
@@ -24,6 +32,11 @@ class BaseEnemy(arcade.Sprite):
             anchor_x="center"
         )
 
+        self.drop_curr1 = drop_curr1
+        self.drop_curr2 = drop_curr2
+        self.drop_curr3 = drop_curr3
+        self.drop_curr4 = drop_curr4
+
     def update_text(self):
         self.hp_text.text = f"HP:{self.health}/{self.max_health}"
 
@@ -35,14 +48,28 @@ class BaseEnemy(arcade.Sprite):
             self.inv_time -= delta_time
 
 class GroundEnemy(BaseEnemy):
-    def __init__(self, scene, sprite_path=":resources:/images/enemies/slimePurple.png", scale=1, damage=1, max_health=1, position=(128,128)):
+    def __init__(self, scene,
+                 sprite_path=":resources:/images/enemies/slimePurple.png",
+                 scale=1,
+                 damage=1,
+                 max_health=1,
+                 position=(128,128),
+                 drop_curr1=1,
+                 drop_curr2=1,
+                 drop_curr3=1,
+                 drop_curr4=1):
+
         super().__init__(
             scene,
             sprite_path,
             scale=scale,
             max_health=max_health,
             position=position,
-            damage=damage
+            damage=damage,
+            drop_curr1=drop_curr1,
+            drop_curr2=drop_curr2,
+            drop_curr3=drop_curr3,
+            drop_curr4=drop_curr4
         )
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -57,15 +84,27 @@ class GroundEnemy(BaseEnemy):
             pass
 
 class FlyingEnemy(BaseEnemy):
-    def __init__(self, scene, sprite_path=":resources:/images/enemies/bee.png", scale=1, damage=1, max_health=1, position=(128,128)):
+    def __init__(self, scene,
+                 sprite_path=":resources:/images/enemies/bee.png",
+                 scale=1,
+                 damage=1,
+                 max_health=1,
+                 position=(128,128),
+                 drop_curr1=1,
+                 drop_curr2=1,
+                 drop_curr3=1,
+                 drop_curr4=1):
         super().__init__(
             scene,
             sprite_path,
             scale=scale,
             max_health=max_health,
             position=position,
-            damage=damage
-
+            damage=damage,
+            drop_curr1=drop_curr1,
+            drop_curr2=drop_curr2,
+            drop_curr3=drop_curr3,
+            drop_curr4=drop_curr4
         )
 
         self.physics_engine = arcade.PhysicsEngineSimple(
