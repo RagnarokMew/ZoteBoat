@@ -39,6 +39,12 @@ class BaseEnemy(arcade.Sprite):
         self.drop_curr3 = drop_curr3
         self.drop_curr4 = drop_curr4
 
+        self.cur_textures = self.animations["wander"]
+        self.cur_tex_index = 0
+        self.cur_frame_duration = 0
+        self.animation_state = "wander"
+        self.frame_duration = 100
+
     def update_text(self):
         self.hp_text.text = f"HP:{self.health}/{self.max_health}"
 
@@ -52,10 +58,26 @@ class BaseEnemy(arcade.Sprite):
         self.update_animation(delta_time)
 
     def update_animation(self, delta_time):
-        pass
+        self.cur_textures = self.animations[self.animation_state]
+
+        self._next_texture(delta_time)
 
     def _next_texture(self, delta_time):
-        pass
+        self.cur_frame_duration += delta_time
+
+        if self.cur_frame_duration * 1000 < self.frame_duration:
+            return
+
+        self.cur_frame_duration = 0
+
+        self.cur_tex_index += 1
+        self.cur_tex_index %= len(self.cur_textures)
+
+        if self.change_x > 0:
+            self.texture = self.cur_textures[self.cur_tex_index][1]
+        else:
+            self.texture = self.cur_textures[self.cur_tex_index][0]
+
 
     def _load_texture(self, base_path):
         wander_path = f"{base_path}wander"
