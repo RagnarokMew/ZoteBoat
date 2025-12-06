@@ -85,9 +85,10 @@ class GameView(arcade.View):
             for spawn in self.scene["Enemy Spawn"]:
                 # TODO: Get enemy id based on enemy spawn sprite
                 load_enemy(
-                    id = "Example_Enemy_2",
+                    id = "Example_Enemy_1",
                     scene = self.scene,
-                    position = (spawn.center_x, spawn.center_y)
+                    position = (spawn.center_x, spawn.center_y),
+                    target = self.player_sprite
                 )
         except: pass
 
@@ -401,3 +402,4 @@ class GameView(arcade.View):
                 self.map_id = sprites_coll[0].properties["map_id"]
             except:
                 self.map_id = DEFAULT_MAP
+

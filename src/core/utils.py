@@ -85,7 +85,7 @@ def load_shop_items(id):
     finally:
         return items
 
-def load_enemy(id, scene, position):
+def load_enemy(id, scene, position, target = None):
     # TODO: Add more enemy types as they get implemented
     enemies = {
         "GroundEnemy": GroundEnemy,
@@ -102,7 +102,7 @@ def load_enemy(id, scene, position):
         npc = enemies[data[id]["type"]](
                 scene=scene,
                 sprite_path=data[id]["sprite_path"],
-                target=None,
+                target=target,
                 speed=data[id]["speed"],
                 wander_range=data[id]["wander_range"],
                 position=position,
