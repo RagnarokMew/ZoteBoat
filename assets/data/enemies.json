@@ -82,5 +82,33 @@
 		"frame_duration": 90,
 		"speed": 2,
 		"wander_range": 200
+	},
+	"OblobbleIdle": {
+		"type": "IdleFlying",
+		"sprite_path": "../assets/sprites/oblobble/",
+		"scale": 0.7,
+		"max_health": 64,
+		"damage": 2,
+		"drop_curr1": 100,
+		"drop_curr2": 100,
+		"drop_curr3": 100,
+		"drop_curr4": 100,
+		"frame_duration": 90,
+		"speed": 3,
+		"wander_range": 225
+	},
+	"OblobbleChaser": {
+		"type": "ChaserFlying",
+		"sprite_path": "../assets/sprites/oblobble/",
+		"scale": 0.7,
+		"max_health": 64,
+		"damage": 2,
+		"drop_curr1": 100,
+		"drop_curr2": 100,
+		"drop_curr3": 100,
+		"drop_curr4": 100,
+		"frame_duration": 90,
+		"speed": 3,
+		"wander_range": 225
 	}
 }
