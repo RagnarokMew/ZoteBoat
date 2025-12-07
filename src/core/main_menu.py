@@ -1,8 +1,8 @@
-from typing import override
 import arcade
-from arcade.draw import arc
 import arcade.gui
+from arcade.draw import arc
 
+from core.game import GameView
 from core.constants import SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class MenuView(arcade.View):
@@ -38,6 +38,12 @@ class MenuView(arcade.View):
         @quit_button.event("on_click")
         def on_click_quit(event):
             arcade.exit()
+
+        @play_game_button.event("on_click")
+        def on_click_play(event):
+            game_view = GameView()
+            game_view.setup()
+            self.window.show_view(game_view)
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLUE_BELL)
