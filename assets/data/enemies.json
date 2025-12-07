@@ -26,5 +26,33 @@
 		"frame_duration": 60,
 		"speed": 3,
 		"wander_range": 200
+	},
+	"BlobbleIdle": {
+		"type": "IdleFlying",
+		"sprite_path": "../assets/sprites/blobble/",
+		"scale": 0.7,
+		"max_health": 4,
+		"damage": 1,
+		"drop_curr1": 1,
+		"drop_curr2": 1,
+		"drop_curr3": 1,
+		"drop_curr4": 1,
+		"frame_duration": 60,
+		"speed": 3,
+		"wander_range": 200
+	},
+	"BlobbleChaser": {
+		"type": "ChaserFlying",
+		"sprite_path": "../assets/sprites/blobble/",
+		"scale": 0.7,
+		"max_health": 4,
+		"damage": 1,
+		"drop_curr1": 1,
+		"drop_curr2": 1,
+		"drop_curr3": 1,
+		"drop_curr4": 1,
+		"frame_duration": 60,
+		"speed": 3,
+		"wander_range": 200
 	}
 }
