@@ -54,5 +54,33 @@
 		"frame_duration": 60,
 		"speed": 3,
 		"wander_range": 200
+	},
+	"FlyIdle": {
+		"type": "IdleFlying",
+		"sprite_path": "../assets/sprites/fly/",
+		"scale": 1,
+		"max_health": 4,
+		"damage": 1,
+		"drop_curr1": 1,
+		"drop_curr2": 1,
+		"drop_curr3": 1,
+		"drop_curr4": 1,
+		"frame_duration": 90,
+		"speed": 2,
+		"wander_range": 200
+	},
+	"FlyChaser": {
+		"type": "ChaserFlying",
+		"sprite_path": "../assets/sprites/fly/",
+		"scale": 1,
+		"max_health": 4,
+		"damage": 1,
+		"drop_curr1": 1,
+		"drop_curr2": 1,
+		"drop_curr3": 1,
+		"drop_curr4": 1,
+		"frame_duration": 90,
+		"speed": 2,
+		"wander_range": 200
 	}
 }
