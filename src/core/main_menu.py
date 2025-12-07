@@ -35,6 +35,9 @@ class MenuView(arcade.View):
             child=self.grid
         )
 
+        @quit_button.event("on_click")
+        def on_click_quit(event):
+            arcade.exit()
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLUE_BELL)
