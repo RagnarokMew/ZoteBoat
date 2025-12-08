@@ -1,0 +1,50 @@
+{
+    "user_1": {
+        "powers": {
+            "mask": 2,      // nail/mask upgrades could be stored individually, but i think this is
+            "nail": 1,      // better since they are the same (no diff between nail 1 and 2 etc)
+            "wall": true,
+            "dblj": false,
+            "dash": false
+        },
+        "scores": {
+            "arena": [
+                16,     //enemies
+                49      //time in seconds (can be changed to mins/secs like below if needed)
+            ],
+/*
+    alternate format:
+            "arena": {
+                "enemies": 16,
+                "time": 49
+            }
+*/
+            "parkour": [
+                20,
+                4,
+                0
+            ]
+/*
+    alternate format:
+            "parkour": {
+                "sec": 20,
+                "min": 4,
+                "hrs": 0
+            }
+*/
+        },
+        "money": [
+            26,
+            13,
+            7,
+            50
+        ]
+/*
+    alternate format:
+            "money": {
+                "curr1": 26
+                etc...
+            }
+*/
+    }
+}
