@@ -175,29 +175,47 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
                 arena_list.append([user, data[user]["arena"]])
                 parkour_list.append([user, data[user]["parkour"]])
 
-            arena_list.sort(key = lambda val: (-val[1][0], val[1][1]))
+            try:
+                arena_list.sort(key = lambda val: (-val[1][0], val[1][1]))
+                arena_list = arena_list[:10]
 
-            arena_names_list = [ name[0] for name in arena_list ]
-            arena_scores_list = []
+                arena_names_list = [ name[0] for name in arena_list ]
+                arena_scores_list = []
 
-            for scores in arena_list:
-                arena_scores_list.append(f"{scores[1][0]} kills, {scores[1][1]}s")
+                for scores in arena_list:
+                    arena_scores_list.append(f"{scores[1][0]} kills, {scores[1][1]}s")
 
-            self.arena_names = "\n".join(arena_names_list)
-            self.arena_scores = "\n".join(arena_scores_list)
+                self.arena_names = "\n".join(arena_names_list)
+                self.arena_scores = "\n".join(arena_scores_list)
 
-            parkour_list.sort(key = lambda val: (val[1][0], val[1][1], val[1][2]))
+            except Exception as e:
+                self.arena_names = ""
+                self.arena_score = ""
+                print(f"Exception loading arena scores: {e}")
 
-            names_list = [ name[0] for name in parkour_list ]
-            scores_list = []
+            try:
+                parkour_list.sort(key = lambda val: (val[1][0], val[1][1], val[1][2]))
+                parkour_list = parkour_list[:10]
 
-            for scores in parkour_list:
-                scores_list.append(f"{scores[1][0]}h {scores[1][1]}min {scores[1][2]}s")
+                names_list = [ name[0] for name in parkour_list ]
+                scores_list = []
 
-            self.parkour_names = "\n".join(names_list)
-            self.parkour_scores = "\n".join(scores_list)
+                for scores in parkour_list:
+                    scores_list.append(f"{scores[1][0]}h {scores[1][1]}min {scores[1][2]}s")
+
+                self.parkour_names = "\n".join(names_list)
+                self.parkour_scores = "\n".join(scores_list)
+
+            except Exception as e:
+                self.parkour_names = ""
+                self.parkour_scores = ""
+                print(f"Exception loading parkour scores: {e}")
 
         except Exception as e:
+            self.arena_names = ""
+            self.arena_scores = ""
+            self.parkour_names = ""
+            self.parkour_scores = ""
             print(f"Exception loading user scores: {e}")
 
 class CreditsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
