@@ -83,12 +83,90 @@ class CreditsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
             text_color=arcade.color.BLACK
         )
 
+        lead_dev_label = arcade.gui.UILabel(
+            text="Lead Developer:",
+            align="left",
+            font_size=16,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        lead_dev_value = arcade.gui.UILabel(
+            text = "RagnarokMew (Stefan Simion)",
+            align="right",
+            font_size=16,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        ) 
+
+        dev_label = arcade.gui.UILabel(
+            text="Developer:",
+            align="left",
+            font_size=16,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        dev_value = arcade.gui.UILabel(
+            text="Luxaks (Lucas Ciuca)",
+            align="left",
+            font_size=16,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        enemy_sprites_label = arcade.gui.UILabel(
+            text="Enemy & Attack Sprites:",
+            align="left",
+            font_size=16,
+            multiline= False,
+            text_color=arcade.color.BLACK
+        )
+
+        enemy_sprites_value = arcade.gui.UILabel(
+            text="All assets have been extracted from the\noriginal gamefiles of Hollow Knight.\nAll rights belong to Team Cherry.",
+            align="left",
+            font_size=16,
+            multiline= True,
+            text_color=arcade.color.BLACK
+        )
+
+        player_sprites_label = arcade.gui.UILabel(
+            text="Player Character Sprites:",
+            align="left",
+            font_size=16,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        player_sprites_value = arcade.gui.UILabel(
+            text="All assets have been extracted from the\nskin Atlas created by DFTz. All rights\nbelong to DFTz.",
+            align="left",
+            font_size=16,
+            multiline=True,
+            text_color=arcade.color.BLACK
+        )
+
         back_button = arcade.gui.UIFlatButton(text = "Back")
         back_button.on_click = self.on_click_back_button
 
-        widget_layout = arcade.gui.UIBoxLayout(align="left", space_between=10)
-        widget_layout.add(title_label)
-        widget_layout.add(back_button)
+        widget_layout = arcade.gui.UIGridLayout(
+            row_count=6,
+            column_count=2,
+            horizontal_spacing=167,
+            vertical_spacing=25
+        )
+
+        widget_layout.add(title_label, row=0, column_span=2)
+        widget_layout.add(lead_dev_label, row=1, column_span=1)
+        widget_layout.add(lead_dev_value, row=1, column=1, column_span=1)
+        widget_layout.add(dev_label, row=2, column_span=1)
+        widget_layout.add(dev_value, row=2, column=1, column_span=1)
+        widget_layout.add(enemy_sprites_label, row=3, column_span=1)
+        widget_layout.add(enemy_sprites_value, row=3, column=1, column_span=1)
+        widget_layout.add(player_sprites_label, row=4, column_span=1)
+        widget_layout.add(player_sprites_value, row=4, column=1, column_span=1)
+        widget_layout.add(back_button, row=5, column_span=2)
 
         frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
 
