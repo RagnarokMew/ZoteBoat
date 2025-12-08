@@ -3,16 +3,22 @@ from pyglet.graphics import Batch
 from core.constants import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
 
 class BaseNpc(arcade.Sprite):
-    def __init__(self, scene, id, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title", has_shop=False):
+    def __init__(self, scene, id,
+            sprite_path = ":resources:/images/animated_characters/male_person/malePerson_idle.png",
+            position = (128, 128), scale = 1, name = "NPC", title = "Title",
+            has_shop = False, has_game = False, game_map = None
+        ):
         super().__init__(
             sprite_path,
-            scale=scale
+            scale = scale
         )
 
         self.id = id
         self.name = name
         self.title = title
         self.has_shop = has_shop
+        self.has_game = has_game
+        self.game_map = game_map
         self.scene = scene
         self.center_x, self.center_y = position
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -23,16 +29,17 @@ class BaseNpc(arcade.Sprite):
         self.physics_engine.update()
 
 class DialogueMenu():
-    def __init__(self,
-                 id,
-                 content=["This is a dialogue text", "Another text"],
-                 npc_name="NPC_NAME",
-                 npc_title="NPC_TITLE",
-                 before_shop_interaction=False
-                 ):
+    def __init__(self, id,
+            content = ["This is a dialogue text", "Another text"],
+            npc_name = "NPC_NAME", npc_title = "NPC_TITLE",
+            before_shop_interaction = False, before_mg = False, game_map = None
+        ):
         self.npc_id = id
         self.npc_name = npc_name
         self.before_shop_interation = before_shop_interaction
+        self.before_mg = before_mg
+        self.game_map = game_map
+        self.game_quit = False
         self.content = content
         self.text = None
         self.text_index = 0
@@ -122,6 +129,29 @@ class DialogueMenu():
         except:
             self.text = "Ok, bye"
             return False
+
+    def bye(self, accept):
+        if not self.game_quit:
+            self.game_quit = True
+            self.game_accept = accept
+
+            self.text = arcade.Text(
+                "Great! I'll get you there right away." if accept else
+                "Alright then, good luck on your adventures.",
+                x=SCREEN_WIDTH // 6 + 24,
+                y=SCREEN_HEIGHT * 5 // 6 + 36,
+                color=arcade.color.WHITE,
+                font_size=14,
+                width=SCREEN_WIDTH * 2 // 3 - 48,
+                align="left",
+                multiline=True,
+                batch=self.batch
+            )
+
+            return (False, False)
+    
+        else:
+            return (True, self.game_accept)
 
     def draw(self):
         arcade.draw_rect_filled(

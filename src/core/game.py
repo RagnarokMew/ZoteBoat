@@ -97,11 +97,13 @@ class GameView(arcade.View):
             for spawn in self.scene["Npc Spawn"]:
                 # TODO: Get npc id based on npc spawn sprite
                 load_npc(
-                    id = "Example_Npc",
+                    id = "Example_MG",
                     scene = self.scene,
                     position = (spawn.center_x, spawn.center_y)
                 )
         except: pass
+
+        load_npc(id = "Example_MG", scene = self.scene, position = player_spawn[0])
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
@@ -237,7 +239,9 @@ class GameView(arcade.View):
                         content = load_dialogue(npc[0].id),
                         npc_name = npc[0].name,
                         npc_title = npc[0].title,
-                        before_shop_interaction = npc[0].has_shop
+                        before_shop_interaction = npc[0].has_shop,
+                        before_mg = npc[0].has_game,
+                        game_map = npc[0].game_map
                     )
                     self.player_interaction_state = P_DIALOGUE
 
@@ -255,9 +259,9 @@ class GameView(arcade.View):
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
             # But match case was introduced in Python 3.10
-            if (key == arcade.key.A) or \
-                (key == arcade.key.Z) or \
-                (key == arcade.key.X):
+            if (key == arcade.key.A or
+                key == arcade.key.Z or
+                key == arcade.key.X):
 
                 # NOTE: The current implementation is very ugly and should be refactored
                 # Currently it works the following way:
@@ -275,6 +279,14 @@ class GameView(arcade.View):
                             self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
                             self.currency_text.reset()
                             self.currency_text.update(0)
+                        elif self.active_menu.before_mg:
+                            state = self.active_menu.bye(accept = not (key == arcade.key.X))
+                            if (state[0]):
+                                new_map = self.active_menu.game_map
+                                self.active_menu = None
+                                self.player_interaction_state = P_GAMEPLAY
+                            if (state[1]):
+                                self.change_map(override = new_map)
                         else:
                             self.active_menu = None
                             self.player_interaction_state = P_GAMEPLAY
@@ -339,7 +351,7 @@ class GameView(arcade.View):
         )
 
         if loadzone_collision:
-            self.change_map(loadzone_collision)
+            self.change_map(sprites_coll = loadzone_collision)
 
         self.update_fade()
 
@@ -395,11 +407,11 @@ class GameView(arcade.View):
             self.setup()
 
     # scene change handler (set new map id)
-    def change_map(self, sprites_coll = None):
+    def change_map(self, sprites_coll = None, override = DEFAULT_MAP):
         if self.fade_out is None:
             self.fade_out = 0
             try:
                 self.map_id = sprites_coll[0].properties["map_id"]
             except:
-                self.map_id = DEFAULT_MAP
+                self.map_id = override
 

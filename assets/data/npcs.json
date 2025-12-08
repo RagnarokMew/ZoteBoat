@@ -3,6 +3,18 @@
 		"name": "NPC Name",
 		"title": "NPC Title",
 		"has_shop": true,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "stoneMid.png",
+		"scale": 1
+	},
+
+	"Example_MG": {
+		"name": "Michael",
+		"title": "parkour god",
+		"has_shop": false,
+		"has_game": true,
+		"game_map": "map_3",
 		"sprite_path": "stoneMid.png",
 		"scale": 1
 	}

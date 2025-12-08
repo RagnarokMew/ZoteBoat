@@ -36,7 +36,9 @@ def load_npc(id, scene, position):
             name = data[id]["name"],
             title = data[id]["title"],
             has_shop = data[id]["has_shop"],
-            )
+            has_game = data[id]["has_game"],
+            game_map = data[id]["game_map"]
+        )
     except Exception as e:
         npc = BaseNpc(scene)
         print(f"Error Load Npc: {e}")
