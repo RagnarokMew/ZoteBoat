@@ -6,7 +6,7 @@ from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
-from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn
+from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn, load_minigame
 
 class GameView(arcade.View):
 
@@ -25,6 +25,7 @@ class GameView(arcade.View):
 
         self.tile_map = None
         self.scene = None
+        self.minigame = None
 
         self.camera = None
         self.gui_camera = None
@@ -67,7 +68,9 @@ class GameView(arcade.View):
         self.scene["Load Zone"].enable_spatial_hashing()
         if "Wall Jump" in self.scene:
             self.scene["Wall Jump"].enable_spatial_hashing()
-
+        
+        self.player_stats.init_minigame(load_minigame(self.map_id))
+    
         player_spawn = load_spawn(self.map_id)
         if not player_spawn:
             print(f"\033[91mThe room you tried to enter does not exist :(\033[0m")
@@ -120,7 +123,7 @@ class GameView(arcade.View):
             f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
             x = 5,
             y = SCREEN_HEIGHT - 60,
-            duration=2
+            duration = 2
         )
         self.currency_text.duration = self.currency_text.trans_duration = 0
 
@@ -240,7 +243,7 @@ class GameView(arcade.View):
                         npc_name = npc[0].name,
                         npc_title = npc[0].title,
                         before_shop_interaction = npc[0].has_shop,
-                        before_mg = npc[0].has_game,
+                        before_game = npc[0].has_game,
                         game_map = npc[0].game_map
                     )
                     self.player_interaction_state = P_DIALOGUE
@@ -252,9 +255,8 @@ class GameView(arcade.View):
             if key == arcade.key.X:
                 self.player_sprite.attack()
 
-            if key == arcade.key.F5:
-                arcade.window_commands.close_window()
-                exit(0)
+            if key == arcade.key.C:
+                self.dash_pressed = True
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
@@ -279,7 +281,7 @@ class GameView(arcade.View):
                             self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
                             self.currency_text.reset()
                             self.currency_text.update(0)
-                        elif self.active_menu.before_mg:
+                        elif self.active_menu.before_game:
                             state = self.active_menu.bye(accept = not (key == arcade.key.X))
                             if (state[0]):
                                 new_map = self.active_menu.game_map
@@ -307,15 +309,13 @@ class GameView(arcade.View):
             elif key == arcade.key.DOWN:
                 self.active_menu.next_item()
 
-        if key == arcade.key.C and self.player_interaction_state == P_GAMEPLAY:
-                self.dash_pressed = True
-
         if key == arcade.key.F5:
             arcade.window_commands.close_window()
 
     def on_update(self, delta_time):
         self.physics_engine.update()
         px_upd = self.player_sprite.update(delta_time)
+        self.player_stats.update(delta_time)
 
         # NOTE: New left-right movement handler moved here
         # to fix all movement related bugs

@@ -32,12 +32,12 @@ class DialogueMenu():
     def __init__(self, id,
             content = ["This is a dialogue text", "Another text"],
             npc_name = "NPC_NAME", npc_title = "NPC_TITLE",
-            before_shop_interaction = False, before_mg = False, game_map = None
+            before_shop_interaction = False, before_game = False, game_map = None
         ):
         self.npc_id = id
         self.npc_name = npc_name
         self.before_shop_interation = before_shop_interaction
-        self.before_mg = before_mg
+        self.before_game = before_game
         self.game_map = game_map
         self.game_quit = False
         self.content = content

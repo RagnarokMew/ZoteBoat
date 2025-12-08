@@ -1,4 +1,5 @@
 from core.constants import P_ATTACK_DAMAGE, P_HEALTH, P_INV_TIME
+import time
 
 class PlayerStats():
 
@@ -19,12 +20,25 @@ class PlayerStats():
             "Mask_4": False,
             "Nail_Upgrade_Kit_1": False,
             "Nail_Upgrade_Kit_2": False, # Each nail upgrade x2 DMG
-            "Wall_Jump": False,
-            "Double_Jump": False,
-            "Dash": False
+            "Wall_Jump": True,
+            "Double_Jump": True,
+            "Dash": True
         }
-        # TODO: Add other player related values
-        # (e.g: has_double_jump, has_wall_jump, ...)
+        
+        self.parkour_start = None
+        self.parkour_break = False  # autosave: see if player quit before finishing (shown on LB)
+        self.parkour_score = {
+            "hrs": 0,
+            "min": 0,
+            "sec": 0
+        }
+
+        self.arena_start = False
+        self.arena_timer = 0
+        self.arena_score = {
+            "kill": 0,
+            "time": 0
+        }
 
     def increase_max_hp(self, amount):
         self.max_health += amount
@@ -38,4 +52,29 @@ class PlayerStats():
 
     def mark_locked(self, upgrade):
         self.unlocks[upgrade] = False
+    
+    def init_minigame(self, minigame):
+        if minigame == "MG_1" and self.parkour_start is None:
+            self.parkour_start = time.time()
+        
+        if minigame == "MG_2":
+            self.arena_start = True
+            self.arena_timer = 60
+    
+    def end_parkour(self):
+        if self.parkour_start is None:
+            print(f"\033[91mParkour not started!\033[0m")
+            return
 
+        parkour_end = time.gmtime(time.time() - self.parkour_start)
+
+        self.parkour_score["hrs"] = parkour_end.tm_hour
+        self.parkour_score["min"] = parkour_end.tm_min
+        self.parkour_score["sec"] = parkour_end.tm_sec
+
+        self.parkour_start = None
+
+    def update(self, delta_time):
+        self.arena_timer = max(0, self.arena_timer - delta_time)
+        if self.arena_start and self.arena_timer <= 0:
+            self.arena_start = False

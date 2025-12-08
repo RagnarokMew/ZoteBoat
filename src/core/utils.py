@@ -44,7 +44,7 @@ def load_npc(id, scene, position):
         print(f"Error Load Npc: {e}")
     finally:
         scene.add_sprite("NPC", npc)
-        print(position)
+        print(f"{id}: {position}")
 
 def load_dialogue(id):
     try:
@@ -124,4 +124,15 @@ def load_enemy(id, scene, position, target = None):
         )
     finally:
         scene.add_sprite("Enemy", npc)
+
+def load_minigame(id):
+    try:
+        with open("../assets/data/maps.json", "r") as file:
+            data = json.load(file)
+        
+        print(data[id]["minigame"])
+        return data[id]["minigame"]
+
+    except:
+        return None
 
