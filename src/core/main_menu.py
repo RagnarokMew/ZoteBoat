@@ -1,6 +1,7 @@
 import arcade
 import arcade.gui
 from arcade.draw import arc
+import json
 
 from core.game import GameView
 from core.constants import SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT
@@ -75,12 +76,17 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     def __init__(self):
         super().__init__(size_hint=(1, 1))
 
+        self.setup()
+
         frame = self.add(arcade.gui.UIAnchorLayout(width=1000, height=520, size_hint=None))
         frame.with_padding(all=30)
 
         frame.with_background(
             color=arcade.color.GHOST_WHITE
         )
+
+        self.minigame = [ "Arena", "Parkour" ]
+        self.active_index = 0
 
         title_label = arcade.gui.UILabel(
             text = "Leaderboard",
@@ -90,8 +96,16 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
             text_color=arcade.color.BLACK
         )
 
-        widget_layout = arcade.gui.UIGridLayout(
-            row_count=3,
+        self.minigame_label = arcade.gui.UILabel(
+            text = self.minigame[self.active_index],
+            align="center",
+            font_size=18,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        self.widget_layout = arcade.gui.UIGridLayout(
+            row_count=4,
             column_count=2,
             horizontal_spacing=167,
             vertical_spacing=25
@@ -103,8 +117,8 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         change_button.on_click = self.on_click_change_button
 
         # NOTE: Should hold at most 10 values
-        player_names = arcade.gui.UILabel(
-            text = "placeholder\nplaceholder",
+        self.player_names = arcade.gui.UILabel(
+            text = self.arena_names,
             align="center",
             font_size=15,
             multiline=True,
@@ -112,27 +126,79 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         )
 
         # NOTE: Should hold at most 10 values
-        player_scores = arcade.gui.UILabel(
-            text = "0\n0",
+        self.player_scores = arcade.gui.UILabel(
+            text = self.arena_scores,
             align="center",
             font_size=15,
             multiline=True,
+            width=1000,
             text_color=arcade.color.BLACK
         )
 
-        widget_layout.add(title_label, column_span=2)
-        widget_layout.add(player_names, row = 1, column=0)
-        widget_layout.add(player_scores, row = 1, column=1)
-        widget_layout.add(back_button, row=2)
-        widget_layout.add(change_button, row=2, column=1)
-        frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
+        self.widget_layout.add(title_label, column_span=2)
+        self.widget_layout.add(self.minigame_label, row=1, column_span=2)
+        self.widget_layout.add(self.player_names, row = 2, column=0)
+        self.widget_layout.add(self.player_scores, row = 2, column=1)
+        self.widget_layout.add(back_button, row=3)
+        self.widget_layout.add(change_button, row=3, column=1)
+        frame.add(child=self.widget_layout, anchor_x="center_x", anchor_y="top")
 
     def on_click_back_button(self, event):
         self.parent.remove(self)
 
     def on_click_change_button(self, event):
-        # TODO: Implement changing minigames
-        pass
+        self.active_index = (self.active_index + 1) % 2
+
+        self.minigame_label.text = self.minigame[self.active_index]
+
+        if (self.active_index == 0):
+            self.player_names.text = self.arena_names
+            self.player_scores.text = self.arena_scores
+        else:
+            self.player_names.text = self.parkour_names
+            self.player_scores.text = self.parkour_scores
+
+        self.player_names.fit_content()
+        self.player_scores.fit_content()
+        self.widget_layout.do_layout()
+        # TODO: change players and score text
+
+    def setup(self):
+        try:
+            with open("../saves/scores.json") as file:
+                data = json.load(file)
+
+            arena_list = []
+            parkour_list = []
+
+            for user in data:
+                arena_list.append([user, data[user]["arena"]])
+                parkour_list.append([user, data[user]["parkour"]])
+
+            arena_list.sort(key = lambda val: (-val[1][0], val[1][1]))
+
+            arena_names_list = [ name[0] for name in arena_list ]
+            arena_scores_list = []
+
+            for scores in arena_list:
+                arena_scores_list.append(f"{scores[1][0]} kills, {scores[1][1]}s")
+
+            self.arena_names = "\n".join(arena_names_list)
+            self.arena_scores = "\n".join(arena_scores_list)
+
+            parkour_list.sort(key = lambda val: (val[1][0], val[1][1], val[1][2]))
+
+            names_list = [ name[0] for name in parkour_list ]
+            scores_list = []
+
+            for scores in parkour_list:
+                scores_list.append(f"{scores[1][0]}h {scores[1][1]}min {scores[1][2]}s")
+
+            self.parkour_names = "\n".join(names_list)
+            self.parkour_scores = "\n".join(scores_list)
+
+        except Exception as e:
+            print(f"Exception loading user scores: {e}")
 
 class CreditsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 
