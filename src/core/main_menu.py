@@ -14,17 +14,19 @@ class MenuView(arcade.View):
 
         play_game_button = arcade.gui.UIFlatButton(text = "Play")
         show_credits_button = arcade.gui.UIFlatButton(text = "Credits")
+        leader_board_button = arcade.gui.UIFlatButton(text = "Leaderboard")
         options_button = arcade.gui.UIFlatButton(text = "Options")
         quit_button = arcade.gui.UIFlatButton(text = "Quit")
 
         self.grid = arcade.gui.UIGridLayout(
-            column_count = 1, row_count=4, horizontal_spacing=20, vertical_spacing=20
+            column_count = 1, row_count=5, horizontal_spacing=20, vertical_spacing=20
         )
 
         self.grid.add(play_game_button, row = 0)
-        self.grid.add(show_credits_button, row = 1)
-        self.grid.add(options_button, row = 2)
-        self.grid.add(quit_button, row = 3)
+        self.grid.add(leader_board_button, row = 1)
+        self.grid.add(show_credits_button, row = 2)
+        self.grid.add(options_button, row = 3)
+        self.grid.add(quit_button, row = 4)
 
         self.anchor = self.ui_manager.add(arcade.gui.UIAnchorLayout())
 
@@ -34,6 +36,11 @@ class MenuView(arcade.View):
             anchor_y="center",
             child=self.grid
         )
+
+        @leader_board_button.event("on_click")
+        def on_click_leaderboard(event):
+            leaderboard_menu = LeaderBoard()
+            self.ui_manager.add(leaderboard_menu, layer=1)
 
         @quit_button.event("on_click")
         def on_click_quit(event):
@@ -62,6 +69,70 @@ class MenuView(arcade.View):
         self.clear()
 
         self.ui_manager.draw()
+
+class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
+
+    def __init__(self):
+        super().__init__(size_hint=(1, 1))
+
+        frame = self.add(arcade.gui.UIAnchorLayout(width=1000, height=520, size_hint=None))
+        frame.with_padding(all=30)
+
+        frame.with_background(
+            color=arcade.color.GHOST_WHITE
+        )
+
+        title_label = arcade.gui.UILabel(
+            text = "Leaderboard",
+            align="center",
+            font_size=20,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        widget_layout = arcade.gui.UIGridLayout(
+            row_count=3,
+            column_count=2,
+            horizontal_spacing=167,
+            vertical_spacing=25
+        )
+
+        back_button = arcade.gui.UIFlatButton(text = "Back")
+        back_button.on_click = self.on_click_back_button
+        change_button = arcade.gui.UIFlatButton(text = "Change Minigame")
+        change_button.on_click = self.on_click_change_button
+
+        # NOTE: Should hold at most 10 values
+        player_names = arcade.gui.UILabel(
+            text = "placeholder\nplaceholder",
+            align="center",
+            font_size=15,
+            multiline=True,
+            text_color=arcade.color.BLACK
+        )
+
+        # NOTE: Should hold at most 10 values
+        player_scores = arcade.gui.UILabel(
+            text = "0\n0",
+            align="center",
+            font_size=15,
+            multiline=True,
+            text_color=arcade.color.BLACK
+        )
+
+        widget_layout.add(title_label, column_span=2)
+        widget_layout.add(player_names, row = 1, column=0)
+        widget_layout.add(player_scores, row = 1, column=1)
+        widget_layout.add(back_button, row=2)
+        widget_layout.add(change_button, row=2, column=1)
+        frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
+
+    def on_click_back_button(self, event):
+        self.parent.remove(self)
+
+    def on_click_change_button(self, event):
+        # TODO: Implement changing minigames
+        pass
 
 class CreditsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 
