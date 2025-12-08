@@ -1,0 +1,20 @@
+{
+    "user_1": {
+        "mask_1": true,
+        "mask_2": false,
+        "mask_3": false,
+        "mask_4": false,
+
+        "nail_1": true,
+        "nail_2": false,
+
+        "wall": true,
+        "dblj": false,
+        "dash": false,
+
+        "curr_1": 26,
+        "curr_2": 7,
+        "curr_3": 13,
+        "curr_4": 50
+    }
+}
