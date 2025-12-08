@@ -45,6 +45,11 @@ class MenuView(arcade.View):
             game_view.setup()
             self.window.show_view(game_view)
 
+        @show_credits_button.event("on_click")
+        def on_click_credits(event):
+            credits_menu = CreditsMenu()
+            self.ui_manager.add(credits_menu, layer = 1)
+
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLUE_BELL)
 
@@ -58,3 +63,34 @@ class MenuView(arcade.View):
 
         self.ui_manager.draw()
 
+class CreditsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
+
+    def __init__(self):
+        super().__init__(size_hint=(1, 1))
+
+        frame = self.add(arcade.gui.UIAnchorLayout(width = 1000, height=520, size_hint=None))
+        frame.with_padding(all=30)
+
+        frame.with_background(
+            color=arcade.color.GHOST_WHITE
+        )
+
+        title_label = arcade.gui.UILabel(
+            text="Credits",
+            align="center",
+            font_size=20,
+            multiline=False,
+            text_color=arcade.color.BLACK
+        )
+
+        back_button = arcade.gui.UIFlatButton(text = "Back")
+        back_button.on_click = self.on_click_back_button
+
+        widget_layout = arcade.gui.UIBoxLayout(align="left", space_between=10)
+        widget_layout.add(title_label)
+        widget_layout.add(back_button)
+
+        frame.add(child=widget_layout, anchor_x="center_x", anchor_y="top")
+
+    def on_click_back_button(self, event):
+        self.parent.remove(self)
