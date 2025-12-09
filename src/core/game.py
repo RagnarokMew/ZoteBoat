@@ -13,6 +13,8 @@ class GameView(arcade.View):
     def __init__(self, options):
         super().__init__()
 
+        # Options is saved to bass it back to the main menu
+        self.options = options
         self.show_enemy_hp = options["show_enemy_hp"]
         self.username = options["username"]
 
@@ -249,8 +251,9 @@ class GameView(arcade.View):
                 self.player_sprite.attack()
 
             if key == arcade.key.F5:
-                arcade.window_commands.close_window()
-                exit(0)
+                from core.main_menu import MenuView
+                menu_view = MenuView(self.options)
+                self.window.show_view(menu_view)
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
@@ -299,7 +302,9 @@ class GameView(arcade.View):
                 self.dash_pressed = True
 
         if key == arcade.key.F5:
-            arcade.window_commands.close_window()
+            from core.main_menu import MenuView
+            menu_view = MenuView(self.options)
+            self.window.show_view(menu_view)
 
     def on_update(self, delta_time):
         self.physics_engine.update()
