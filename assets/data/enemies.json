@@ -166,5 +166,33 @@
 		"frame_duration": 80,
 		"speed": 2,
 		"wander_range": 200
+	},
+	"HuskBullyIdle": {
+		"type": "IdleGround",
+		"sprite_path": "../assets/sprites/huskbully/",
+		"scale": 0.7,
+		"max_health": 10,
+		"damage": 1,
+		"drop_curr1": 10,
+		"drop_curr2": 10,
+		"drop_curr3": 10,
+		"drop_curr4": 10,
+		"frame_duration": 80,
+		"speed": 2,
+		"wander_range": 200
+	},
+	"HuskBullyChaser": {
+		"type": "ChaserGround",
+		"sprite_path": "../assets/sprites/huskbully/",
+		"scale": 0.7,
+		"max_health": 10,
+		"damage": 1,
+		"drop_curr1": 10,
+		"drop_curr2": 10,
+		"drop_curr3": 10,
+		"drop_curr4": 10,
+		"frame_duration": 80,
+		"speed": 2,
+		"wander_range": 200
 	}
 }
