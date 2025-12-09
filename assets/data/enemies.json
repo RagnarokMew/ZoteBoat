@@ -110,5 +110,33 @@
 		"frame_duration": 90,
 		"speed": 3,
 		"wander_range": 225
+	},
+	"BuzzerIdle": {
+		"type": "IdleFlying",
+		"sprite_path": "../assets/sprites/buzzer/",
+		"scale": 1,
+		"max_health": 6,
+		"damage": 1,
+		"drop_curr1": 4,
+		"drop_curr2": 0,
+		"drop_curr3": 0,
+		"drop_curr4": 0,
+		"frame_duration": 80,
+		"speed": 4,
+		"wander_range": 200
+	},
+	"BuzzerChaser": {
+		"type": "ChaserFlying",
+		"sprite_path": "../assets/sprites/buzzer/",
+		"scale": 1,
+		"max_health": 6,
+		"damage": 1,
+		"drop_curr1": 4,
+		"drop_curr2": 0,
+		"drop_curr3": 0,
+		"drop_curr4": 0,
+		"frame_duration": 80,
+		"speed": 4,
+		"wander_range": 200
 	}
 }
