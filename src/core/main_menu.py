@@ -3,12 +3,11 @@ import arcade.gui
 from arcade.draw import arc
 import json
 
-from core.game import GameView
 from core.constants import SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class MenuView(arcade.View):
 
-    def __init__(self):
+    def __init__(self, options = None):
         super().__init__()
 
         self.ui_manager = arcade.gui.UIManager()
@@ -40,10 +39,13 @@ class MenuView(arcade.View):
             child=self.grid
         )
 
-        self.options = {
-            "username": "default",
-            "show_enemy_hp": False
-        }
+        if options == None:
+            self.options = {
+                "username": "default",
+                "show_enemy_hp": False
+            }
+        else:
+            self.options = options
 
         @options_button.event("on_click")
         def on_click_options(event):
@@ -61,6 +63,8 @@ class MenuView(arcade.View):
 
         @play_game_button.event("on_click")
         def on_click_play(event):
+            from core.game import GameView
+
             game_view = GameView(self.options)
             game_view.setup()
             self.window.show_view(game_view)
