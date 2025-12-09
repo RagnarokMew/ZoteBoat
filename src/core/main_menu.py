@@ -38,6 +38,16 @@ class MenuView(arcade.View):
             child=self.grid
         )
 
+        self.options = {
+            "username": "username",
+            "show_enemy_hp": False
+        }
+
+        @options_button.event("on_click")
+        def on_click_options(event):
+            options_menu = OptionsMenu(self.options)
+            self.ui_manager.add(options_menu, layer=1)
+
         @leader_board_button.event("on_click")
         def on_click_leaderboard(event):
             leaderboard_menu = LeaderBoard()
@@ -70,6 +80,40 @@ class MenuView(arcade.View):
         self.clear()
 
         self.ui_manager.draw()
+
+class OptionsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
+
+    def __init__(self, options):
+        super().__init__(size_hint=(1, 1))
+
+        self.options = options
+
+        frame = self.add(arcade.gui.UIAnchorLayout(width=1000, height=520, size_hint=None))
+        frame.with_padding(all=30)
+
+        frame.with_background(
+            color=arcade.color.GHOST_WHITE
+        )
+
+        back_button = arcade.gui.UIFlatButton(text = "Back", width=200)
+        back_button.on_click = self.on_click_back_button
+
+        widget_layout = arcade.gui.UIGridLayout(
+            row_count=3,
+            column_count=3
+        )
+
+        widget_layout.add(back_button, row = 2, column_span=3)
+
+        frame.add(
+            child=widget_layout,
+            anchor_x="center_x",
+            anchor_y="center_y"
+        )
+
+    def on_click_back_button(self, event):
+        self.parent.remove(self)
+        # TODO: save settings 
 
 class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 
