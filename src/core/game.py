@@ -10,11 +10,11 @@ from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, loa
 
 class GameView(arcade.View):
 
-    def __init__(self):
+    def __init__(self, options):
         super().__init__()
 
-        # Temp Value for setting to show enemy hp:
-        self.show_enemy_hp = True
+        self.show_enemy_hp = options["show_enemy_hp"]
+        self.username = options["username"]
 
         self.physics_engine = None
 

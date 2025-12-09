@@ -23,6 +23,8 @@ class MenuView(arcade.View):
             column_count = 1, row_count=5, horizontal_spacing=20, vertical_spacing=20
         )
 
+        self.background = arcade.load_texture("../assets/sprites/menu.jpg")
+
         self.grid.add(play_game_button, row = 0)
         self.grid.add(leader_board_button, row = 1)
         self.grid.add(show_credits_button, row = 2)
@@ -59,7 +61,7 @@ class MenuView(arcade.View):
 
         @play_game_button.event("on_click")
         def on_click_play(event):
-            game_view = GameView()
+            game_view = GameView(self.options)
             game_view.setup()
             self.window.show_view(game_view)
 
@@ -78,6 +80,11 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         self.clear()
+
+        arcade.draw_texture_rect(
+            self.background,
+            arcade.LBWH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
 
         self.ui_manager.draw()
 
