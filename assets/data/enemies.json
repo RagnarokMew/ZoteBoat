@@ -138,5 +138,33 @@
 		"frame_duration": 80,
 		"speed": 4,
 		"wander_range": 200
+	},
+	"HuskIdle": {
+		"type": "IdleGround",
+		"sprite_path": "../assets/sprites/husk/",
+		"scale": 0.7,
+		"max_health": 5,
+		"damage": 1,
+		"drop_curr1": 10,
+		"drop_curr2": 10,
+		"drop_curr3": 10,
+		"drop_curr4": 10,
+		"frame_duration": 80,
+		"speed": 2,
+		"wander_range": 200
+	},
+	"HuskChaser": {
+		"type": "ChaserGround",
+		"sprite_path": "../assets/sprites/husk/",
+		"scale": 0.7,
+		"max_health": 5,
+		"damage": 1,
+		"drop_curr1": 10,
+		"drop_curr2": 10,
+		"drop_curr3": 10,
+		"drop_curr4": 10,
+		"frame_duration": 80,
+		"speed": 2,
+		"wander_range": 200
 	}
 }
