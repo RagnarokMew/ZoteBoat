@@ -39,7 +39,7 @@ class MenuView(arcade.View):
         )
 
         self.options = {
-            "username": "username",
+            "username": "default",
             "show_enemy_hp": False
         }
 
@@ -86,24 +86,87 @@ class OptionsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     def __init__(self, options):
         super().__init__(size_hint=(1, 1))
 
-        self.options = options
+        on_texture = arcade.load_texture(
+            ":resources:gui_basic_assets/simple_checkbox/circle_on.png"
+        )
+        off_texture = arcade.load_texture(
+            ":resources:gui_basic_assets/simple_checkbox/circle_off.png"
+        )
 
         frame = self.add(arcade.gui.UIAnchorLayout(width=1000, height=520, size_hint=None))
         frame.with_padding(all=30)
 
         frame.with_background(
-            color=arcade.color.GHOST_WHITE
+            color=arcade.color.GRAY
         )
 
         back_button = arcade.gui.UIFlatButton(text = "Back", width=200)
         back_button.on_click = self.on_click_back_button
 
-        widget_layout = arcade.gui.UIGridLayout(
-            row_count=3,
-            column_count=3
+        self.options = options
+
+        title_label = arcade.gui.UILabel(
+            text="Options",
+            text_color=arcade.color.BLACK,
+            font_size=20
         )
 
-        widget_layout.add(back_button, row = 2, column_span=3)
+        username_label = arcade.gui.UILabel(
+            text="Username: ",
+            text_color=arcade.color.BLACK,
+            font_size=15
+        )
+        show_enemy_hp_label = arcade.gui.UILabel(
+            text = "Show Enemy Hp",
+            text_color=arcade.color.BLACK,
+            font_size=15
+        )
+
+        self.show_enemy_hp = arcade.gui.UITextureToggle(
+            on_texture=on_texture,
+            off_texture=off_texture,
+            width=25,
+            height=25,
+            value=self.options["show_enemy_hp"]
+        )
+
+
+        input_style = arcade.gui.widgets.text.UIInputTextStyle(
+            arcade.color.GHOST_WHITE,
+            arcade.color.BLACK
+        )
+
+        dict_style = {
+            "disabled": input_style,
+            "invalid": input_style,
+            "hover": input_style,
+            "normal": input_style,
+            "press": input_style
+        }
+
+        self.username = arcade.gui.UIInputText(
+            text = self.options["username"],
+            text_color=arcade.color.BLACK,
+            align = "center",
+            multiline=False,
+            width=200,
+            style = dict_style,
+            caret_color=arcade.color.BLACK
+        )
+
+        widget_layout = arcade.gui.UIGridLayout(
+            row_count=4,
+            column_count=3,
+            vertical_spacing=25,
+            horizontal_spacing=25
+        )
+
+        widget_layout.add(title_label, column_span=3)
+        widget_layout.add(username_label, row = 1)
+        widget_layout.add(self.username, row = 1, column=1, column_span=2)
+        widget_layout.add(show_enemy_hp_label, row = 2)
+        widget_layout.add(self.show_enemy_hp, row = 2, column=1)
+        widget_layout.add(back_button, row = 3, column_span=3)
 
         frame.add(
             child=widget_layout,
@@ -113,7 +176,9 @@ class OptionsMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 
     def on_click_back_button(self, event):
         self.parent.remove(self)
-        # TODO: save settings 
+
+        self.options["username"] = self.username.text
+        self.options["show_enemy_hp"] = self.show_enemy_hp.value
 
 class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
 
@@ -220,11 +285,13 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
                 arena_list.sort(key = lambda val: (-val[1][0], val[1][1]))
                 arena_list = arena_list[:10]
 
-                arena_names_list = [ name[0] for name in arena_list ]
+                arena_names_list = []
                 arena_scores_list = []
 
                 for scores in arena_list:
-                    arena_scores_list.append(f"{scores[1][0]} kills, {scores[1][1]}s")
+                    if scores[1][0] != -1:
+                        arena_names_list.append(scores[0])
+                        arena_scores_list.append(f"{scores[1][0]} kills, {scores[1][1]}s")
 
                 self.arena_names = "\n".join(arena_names_list)
                 self.arena_scores = "\n".join(arena_scores_list)
@@ -238,11 +305,13 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
                 parkour_list.sort(key = lambda val: (val[1][0], val[1][1], val[1][2]))
                 parkour_list = parkour_list[:10]
 
-                names_list = [ name[0] for name in parkour_list ]
+                names_list = []
                 scores_list = []
 
                 for scores in parkour_list:
-                    scores_list.append(f"{scores[1][0]}h {scores[1][1]}min {scores[1][2]}s")
+                    if scores[1][0] != -1:
+                        names_list.append(scores[0])
+                        scores_list.append(f"{scores[1][0]}h {scores[1][1]}min {scores[1][2]}s")
 
                 self.parkour_names = "\n".join(names_list)
                 self.parkour_scores = "\n".join(scores_list)
