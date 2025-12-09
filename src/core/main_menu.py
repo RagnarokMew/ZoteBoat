@@ -13,11 +13,11 @@ class MenuView(arcade.View):
 
         self.ui_manager = arcade.gui.UIManager()
 
-        play_game_button = arcade.gui.UIFlatButton(text = "Play")
-        show_credits_button = arcade.gui.UIFlatButton(text = "Credits")
-        leader_board_button = arcade.gui.UIFlatButton(text = "Leaderboard")
-        options_button = arcade.gui.UIFlatButton(text = "Options")
-        quit_button = arcade.gui.UIFlatButton(text = "Quit")
+        play_game_button = arcade.gui.UIFlatButton(text = "Play", width=200)
+        show_credits_button = arcade.gui.UIFlatButton(text = "Credits", width=200)
+        leader_board_button = arcade.gui.UIFlatButton(text = "Leaderboard", width = 200)
+        options_button = arcade.gui.UIFlatButton(text = "Options", width=200)
+        quit_button = arcade.gui.UIFlatButton(text = "Quit", width=200)
 
         self.grid = arcade.gui.UIGridLayout(
             column_count = 1, row_count=5, horizontal_spacing=20, vertical_spacing=20
@@ -111,9 +111,9 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
             vertical_spacing=25
         )
 
-        back_button = arcade.gui.UIFlatButton(text = "Back")
+        back_button = arcade.gui.UIFlatButton(text = "Back", width=200)
         back_button.on_click = self.on_click_back_button
-        change_button = arcade.gui.UIFlatButton(text = "Change Minigame")
+        change_button = arcade.gui.UIFlatButton(text = "Change Minigame", width=200)
         change_button.on_click = self.on_click_change_button
 
         # NOTE: Should hold at most 10 values
@@ -131,7 +131,6 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
             align="center",
             font_size=15,
             multiline=True,
-            width=1000,
             text_color=arcade.color.BLACK
         )
 
@@ -158,10 +157,8 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
             self.player_names.text = self.parkour_names
             self.player_scores.text = self.parkour_scores
 
-        self.player_names.fit_content()
         self.player_scores.fit_content()
         self.widget_layout.do_layout()
-        # TODO: change players and score text
 
     def setup(self):
         try:
