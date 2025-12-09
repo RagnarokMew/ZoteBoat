@@ -7,5 +7,11 @@
 
 	"Example_MG": [
 		"Hey there! Would you like to try my platforming challenge?\n(Z = accept, X = cancel)"
+	],
+	"Example_Scores": [
+		"You know... there were other adventurers who attempted this challenge before you.",
+		"Not all of them managed to get out, though.",
+		"Oh, you want to see your own score? Hmm, let's see...",
+		"NEW_HI_TEXT Your high-score is PARKOUR_TIME_HI; your last attempt was PARKOUR_TIME_CUR."
 	]
 }

@@ -38,3 +38,9 @@ PLAYER_JUMP_SPEED = 20
 # --- Maps ---
 DEFAULT_MAP = "map_1"
 DEFAULT_SPAWN = (200, 440)
+
+# --- Data Operations ---
+OP_LOAD_DT = 1
+OP_SAVE_DT = 2
+OP_LOAD_SC = 3
+OP_SAVE_SC = 4

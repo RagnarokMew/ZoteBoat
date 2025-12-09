@@ -11,10 +11,19 @@
 
 	"Example_MG": {
 		"name": "Michael",
-		"title": "parkour god",
+		"title": "Platforming master",
 		"has_shop": false,
 		"has_game": true,
 		"game_map": "map_3",
+		"sprite_path": "stoneMid.png",
+		"scale": 1
+	},
+	"Example_Scores": {
+		"name": "John",
+		"title": "Friendly foe",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
 		"sprite_path": "stoneMid.png",
 		"scale": 1
 	}

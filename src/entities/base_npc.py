@@ -109,12 +109,39 @@ class DialogueMenu():
             batch=self.batch
         )
 
-        self.next()
+        self.next(stats = None)
 
-    def next(self):
+    def next(self, stats):
         try:
+            next_text = self.content[self.text_index]
+
+            if stats is not None:
+                next_text = next_text.replace("NEW_HI_TEXT",
+                "Wow, that's even better than before!" if stats.parkour_break or stats.arena_break
+                else "Well, you've had a great performance, but maybe you could do better next time.")
+
+                kill_cur = stats.arena_score["kill"]
+                time_cur = stats.arena_score["time"]
+                kill_hi = stats.arena_hiscore["kill"]
+                time_hi = stats.arena_hiscore["time"]
+
+                next_text = next_text.replace("ARENA_KILL_CUR", f"{kill_cur}")
+                next_text = next_text.replace("ARENA_TIME_CUR", f"{time_cur}")
+                next_text = next_text.replace("ARENA_KILL_HI", f"{kill_hi}")
+                next_text = next_text.replace("ARENA_TIME_HI", f"{time_hi}")
+
+                hrs_cur = stats.parkour_score["hrs"]
+                min_cur = stats.parkour_score["min"]
+                sec_cur = stats.parkour_score["sec"]
+                hrs_hi = stats.parkour_hiscore["hrs"]
+                min_hi = stats.parkour_hiscore["min"]
+                sec_hi = stats.parkour_hiscore["min"]
+
+                next_text = next_text.replace("PARKOUR_TIME_HI", f"{hrs_hi}:{min_hi}:{sec_hi}")
+                next_text = next_text.replace("PARKOUR_TIME_CUR", f"{hrs_cur}:{min_cur}:{sec_cur}")
+
             self.text = arcade.Text(
-                self.content[self.text_index],
+                next_text,
                 x=SCREEN_WIDTH // 6 + 24,
                 y=SCREEN_HEIGHT * 5 // 6 + 36,
                 color=arcade.color.WHITE,
