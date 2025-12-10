@@ -1,26 +1,59 @@
 import arcade
 from pyglet.graphics import Batch
-from core.constants import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
+from core.constants import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH, P_DIALOGUE, P_SHOP
 
 class BaseNpc(arcade.Sprite):
-    def __init__(self, scene, id, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title", has_shop=False):
+    def __init__(
+        self, scene, id = "default", sprite_path = "../assets/sprites/npc/flav0_guide.png",
+        alt_sprite = None, anim = False, position = (128, 128), scale = 1,
+        name = "NPC", title = "Title", has_shop = False, has_game = False, game_map = None
+    ):
         super().__init__(
             sprite_path,
             scale=scale
         )
 
         self.id = id
+        self.scene = scene
         self.name = name
         self.title = title
+
         self.has_shop = has_shop
-        self.scene = scene
+        self.has_game = has_game
+        self.game_map = game_map
+
+        self.anim = anim
+        self.active = False
+        try:
+            self.sprites = [self.texture, arcade.load_texture(alt_sprite)]
+            self.anim_timer = 0
+            self.anim_frame = 0
+            self.has_alt = True
+        except:
+            self.has_alt = False
+
         self.center_x, self.center_y = position
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self, scene["Platforms"], GRAVITY
         )
 
-    def update(self, delta_time):
+    def update(self, delta_time, curr_state):
         self.physics_engine.update()
+
+        if self.has_alt:
+            if self.anim:
+                self.anim_timer += delta_time
+                if self.anim_timer * 1000 >= 200:
+                    self.anim_timer = 0
+                    self.anim_frame = 1 - self.anim_frame
+                    self.texture = self.sprites[self.anim_frame]
+            elif self.active and (curr_state == P_DIALOGUE or curr_state == P_SHOP):
+                self.texture = self.sprites[1]
+            else:
+                self.texture = self.sprites[0]
+    
+    def set_active(self, who = None):
+        self.active = (who == self)
 
 class DialogueMenu():
     def __init__(self,

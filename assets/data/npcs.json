@@ -1,9 +1,123 @@
 {
-	"Example_Npc": {
-		"name": "NPC Name",
-		"title": "NPC Title",
+	"flav0_guide": {
+		"name": "Watcher Gilbert",
+		"title": "Hero seeker",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "flav0_guide.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
+	},
+	"flav0_sleepy": {
+		"name": "Gertie",
+		"title": "Weary adventurer",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "flav0_sleepy_0.png",
+		"alt_sprite": "flav0_sleepy_1.png",
+		"anim": false,
+		"scale": 0.5
+	},
+	"flav1_sit": {
+		"name": "Berthold",
+		"title": "The Iron Mountain",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "flav1_sit_0.png",
+		"alt_sprite": "flav1_sit_1.png",
+		"anim": false,
+		"scale": 0.5
+	},
+	"flav2_scheming": {
+		"name": "Blind Balor",
+		"title": "Aging fool",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "flav2_scheming.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
+	},
+	"lb1_friend": {
+		"name": "Bright-eyed Esther",
+		"title": "Friendly foe",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "lb1_friend.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
+	},
+	"lb2_tired": {
+		"name": "Tiso",
+		"title": "Exhausted gladiator",
+		"has_shop": false,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "lb2_tired.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
+	},
+	"mg1_challenger": {
+		"name": "Nuf the Nimble",
+		"title": "Faraway speedster",
+		"has_shop": false,
+		"has_game": true,
+		"game_map": "parkour_01",
+		"sprite_path": "mg1_challenger_0.png",
+		"alt_sprite": "mg1_challenger_1.png",
+		"anim": true,
+		"scale": 0.5
+	},
+	"mg2_guard": {
+		"name": "Ser Yvar",
+		"title": "Exalted champion",
+		"has_shop": false,
+		"has_game": true,
+		"game_map": "arena_01",
+		"sprite_path": "mg2_guard.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
+	},
+	"shop1_artisan": {
+		"name": "El Arano",
+		"title": "Mask artisan",
 		"has_shop": true,
-		"sprite_path": "stoneMid.png",
-		"scale": 1
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "shop1_artisan_0.png",
+		"alt_sprite": "shop1_artisan_1.png",
+		"anim": true,
+		"scale": 0.2
+	},
+	"shop2_warrior": {
+		"name": "Courageous Colewald",
+		"title": "Ancient Nailmaster",
+		"has_shop": true,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "shop2_warrior.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
+	},
+	"shop3_trader": {
+		"name": "Dorofey",
+		"title": "Travelling trader",
+		"has_shop": true,
+		"has_game": false,
+		"game_map": "",
+		"sprite_path": "shop3_trader.png",
+		"alt_sprite": "",
+		"anim": false,
+		"scale": 0.5
 	}
 }

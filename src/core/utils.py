@@ -40,7 +40,7 @@ def load_bg(id, curr_bg):
 
 def load_npc(id, scene, position):
     try:
-        base_path = "../assets/sprites/"
+        base_path = "../assets/sprites/npc/"
         with open("../assets/data/npcs.json", "r") as file:
             data = json.load(file)
 
@@ -48,18 +48,22 @@ def load_npc(id, scene, position):
             scene = scene,
             id = id,
             sprite_path = f"{base_path}{data[id]["sprite_path"]}",
+            alt_sprite = f"{base_path}{data[id]["alt_sprite"]}",
+            anim = data[id]["anim"],
             position = position,
             scale = data[id]["scale"],
             name = data[id]["name"],
             title = data[id]["title"],
             has_shop = data[id]["has_shop"],
-            )
+            has_game = data[id]["has_game"],
+            game_map = data[id]["game_map"]
+        )
     except Exception as e:
         npc = BaseNpc(scene)
         print(f"Error Load Npc: {e}")
     finally:
         scene.add_sprite("NPC", npc)
-        print(position)
+        print(f"{id}: {position}")
 
 def load_dialogue(id):
     try:

@@ -1,7 +1,55 @@
 {
-	"Example_Npc": [
-		"This is the first dialogue line of this npc",
-		"This is the second dialogue line of this npc",
-		"This is the last dialogue line of this npc"
+	"flav0_guide": [
+		"Hey, you... You're finally awake. You were trying to sail past our island, right?",
+		"I saw your boat-- I mean, your great ship, getting wrecked last night.",
+		"Well, I guess you'll be stuck here a while. I'm Gilbert, Watcher over this small town.",
+		"If you want to leave, you'll probably need our help. Don't worry, we'll do anything necessary.",
+		"For now you should better head further inside, the others will be excited to meet you."
+	],
+	"flav0_sleepy": [
+		"*yawn* Oh, hello. Sorry, I must've dozed off...",
+		"Me? Name's Gertie. Pleased to meet you, Zote! (That sure sounds like a tough name, haha.)",
+		"So, you got shipwrecked here? And you want to leave?",
+		"I'd love it if you stayed here a bit longer, but I get it. I wouldn't want to be stuck somewhere far from home, either.",
+		"I don't think I can help you much, except for a tip: this island is kind of mean. So you should face your enemies meanly, too!",
+		"But... I believe in you! I can tell you're a mighty powerful type."
+	],
+	"flav1_sit": [
+		"Hello there... I'm Berthold. I used to be a warrior, just like you.",
+		"In fact, people admired my strength and skill so much, they even called me 'the Iron Mountain'.",
+		"I don't think I live up to that name anymore, these days...",
+		"...Maybe this island needs a new hero, and maybe it could be you."
+	],
+	"flav2_scheming": [
+		"EVIL UGLY MF"
+	],
+	"lb1_friend": [
+		"Heya! I'm Esther! The others told me a lot of great things about you!",
+		"Didja see that cave over there? It's huge and full of traps! I was barely able to explore a couple of rooms!",
+		"Oh, you've already passed through the cave? Well then, let's compare our times!",
+		"PARKOUR_SCORE_CHECK"
+	],
+	"lb2_tired": [
+		"Greetings, traveller-- Wait a minute, what are you doing here?",
+		"Shipwrecked? Ha! not surprising, coming from a weakling such as yourself.",
+		"As for me, I came here looking for a real challenge.",
+		"Of course that arena wasn't difficult for me at all, how insolent of you to say such a thing! I'm just tired after all this battling is all.",
+		"You tried your nail in there, too? Alright, then let's see how well you did!",
+		"ARENA_SCORE_CHECK"
+	],
+	"mg1_challenger": [
+		"race my racecourse"
+	],
+	"mg2_guard": [
+		"test your mettle bro"
+	],
+	"shop1_artisan": [
+		"im old!"
+	],
+	"shop2_warrior": [
+		"im small!"
+	],
+	"shop3_trader": [
+		"im russian!"
 	]
 }

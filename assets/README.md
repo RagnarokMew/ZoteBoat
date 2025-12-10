@@ -37,10 +37,12 @@ You may notice, while adding elements to a tileset, that sometimes, some tiles w
 You will notice that so far, all tiles will live on the same layer. To give our scene depth (and to later allow for special-purpose tiles), create a new *tile layer* by right-clicking on the upper-right panel, and selecting `New > Tile Layer`. The naming and order of the layers should be as follows:
 
 * Foreground
+* Background
 * Enemy Spawn <i style="font-size:11px;">&emsp;&emsp;(optional)</i>
 * Npc Spawn <i style="font-size:11px;">&ensp;&emsp;&emsp;&emsp;(optional)</i>
 * Load Zone
 * Wall Jump <i style="font-size:11px;">&emsp;&emsp;&emsp;&emsp;(optional)</i>
+* Hazard <i style="font-size:11px;">&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;(optional)</i>
 * Platforms
 
 Once you have your layers, click on the one you want to draw on, and start drawing the tiles.

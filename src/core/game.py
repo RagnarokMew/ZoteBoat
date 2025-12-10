@@ -3,7 +3,7 @@ from entities import player
 from core.constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SCALING,\
     RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING,\
     P_GAMEPLAY, P_DIALOGUE, P_SHOP,\
-    GRAVITY, PLAYER_MOVEMENT_SPEED,\
+    GRAVITY, PLAYER_MOVEMENT_SPEED, P_SLIDE,\
     DEFAULT_MAP, DEFAULT_SPAWN
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
@@ -24,8 +24,8 @@ class GameView(arcade.View):
 
         self.player_texture = None
         self.player_sprite = None
-        # TODO: Load player stats based on savefile
         self.player_stats = PlayerStats()
+        self.player_spawn = None
 
         self.tile_map = None
         self.scene = None
@@ -47,6 +47,7 @@ class GameView(arcade.View):
 
         self.fade_out = None
         self.fade_in = None
+        self.next_room = True
 
         self.player_interaction_state = P_GAMEPLAY
         self.active_menu = None
@@ -56,82 +57,32 @@ class GameView(arcade.View):
     def setup(self):
         # DEBUG: make sure map is correct
         # print(f"changed to {map_id}")
-
+        
         self.tile_map = arcade.load_tilemap(
             f"../assets/tilemaps/{self.map_id}.tmx",
-            #":resources:tiled_maps/map2_level_1.json", # NOTE: Test map
             scaling = TILE_SCALING
         )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         self.background = load_bg(self.map_id, self.background)
 
-        self.scene.add_sprite_list_before("NPC", "Foreground")
-        self.scene.add_sprite_list_after("Enemy", "NPC")
+        self.scene.add_sprite_list_before("NPC", "Background")
+        self.scene.add_sprite_list_after("Enemy", "Background")
         self.scene.add_sprite_list_after("Player", "Enemy")
+        self.scene.add_sprite_list_before("EffectFly", "Player")
+        self.scene.add_sprite_list_after("EffectDmg", "Player")
 
-        # optimise collision detection
-        self.scene["Load Zone"].enable_spatial_hashing()
-        if "Wall Jump" in self.scene:
-            self.scene["Wall Jump"].enable_spatial_hashing()
-            self.scene["Wall Jump"].visible = False
-
-        player_spawn = load_spawn(self.map_id)
-        if not player_spawn:
+        self.player_spawn = load_spawn(self.map_id)
+        if not self.player_spawn:
             print(f"\033[91mThe room you tried to enter does not exist :(\033[0m")
             exit(1)
-
+    
         self.player_sprite = player.PlayerSprite(
-            self.scene, player_spawn[0]
+            self.scene, self.player_spawn[0]
         )
         self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
-        self.player_sprite.change_y = player_spawn[1]
-
-        # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
-        try:
-            for spawn in self.scene["Enemy Spawn"]:
-                # TODO: Get enemy id based on enemy spawn sprite
-                load_enemy(
-                    id = "Example_Enemy_1",
-                    scene = self.scene,
-                    position = (spawn.center_x, spawn.center_y),
-                    target = self.player_sprite
-                )
-        except: pass
-
-        # TODO: Implement NPC spawn
-        try:
-            for spawn in self.scene["Npc Spawn"]:
-                # TODO: Get npc id based on npc spawn sprite
-                load_npc(
-                    id = "Example_Npc",
-                    scene = self.scene,
-                    position = (spawn.center_x, spawn.center_y)
-                )
-        except: pass
-
-        self.camera = arcade.Camera2D()
-        self.gui_camera = arcade.Camera2D()
-
-        self.health_text = arcade.Text(
-            f"HP: {self.player_stats.health} / {self.player_stats.max_health}",
-            x = 5,
-            y = SCREEN_HEIGHT - 30,
-            color = arcade.color.BLACK,
-            font_size = 20
-        )
-
-        self.currency_text = FadingText(
-            f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
-            x = 5,
-            y = SCREEN_HEIGHT - 60,
-            duration = 2
-        )
-        self.currency_text.duration = self.currency_text.trans_duration = 0
-
-
-        self.background_color = arcade.color.AERO_BLUE
+        self.player_sprite.change_y = self.player_spawn[1]
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite,
@@ -142,13 +93,59 @@ class GameView(arcade.View):
         if self.player_stats.unlocks["Double_Jump"]:
             self.physics_engine.enable_multi_jump(2)
 
+        # optimise collision detection
+        self.scene["Load Zone"].enable_spatial_hashing()
+        self.scene["Load Zone"].visible = False
+        if "Wall Jump" in self.scene:
+            self.scene["Wall Jump"].enable_spatial_hashing()
+            self.scene["Wall Jump"].visible = False
+
+        if "Enemy Spawn" in self.scene:
+            self.scene["Enemy Spawn"].visible = False
+            for spawn in self.scene["Enemy Spawn"]:
+                enemy_id = spawn.properties["id"]
+                if enemy_id is not "random": load_enemy(
+                    id = enemy_id,
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y),
+                    target = self.player_sprite
+                )
+
+        if "Npc Spawn" in self.scene:
+            self.scene["Npc Spawn"].visible = False
+            for spawn in self.scene["Npc Spawn"]:
+                load_npc(
+                    id = spawn.properties["id"],
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y)
+                )
+    
+        self.camera = arcade.Camera2D()
+        self.gui_camera = arcade.Camera2D()
+        
+        self.health_text = arcade.Text(
+            f"HP: {self.player_stats.health} / {self.player_stats.max_health}",
+            x = 5,
+            y = SCREEN_HEIGHT - 30,
+            font_size = 20,
+            color = arcade.color.ALABAMA_CRIMSON
+        )
+        self.currency_text = FadingText(
+            f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
+            x = 5,
+            y = SCREEN_HEIGHT - 60,
+            duration = 2,
+            color = arcade.color.SAE
+        )
+        self.currency_text.duration = self.currency_text.trans_duration = 0
+
     def update_fade(self):
         if self.fade_out is not None:
             self.fade_out += 10
             if self.fade_out > 255:
                 self.fade_out = None
                 self.fade_in = 255
-                self.setup()
+                if self.next_room: self.setup()
 
         if self.fade_in is not None:
             self.fade_in -= 5
@@ -160,8 +157,8 @@ class GameView(arcade.View):
         if self.fade_out or self.fade_in:
             arcade.draw_rect_filled(
                 arcade.XYWH(
-                    self.window.width / 2,
-                    self.window.height / 2,
+                    SCREEN_WIDTH // 2,
+                    SCREEN_HEIGHT // 2,
                     self.window.width,
                     self.window.height,
                 ),
@@ -253,6 +250,7 @@ class GameView(arcade.View):
                         npc_title = npc[0].title,
                         before_shop_interaction = npc[0].has_shop
                     )
+                    for all_npc in self.scene["NPC"]: all_npc.set_active(npc[0])
                     self.player_interaction_state = P_DIALOGUE
 
             if key == arcade.key.DOWN:
@@ -333,6 +331,20 @@ class GameView(arcade.View):
             else:
                 self.player_sprite.change_x = 0
 
+            try:
+                no_entry = arcade.check_for_collision_with_list(
+                    self.player_sprite,
+                    self.scene["Wall Jump"],
+                    method = 1
+                )[0]
+
+                if no_entry.properties["side"] == 0:
+                    if self.player_sprite.center_x - no_entry.center_x < 0:
+                        self.player_sprite.change_x -= P_SLIDE
+                    else:
+                        self.player_sprite.change_x += P_SLIDE
+            except: pass
+
             if self.dash_pressed:
                 self.player_sprite.dash()
                 self.dash_pressed = False
@@ -342,7 +354,9 @@ class GameView(arcade.View):
             self.player_sprite.change_x = 0
 
         self.scene["Enemy"].update(delta_time)
-        self.scene["NPC"].update(delta_time)
+        self.scene["NPC"].update(delta_time, self.player_interaction_state)
+        self.scene["EffectDmg"].update(delta_time)
+        self.scene["EffectFly"].update(delta_time)
 
         self.camera.position = self.player_sprite.position
 
@@ -361,6 +375,10 @@ class GameView(arcade.View):
         hit = None
 
         if self.player_sprite.player_attack:
+            if "Hazard" in self.scene and arcade.check_for_collision_with_list(
+                self.player_sprite.player_attack, self.scene["Hazard"]
+            ):  self.player_sprite.pogo(self.physics_engine)
+            
             hit = arcade.check_for_collision_with_list(
                 self.player_sprite.player_attack, self.scene["Enemy"]
             )
@@ -372,8 +390,7 @@ class GameView(arcade.View):
                 if enemy.inv_time > 0:
                     continue
 
-                enemy.inv_time = self.player_sprite.player_attack.remaining_duration
-                enemy.health -= self.player_stats.damage
+                enemy.get_hit(self.player_stats.damage, self.player_sprite.player_attack.remaining_duration)
                 enemy.update_text()
 
                 if enemy.health <= 0:
@@ -392,7 +409,7 @@ class GameView(arcade.View):
         )
 
         if hit_by and self.player_stats.inv_time <= 0:
-            self.player_stats.health -= hit_by[0].damage
+            self.player_sprite.get_hit(hit_by[0].damage)
             self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
             self.player_stats.inv_time = self.player_stats.max_inv_time
         else:
@@ -401,18 +418,32 @@ class GameView(arcade.View):
         if self.currency_text and self.player_interaction_state != P_SHOP:
             self.currency_text.update(delta_time)
 
-        if self.player_stats.health <= 0:
-            # TODO: Add respawning logic once level loader is fully implemented
-            # Once more features are added, more logic would be included here
-            # Temporarily setup will be called again
-            self.player_stats.health = self.player_stats.max_health
-            self.setup()
+        hazard_collision = None
+        if "Hazard" in self.scene:
+            hazard_collision = arcade.check_for_collision_with_list(
+                self.player_sprite, self.scene["Hazard"]
+            )
+            if hazard_collision: self.player_sprite.get_hit(damage = 1)
+
+        if hazard_collision or self.player_stats.health <= 0:
+            self.respawn(reset = False)
 
     # scene change handler (set new map id)
     def change_map(self, sprites_coll = None):
         if self.fade_out is None:
             self.fade_out = 0
+            self.next_room = True
             try:
                 self.map_id = sprites_coll[0].properties["map_id"]
             except:
                 self.map_id = DEFAULT_MAP
+    
+    def respawn(self, reset = True):
+        if reset: self.player_stats.health = self.player_stats.max_health
+        self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
+        self.scene["EffectDmg"].clear()
+        self.scene["EffectFly"].clear()
+        self.player_sprite.position = self.player_spawn[0]
+        self.fade_out = 0
+        self.next_room = False
+        self.did_respawn = True

@@ -1,5 +1,7 @@
 import arcade
-from core.constants import RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING, P_ATTACK_COOLDOWN, P_WJUMP_SPEED, P_WJUMP_TIME, P_DASH_SPEED, P_DASH_TIME, P_DASH_COOLDOWN, PLAYER_JUMP_SPEED
+from core.constants import RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING,\
+    P_ATTACK_COOLDOWN, P_WJUMP_SPEED, P_WJUMP_TIME, P_DASH_SPEED, P_DASH_TIME, P_DASH_COOLDOWN, PLAYER_JUMP_SPEED
+from entities.effects import EffectDmg, EffectFly
 
 class PlayerSprite(arcade.Sprite):
 
@@ -16,6 +18,9 @@ class PlayerSprite(arcade.Sprite):
         self.attack_cooldown = 0.0
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
+
+        self.dmg_effect = None
+        self.fly_effect = None
 
         self.wjump_timer = 0.0
         self.wj_x = 0
@@ -61,6 +66,8 @@ class PlayerSprite(arcade.Sprite):
 
         elif phys.can_jump():
             phys.jump(PLAYER_JUMP_SPEED)
+            if phys.jumps_since_ground == 2:
+                self.fly_effect = EffectFly(self, self.scene)
 
     def dash(self):
         if self.stats.unlocks["Dash"] and self.dash_cooldown <= 0:
@@ -86,6 +93,10 @@ class PlayerSprite(arcade.Sprite):
                 phys.jumps_since_ground = max(
                     1, phys.jumps_since_ground - 1
                 )
+    
+    def get_hit(self, damage):
+        self.stats.health -= damage
+        self.dmg_effect = EffectDmg(parent = self, dmg_type = "player", scene = self.scene, scale = 1.2)
 
     def update(self, delta_time):
         # TODO: is this check necessary?
