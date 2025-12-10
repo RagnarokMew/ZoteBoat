@@ -1,6 +1,10 @@
 import arcade
 from entities import player
-from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT, DEFAULT_MAP, DEFAULT_SPAWN, P_GAMEPLAY, P_DIALOGUE, P_SHOP
+from core.constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SCALING,\
+    RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING,\
+    P_GAMEPLAY, P_DIALOGUE, P_SHOP,\
+    GRAVITY, PLAYER_MOVEMENT_SPEED,\
+    DEFAULT_MAP, DEFAULT_SPAWN
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
@@ -51,6 +55,8 @@ class GameView(arcade.View):
         self.player_interaction_state = P_GAMEPLAY
         self.active_menu = None
 
+        self.background = None
+
     def setup(self):
         # DEBUG: make sure map is correct
         # print(f"changed to {map_id}")
@@ -62,6 +68,7 @@ class GameView(arcade.View):
         )
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+        self.background = load_bg(self.map_id, self.background)
 
         self.scene.add_sprite_list_before("NPC", "Foreground")
         self.scene.add_sprite_list_after("Enemy", "NPC")
@@ -170,6 +177,12 @@ class GameView(arcade.View):
     def on_draw(self):
         self.clear()
         self.camera.use()
+
+        arcade.draw_texture_rect(self.background, arcade.LBWH(
+            self.player_sprite.center_x - SCREEN_WIDTH // 2,
+            self.player_sprite.center_y - SCREEN_HEIGHT // 2,
+            SCREEN_WIDTH, SCREEN_HEIGHT
+        ))
 
         # NOTE: Below this the World gets Rendered
         # (aka everything gets rendered based on world coordinates)
