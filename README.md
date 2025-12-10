@@ -1,11 +1,17 @@
 # ZoteBoat
 
+A project made for IA4: Python Projects by 2 student
+
 ZoteBoat is a small metroidvania made in Python, that seeks to replicate the
 the feel of the original Hollow Knight game made by Team Cherry. The game
 has an open area to explore and two addicting minigames to master with
 most of the features that are expected of a metroidvania. Explore, test your
 skills and become stronger while meeting many intruiging characters, some of
 which are willing to sell you upgrades to aid you in your travels.
+
+## GitHub Link
+
+https://github.com/RagnarokMew/ZoteBoat
 
 ## Technologies used
 
