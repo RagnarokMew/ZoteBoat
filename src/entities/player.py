@@ -31,9 +31,6 @@ class PlayerSprite(arcade.Sprite):
         self.frame_duration = 60
         self.cur_frame_duration = 0
 
-    # TODO: Should also work on logic to handle direction facing etc
-    # The implementation of these features can be done later on
-
     def attack(self):
         if(self.attack_cooldown > 0):
             return
@@ -56,8 +53,6 @@ class PlayerSprite(arcade.Sprite):
         self.update_animation(delta_time)
 
     def update_animation(self, delta_time):
-        # TODO: finish state changes and move them
-        # outside update_animation
         if self.change_y > 0:
             self.current_state = "jump"
         elif self.change_y < 0:
@@ -89,12 +84,7 @@ class PlayerSprite(arcade.Sprite):
 
 
     def _load_textures(self, base_path):
-        # TODO: add temp animations for the following:
-        # idle - DONE
-        # walking - DONE
-        # jumping - DONE
-        # falling - DONE
-        # attacking
+        # TODO: add temp animations for the following (if needed):
         # taking damage
         # dying
         # double jump
