@@ -5,7 +5,11 @@
   <properties>
    <property name="map_id" value="map_2"/>
   </properties>
+<<<<<<< HEAD
   <image source="../sprites/icons/blue_check.png" width="64" height="64"/>
+=======
+  <image source="../sprites/blue_check.png" width="64" height="64"/>
+>>>>>>> master
  </tile>
  <tile id="1">
   <properties>
