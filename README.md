@@ -9,7 +9,10 @@ which are willing to sell you upgrades to aid you in your travels.
 
 ## Technologies used
 
-TODO
+- Python
+- Python Arcade Library (and its dependencies such as Pyglet, Pillow, etc)
+- JSON
+- Tiled
 
 ## How to use / run
 
