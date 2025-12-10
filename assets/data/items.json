@@ -1,0 +1,56 @@
+{
+	"Mask_1": {
+		"display_name": "Mask",
+		"description": "Ah, this old thing... I found it on the ground a while back, but don't remember where. It looks pretty so it's got to be worth a bit.\n\n(Increases max hp by 1)",
+		"currency": "currency1",
+		"price": 150
+	},
+	"Mask_2": {
+		"display_name": "Mask",
+		"description": "Ah, this old thing... I found it on the ground a while back, but don't remember where. It looks pretty so it's got to be worth a bit.\n\n(Increases max hp by 1)",
+		"currency": "currency2",
+		"price": 150
+	},
+	"Mask_3": {
+		"display_name": "Mask",
+		"description": "Ah, this old thing... I found it on the ground a while back, but don't remember where. It looks pretty so it's got to be worth a bit.\n\n(Increases max hp by 1)",
+		"currency": "currency3",
+		"price": 150
+	},
+	"Mask_4": {
+		"display_name": "Mask",
+		"description": "Ah, this old thing... I found it on the ground a while back, but don't remember where. It looks pretty so it's got to be worth a bit.\n\n(Increases max hp by 1)",
+		"currency": "currency4",
+		"price": 150
+	},
+	"Nail_Upgrade_Kit_1": {
+		"display_name": "Nail Sharpening Kit",
+		"description": "A simple sharpening kit that can be used on that mighty nail of yours. It will make you feared on the battlefield.\n\n(Increases damage dealt by 2)",
+		"currency": "currency1",
+		"price": 150
+	},
+	"Nail_Upgrade_Kit_2": {
+		"display_name": "Nail Sharpening Kit",
+		"description": "A simple sharpening kit that can be used on that mighty nail of yours. It will make you feared on the battlefield.\n\n(Increases damage dealt by 2)",
+		"currency": "currency2",
+		"price": 150
+	},
+	"Wall_Jump": {
+		"display_name": "Old Grips",
+		"description": "These grips will give you just enough time to jump off any wall. Don't try to hang on to one though, or you'll most likely break something when you fall.\n\n(Grants the Wall Jump ability)\n(Press Z while touching the side of a wall to wall jump)",
+		"currency": "currency2",
+		"price": 150
+	},
+	"Dash": {
+		"display_name": "Swift Cloak",
+		"description": "Rumours say this cloak makes you go very fast. Honestly I don't understand how that would work but it looks like it's made with high quality material, so even if it doesn't work you don't get scammed.\n\n(Grants the Dash ability)\n(Press C to dash)",
+		"currency": "currency1",
+		"price": 150
+	},
+	"Double_Jump": {
+		"display_name": "Trusty Wings",
+		"description": "Beautiful wings that look like an angel's. Don't think they can make you fly, but I'm sure they can give you a little boost midair\n\n(Grants the Double Jump ability)\n(Press Z while midair to double jump)",
+		"currency": "currency1",
+		"price": 150
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"Example_Npc": {
+		"name": "NPC Name",
+		"title": "NPC Title",
+		"has_shop": true,
+		"sprite_path": "stoneMid.png",
+		"scale": 1
+	}
+}
