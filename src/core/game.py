@@ -10,7 +10,7 @@ from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
 from ui.text import FadingText
 from core.shop import ShopMenu
-from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn
+from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn, load_bg
 
 class GameView(arcade.View):
 

@@ -1,31 +1,14 @@
 {
     "template": {
-        "spawn": [
-            0,
-            0
-        ],
-        "speed": [
-            0,
-            0
-        ],
-        "door": [],
+        "spawn": [ 0, 0 ],
+        "speed": [ 0, 0 ],
         "enemy": [],
         "npc": []
     },
 
     "map_1": {
-        "spawn": [
-            200,
-            440
-        ],
-        "speed": [
-            0,
-            0
-        ],
-        "door": [
-            "map_3",
-            "map_2"
-        ],
+        "spawn": [ 200, 440 ],
+        "speed": [ 0, 0 ],
         "enemy": [],
         "npc": [
             "Example_Npc"
@@ -33,34 +16,23 @@
     },
 
     "map_2": {
-        "spawn": [
-            200,
-            300
-        ],
-        "speed": [
-            0,
-            25
-        ],
-        "door": [],
+        "spawn": [ 200, 300 ],
+        "speed": [ 0, 25 ],
         "enemy": [
             "Enemy"
         ],
-        "npc": []
+        "npc": [],
+        "bg": "shipwreck.jpg"
     },
 
     "map_3": {
-        "spawn": [
-            200,
-            420
-        ],
-        "speed": [
-            0,
-            0
-        ],
+        "spawn": [ 200, 420 ],
+        "speed": [ 0, 0 ],
         "door": [
             "map_2"
         ],
         "enemy": [],
-        "npc": []
+        "npc": [],
+        "bg": ""
     }
 }

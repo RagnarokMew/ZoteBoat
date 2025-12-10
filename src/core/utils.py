@@ -3,6 +3,7 @@ from entities.base_npc import BaseNpc
 from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
 from entities.enemies import IdleGround, IdleFlying, ChaserGround, ChaserFlying
 from core.shop import ShopItem
+from core.constants import DEFAULT_BG
 import json
 
 def load_spawn(id):
@@ -20,6 +21,22 @@ def load_spawn(id):
     except Exception as e:
         print(f"\033[91mCould not load next room:\033[93m {e}\033[0m")
         return []
+
+def load_bg(id, curr_bg):
+    base_path = "../assets/bg/"
+    if curr_bg is None:
+        curr_bg = arcade.load_texture(f"{base_path}{DEFAULT_BG}")
+    
+    try:
+        with open("../assets/data/maps.json", "r") as file:
+            new_bg = json.load(file)[id]["bg"]
+
+        curr_bg = arcade.load_texture(f"{base_path}{new_bg}")
+    
+    # we expect this to fail often, since not all maps have a bg, so no error handling is needed
+    except: pass
+    
+    return curr_bg
 
 def load_npc(id, scene, position):
     try:

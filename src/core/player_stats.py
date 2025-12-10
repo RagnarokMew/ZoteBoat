@@ -19,7 +19,7 @@ class PlayerStats():
             "Mask_4": False,
             "Nail_Upgrade_Kit_1": False,
             "Nail_Upgrade_Kit_2": False, # Each nail upgrade x2 DMG
-            "Wall_Jump": False,
+            "Wall_Jump": True,
             "Double_Jump": False,
             "Dash": False
         }
