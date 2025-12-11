@@ -488,7 +488,7 @@ class GameView(arcade.View):
                 if enemy_id == "random_gnd":
                     enemy_id = random.choice(ENEMY_GND)
                 if enemy_id == "random_air":
-                    enemy_id == random.choice(ENEMY_AIR)
+                    enemy_id = random.choice(ENEMY_AIR)
 
                 load_enemy(
                     id = enemy_id,
@@ -507,8 +507,10 @@ class GameView(arcade.View):
                     sprites_coll[0].position
                 )
                 else:
-                    if map_id == "hub_02" and self.map_id == "parkour_03":
+                    if self.map_id == "parkour_03" and map_id == "hub_02":
                         self.player_stats.end_parkour()
+                    if self.map_id == "arena_01" and map_id == "arena_00":
+                        self.player_stats.end_arena(forfeit = True)
                     self.map_id = map_id
                     self.fade_out = 0
             except:

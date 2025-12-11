@@ -42,6 +42,8 @@ class PlayerStats():
 
         self.arena_start = False
         self.arena_timer = 0
+        self.new_kill = 0
+        self.forfeit = False
         self.arena_score = {
             "kill": 0,
             "time": 0
@@ -160,7 +162,7 @@ class PlayerStats():
         if minigame == "arena_01":
             self.arena_start = True
             self.arena_timer = 0
-            self.arena_score["kill"] = 0
+            self.new_kill = 0
             self.arena_break = False
     
     def end_parkour(self):
@@ -189,14 +191,21 @@ class PlayerStats():
             self.parkour_hiscore["sec"] = self.parkour_score["sec"]
     
     def arena_kill(self):
-        if self.arena_start: self.arena_score["kill"] += 1
+        if self.arena_start: self.new_kill += 1
 
-    def end_arena(self):
+    def end_arena(self, forfeit = False):
         if not self.arena_start:
             print(f"\033[91mArena not started!\033[0m")
             return
         
         self.arena_start = False
+        
+        if forfeit:
+            self.forfeit = True
+            return
+        
+        self.forfeit = False
+        self.arena_score["kill"] = self.new_kill
         self.arena_score["time"] = round(self.arena_timer, 2)
 
         self.arena_break = (

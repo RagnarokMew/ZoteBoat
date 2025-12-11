@@ -142,7 +142,11 @@ class DialogueMenu():
         try:
             next_text = self.content[self.text_index]
 
-            if stats is not None:                
+            if stats is not None:
+                if stats.forfeit:
+                    next_text = next_text.replace("ARENA_SCORE_CHECK",
+                    "You lousy coward! As soon as you saw what awaits you in the arena, you ran right back. Dishonor! Dishonor on your whole family!")
+
                 next_text = next_text.replace("ARENA_SCORE_CHECK",
                 "NEW_HI_TEXT Your current score is ARENA_KILL_CUR kills in ARENA_TIME_CUR seconds, and your best is ARENA_KILL_HI in ARENA_TIME_HI."
                 if stats.arena_hiscore["kill"] != -1 else
