@@ -86,6 +86,36 @@ TODO
 
 ## Implementation Difficulties
 
+### Movement Physics
+
+One of the greatest problems we encountered during the development of Zoteboat
+was the implementation of the movement physics.
+
+Originally we planned to use the Pymunk Physiscs Engine included with Arcade and
+wrote the basic movement mechanics with it, but we had difficulties in making the
+player character stop moving as they continued to glide as if the ground was ice
+despite setting the friction with the ground to be quite high.
+
+After that we decided to completely rewrite the movement with the Arcade Physics
+Engine placing our movement logic in the `on_key_pressed` functions and this
+worked well until we implemented the map changing logic and did some testing.
+While implementing more complex movement mechanics we discovered that the player
+character would glide on the new map despite no movement keys being pressed.
+
+We discovered this was because when the map changed, the key press handling made
+in Arcade was interfering with the preservation of movement we implemented to
+make the transitions work. We tried some workarounds like forcefully decreasing
+the speeds but it introduced more bugs than it fixed.
+
+As a final resort we once again rewrote the whole movement logic moving
+everything to `on_update` and only the key detection in the old system. This
+did not come without its own problems as this rewrite broke our advanced
+movement mechanics logic that was based on our old movement. We were forced
+to also rewrite this logic arriving at the current implementation of our
+movement mechanics.
+
+### Arcade Pixel Coordinates
+
 TODO
 
 TODO: Any extra sections we wish to include
