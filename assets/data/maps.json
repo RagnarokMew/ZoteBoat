@@ -1,52 +1,46 @@
 {
     "entry_00": {
         "spawn": [ 690, 520 ],
-        "enemy": [],
         "bg": "shipwreck.jpg"
     },
     "entry_01": {
         "spawn": [ 440, 1420 ],
-        "enemy": [],
         "bg": "shipwreck.jpg"
     },
     "hub_00": {
         "spawn": [ 1000, 800 ],
-        "enemy": [],
         "bg": "fog.jpg"
     },
     "hub_01": {
         "spawn": [ 440, 800 ],
-        "enemy": [],
         "bg": "fog.jpg"
     },
     "hub_02": {
         "spawn": [ 450, 1300 ],
-        "enemy": [],
         "bg": "fog.jpg"
     },
     "arena_00": {
         "spawn": [ 480, 430 ],
-        "enemy": [],
         "bg": "hall.png"
     },
     "arena_01": {
-        "spawn": [ 0, 0 ],
-        "enemy": [],
+        "spawn": [ 500, 1160 ],
         "bg": "arena.png"
     },
     "parkour_00": {
-        "spawn": [ 0, 0 ],
-        "enemy": [],
+        "spawn": [ 500, 600 ],
         "bg": "fog.jpg"
     },
     "parkour_01": {
         "spawn": [ 480, 600 ],
-        "enemy": [],
         "bg": "fog.jpg"
     },
     "parkour_02": {
-        "spawn": [ 0, 0 ],
-        "enemy": [],
+        "spawn": [ 440, 1200 ],
+        "bg": "fog.jpg"
+    },
+    "parkour_03": {
+        "spawn": [ 500, 1000 ],
         "bg": "fog.jpg"
     }
 }
