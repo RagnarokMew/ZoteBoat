@@ -11,14 +11,18 @@ class EffectDmg(arcade.Sprite):
         self.parent = parent
         self.position = self.parent.position
         self.scene = scene
-        self.remaining_duration = P_INV_TIME
+        if dmg_type == "enemy":
+            self.type = 1.1
+        else:
+            self.type = 1
+        self.remaining_duration = P_INV_TIME // self.type
 
         self.scene.add_sprite("EffectDmg", self)
 
     def update(self, delta_time):
         self.position = self.parent.position
         self.remaining_duration -= delta_time
-        self.alpha = 195 * self.remaining_duration
+        self.alpha = 195 * self.type * self.remaining_duration
         if self.remaining_duration <= 0:
             self.remove_from_sprite_lists()
             self.parent.dmg_effect = None

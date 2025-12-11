@@ -15,19 +15,19 @@
         "bg": "fog.jpg"
     },
     "hub_01": {
-        "spawn": [ 0, 0 ],
+        "spawn": [ 440, 800 ],
         "enemy": [],
         "bg": "fog.jpg"
     },
     "hub_02": {
-        "spawn": [ 0, 0 ],
+        "spawn": [ 450, 1300 ],
         "enemy": [],
         "bg": "fog.jpg"
     },
     "arena_00": {
-        "spawn": [ 0, 0 ],
+        "spawn": [ 480, 430 ],
         "enemy": [],
-        "bg": "arena.png"
+        "bg": "hall.png"
     },
     "arena_01": {
         "spawn": [ 0, 0 ],
@@ -45,11 +45,6 @@
         "bg": "fog.jpg"
     },
     "parkour_02": {
-        "spawn": [ 0, 0 ],
-        "enemy": [],
-        "bg": "fog.jpg"
-    },
-    "parkour_03": {
         "spawn": [ 0, 0 ],
         "enemy": [],
         "bg": "fog.jpg"

@@ -30,7 +30,7 @@
 		"sprite_path": "flav1_sit_0.png",
 		"alt_sprite": "flav1_sit_1.png",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.95
 	},
 	"flav2_scheming": {
 		"name": "Blind Balor",
@@ -41,7 +41,7 @@
 		"sprite_path": "flav2_scheming.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.66
 	},
 	"lb1_friend": {
 		"name": "Bright-eyed Esther",
@@ -52,7 +52,7 @@
 		"sprite_path": "lb1_friend.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.58
 	},
 	"lb2_tired": {
 		"name": "Tiso",
@@ -63,18 +63,18 @@
 		"sprite_path": "lb2_tired.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.8
 	},
 	"mg1_challenger": {
 		"name": "Nuf the Nimble",
 		"title": "Faraway speedster",
 		"has_shop": false,
 		"has_game": true,
-		"game_map": "parkour_01",
+		"game_map": "parkour_00",
 		"sprite_path": "mg1_challenger_0.png",
 		"alt_sprite": "mg1_challenger_1.png",
 		"anim": true,
-		"scale": 0.5
+		"scale": 0.72
 	},
 	"mg2_guard": {
 		"name": "Ser Yvar",
@@ -85,7 +85,7 @@
 		"sprite_path": "mg2_guard.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.9
 	},
 	"shop1_artisan": {
 		"name": "El Arano",
@@ -107,7 +107,7 @@
 		"sprite_path": "shop2_warrior.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.6
 	},
 	"shop3_trader": {
 		"name": "Dorofey",
@@ -118,6 +118,6 @@
 		"sprite_path": "shop3_trader.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.8
 	}
 }

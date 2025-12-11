@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="enemy" tilewidth="64" tileheight="64" tilecount="15" columns="0">
+<tileset version="1.10" tiledversion="1.11.2" name="enemy" tilewidth="64" tileheight="64" tilecount="16" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <properties>
@@ -87,7 +87,13 @@
  </tile>
  <tile id="15">
   <properties>
-   <property name="id" value="random"/>
+   <property name="id" value="random_gnd"/>
+  </properties>
+  <image source="../sprites/icons/blue_cross.png" width="64" height="64"/>
+ </tile>
+ <tile id="16">
+  <properties>
+   <property name="id" value="random_air"/>
   </properties>
   <image source="../sprites/icons/blue_cross.png" width="64" height="64"/>
  </tile>

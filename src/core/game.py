@@ -12,6 +12,9 @@ from ui.text import FadingText
 from core.shop import ShopMenu
 from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn, load_bg
 
+# TODO: change default map to hub_00/hub_02/arena_00
+
+
 class GameView(arcade.View):
 
     def __init__(self):
@@ -66,8 +69,8 @@ class GameView(arcade.View):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         self.background = load_bg(self.map_id, self.background)
 
-        self.scene.add_sprite_list_before("NPC", "Background")
-        self.scene.add_sprite_list_after("Enemy", "Background")
+        self.scene.add_sprite_list_after("NPC", "Background")
+        self.scene.add_sprite_list_after("Enemy", "NPC")
         self.scene.add_sprite_list_after("Player", "Enemy")
         self.scene.add_sprite_list_before("EffectFly", "Player")
         self.scene.add_sprite_list_after("EffectDmg", "Player")
@@ -103,12 +106,13 @@ class GameView(arcade.View):
             self.scene["Enemy Spawn"].visible = False
             for spawn in self.scene["Enemy Spawn"]:
                 enemy_id = spawn.properties["id"]
-                if enemy_id != "random": load_enemy(
-                    id = enemy_id,
-                    scene = self.scene,
-                    position = (spawn.center_x, spawn.center_y),
-                    target = self.player_sprite
-                )
+                if enemy_id != "random_gnd" and enemy_id != "random_air":
+                    load_enemy(
+                        id = enemy_id,
+                        scene = self.scene,
+                        position = (spawn.center_x, spawn.center_y),
+                        target = self.player_sprite
+                    )
 
         if "Npc Spawn" in self.scene:
             self.scene["Npc Spawn"].visible = False
@@ -373,7 +377,7 @@ class GameView(arcade.View):
         self.camera.position = self.player_sprite.position
         min_x = max(self.camera.position[0], self.player_spawn[0][0] + 200)
         min_y = max(self.camera.position[1], self.player_spawn[0][1] - 50)
-        self.camera.position = arcade.Vec2(min_x, min_y + 50)
+        self.camera.position = arcade.Vec2(min_x, min_y + 100)
 
         loadzone_collision = arcade.check_for_collision_with_list(
                 self.player_sprite,
@@ -393,6 +397,13 @@ class GameView(arcade.View):
                 self.player_sprite.player_attack, self.scene["Hazard"]
             ):  self.player_sprite.pogo(self.physics_engine)
             
+            eas = arcade.check_for_collision_with_list(
+                self.player_sprite.player_attack, self.scene["NPC"]
+            )
+            
+            if eas and eas[0].id == "flav1_sit":
+                self.player_sprite.pogo(self.physics_engine)
+
             hit = arcade.check_for_collision_with_list(
                 self.player_sprite.player_attack, self.scene["Enemy"]
             )
@@ -442,7 +453,7 @@ class GameView(arcade.View):
             )
             if hazard_collision: self.player_sprite.get_hit(damage = 1)
 
-        if self.player_stats.health <= 0: self.respawn()
+        if self.player_stats.health <= 0: self.respawn(reset = True)
         elif hazard_collision: self.respawn(reset = False)
 
     # handle scene change and spawn point set
@@ -461,7 +472,7 @@ class GameView(arcade.View):
                 self.map_id = DEFAULT_MAP
                 self.fade_out = 0
     
-    def respawn(self, reset = True):
+    def respawn(self, reset):
         if reset:
             self.player_stats.health = self.player_stats.max_health
             self.death_text.text = "You died!"
@@ -473,4 +484,4 @@ class GameView(arcade.View):
         self.scene["EffectFly"].clear()
         self.fade_in = 255
 
-        self.player_sprite.position = self.player_spawn[0 if reset else 1]
+        self.player_sprite.position = self.player_spawn[1]
