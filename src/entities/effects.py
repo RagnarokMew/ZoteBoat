@@ -4,7 +4,7 @@ from core.constants import P_INV_TIME
 class EffectDmg(arcade.Sprite):
     def __init__(self, parent, scene, dmg_type = "enemy", scale = 0.8):
         super().__init__(
-            f"../assets/sprites/player/dmg_{dmg_type}.png",
+            f"../assets/sprites/player/effect/dmg_{dmg_type}.png",
             scale = scale
         )
 
@@ -31,7 +31,7 @@ class EffectFly(arcade.Sprite):
 
     def __init__(self, parent, scene, scale = 0.8):
         self.fly = [
-            arcade.load_texture(f"../assets/sprites/player/fly_{i}.png") for i in range(0,3)
+            arcade.load_texture(f"../assets/sprites/player/effect/fly_{i}.png") for i in range(0,3)
         ]
 
         super().__init__(

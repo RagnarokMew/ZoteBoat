@@ -40,3 +40,11 @@ P_SLIDE = 5.5
 DEFAULT_MAP = "entry_00"
 DEFAULT_SPAWN = (200, 440)
 DEFAULT_BG = "fog.jpg"
+ENEMY_GND = [ "CrawlerIdle", "CrawlerChaser", "HuskIdle", "HuskChaser", "HuskBullyIdle", "HuskBullyChaser" ]
+ENEMY_AIR = [ "BlobbleIdle", "BlobbleChaser", "FlyIdle", "FlyChaser", "OblobbleIdle", "OblobbleChaser", "BuzzerIdle", "BuzzerChaser" ]
+
+# --- Data Operations ---
+OP_LOAD_DT = 1
+OP_SAVE_DT = 2
+OP_LOAD_SC = 3
+OP_SAVE_SC = 4

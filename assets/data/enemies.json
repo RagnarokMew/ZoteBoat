@@ -113,7 +113,7 @@
 	},
 	"BuzzerIdle": {
 		"type": "IdleFlying",
-		"sprite_path": "../assets/sprites/fly/",
+		"sprite_path": "../assets/sprites/buzzer/",
 		"scale": 1,
 		"max_health": 6,
 		"damage": 1,
@@ -127,7 +127,7 @@
 	},
 	"BuzzerChaser": {
 		"type": "ChaserFlying",
-		"sprite_path": "../assets/sprites/fly/",
+		"sprite_path": "../assets/sprites/buzzer/",
 		"scale": 1,
 		"max_health": 6,
 		"damage": 1,
@@ -141,7 +141,7 @@
 	},
 	"HuskIdle": {
 		"type": "IdleGround",
-		"sprite_path": "../assets/sprites/crawler/",
+		"sprite_path": "../assets/sprites/husk/",
 		"scale": 0.7,
 		"max_health": 8,
 		"damage": 1,
@@ -169,7 +169,7 @@
 	},
 	"HuskBullyIdle": {
 		"type": "IdleGround",
-		"sprite_path": "../assets/sprites/crawler/",
+		"sprite_path": "../assets/sprites/huskbully/",
 		"scale": 0.7,
 		"max_health": 12,
 		"damage": 1,

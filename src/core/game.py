@@ -1,37 +1,45 @@
 import arcade
-from entities import player
+import random
+
 from core.constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SCALING,\
     RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING,\
     P_GAMEPLAY, P_DIALOGUE, P_SHOP,\
     GRAVITY, PLAYER_MOVEMENT_SPEED, P_SLIDE,\
-    DEFAULT_MAP, DEFAULT_SPAWN
+    DEFAULT_MAP, DEFAULT_SPAWN,\
+    OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC, ENEMY_GND, ENEMY_AIR
 from core.player_stats import PlayerStats
-from entities.base_enemies import GroundEnemy
-from entities.base_npc import BaseNpc, DialogueMenu
-from ui.text import FadingText
 from core.shop import ShopMenu
-from core.utils import load_enemy, load_npc, load_dialogue, load_shop_items, load_spawn, load_bg
+from core.utils import load_spawn, load_bg, load_enemy,\
+    load_npc, load_dialogue, load_shop_items, save_data
+from ui.text import FadingText
 
-# TODO: change default map to hub_00/hub_02/arena_00
+from entities import player
+from entities.base_npc import BaseNpc, DialogueMenu
+from entities.base_enemies import GroundEnemy
 
 
 class GameView(arcade.View):
 
-    def __init__(self):
+    def __init__(self, options):
         super().__init__()
 
-        # Temp Value for setting to show enemy hp:
-        self.show_enemy_hp = True
+        # Options is saved to bass it back to the main menu
+        self.options = options
+        self.show_enemy_hp = options["show_enemy_hp"]
+        self.username = options["username"]
 
         self.physics_engine = None
 
         self.player_texture = None
         self.player_sprite = None
+
         self.player_stats = PlayerStats()
-        self.player_spawn = None
+        save_data(self.username, self.player_stats, OP_LOAD_DT)
+        save_data(self.username, self.player_stats, OP_LOAD_SC)
 
         self.tile_map = None
         self.scene = None
+        self.minigame = None
 
         self.camera = None
         self.gui_camera = None
@@ -75,13 +83,20 @@ class GameView(arcade.View):
         self.scene.add_sprite_list_before("EffectFly", "Player")
         self.scene.add_sprite_list_after("EffectDmg", "Player")
 
+        # optimise collision detection
+        self.scene["Load Zone"].enable_spatial_hashing()
+        if "Wall Jump" in self.scene:
+            self.scene["Wall Jump"].enable_spatial_hashing()
+        
+        self.player_stats.init_minigame(self.map_id)
+    
         self.player_spawn = load_spawn(self.map_id)
         if not self.player_spawn:
             print(f"\033[91mThe room you tried to enter does not exist :(\033[0m")
             exit(1)
     
         self.player_sprite = player.PlayerSprite(
-            self.scene, self.player_spawn[1]
+            self.scene, self.player_spawn[0]
         )
         self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
@@ -102,17 +117,7 @@ class GameView(arcade.View):
             self.scene["Wall Jump"].enable_spatial_hashing()
             self.scene["Wall Jump"].visible = False
 
-        if "Enemy Spawn" in self.scene:
-            self.scene["Enemy Spawn"].visible = False
-            for spawn in self.scene["Enemy Spawn"]:
-                enemy_id = spawn.properties["id"]
-                if enemy_id != "random_gnd" and enemy_id != "random_air":
-                    load_enemy(
-                        id = enemy_id,
-                        scene = self.scene,
-                        position = (spawn.center_x, spawn.center_y),
-                        target = self.player_sprite
-                    )
+        self.spawn_enemies()
 
         if "Npc Spawn" in self.scene:
             self.scene["Npc Spawn"].visible = False
@@ -264,7 +269,9 @@ class GameView(arcade.View):
                         content = load_dialogue(npc[0].id),
                         npc_name = npc[0].name,
                         npc_title = npc[0].title,
-                        before_shop_interaction = npc[0].has_shop
+                        before_shop_interaction = npc[0].has_shop,
+                        before_game = npc[0].has_game,
+                        game_map = npc[0].game_map
                     )
                     for all_npc in self.scene["NPC"]: all_npc.set_active(npc[0])
                     self.player_interaction_state = P_DIALOGUE
@@ -276,23 +283,22 @@ class GameView(arcade.View):
             if key == arcade.key.X:
                 self.player_sprite.attack()
 
-            if key == arcade.key.F5:
-                arcade.window_commands.close_window()
-                exit(0)
+            if key == arcade.key.C:
+                self.dash_pressed = True
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
             # But match case was introduced in Python 3.10
-            if (key == arcade.key.A) or \
-                (key == arcade.key.Z) or \
-                (key == arcade.key.X):
+            if (key == arcade.key.A or
+                key == arcade.key.Z or
+                key == arcade.key.X):
 
                 # NOTE: The current implementation is very ugly and should be refactored
                 # Currently it works the following way:
                 # When a dialogue ends it checks if it leads to a shop interaction
                 # If it does it spawns a shop and loads its items
                 if self.active_menu:
-                    if not self.active_menu.next():
+                    if not self.active_menu.next(self.player_stats):
                         if self.active_menu.before_shop_interation:
                             self.active_menu = ShopMenu(
                                 load_shop_items(self.active_menu.npc_id),
@@ -303,6 +309,14 @@ class GameView(arcade.View):
                             self.currency_text.text = f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}"
                             self.currency_text.reset()
                             self.currency_text.update(0)
+                        elif self.active_menu.before_game:
+                            state = self.active_menu.bye(accept = not (key == arcade.key.X))
+                            if (state[0]):
+                                new_map = self.active_menu.game_map
+                                self.active_menu = None
+                                self.player_interaction_state = P_GAMEPLAY
+                            if (state[1]):
+                                self.change_map(override = new_map)
                         else:
                             self.active_menu = None
                             self.player_interaction_state = P_GAMEPLAY
@@ -323,15 +337,18 @@ class GameView(arcade.View):
             elif key == arcade.key.DOWN:
                 self.active_menu.next_item()
 
-        if key == arcade.key.C and self.player_interaction_state == P_GAMEPLAY:
-                self.dash_pressed = True
-
-        if key == arcade.key.F5:
-            arcade.window_commands.close_window()
+        if key == arcade.key.ESCAPE:
+            save_data(self.username, self.player_stats, OP_SAVE_DT)
+            save_data(self.username, self.player_stats, OP_SAVE_SC)
+            from core.main_menu import MenuView
+            menu_view = MenuView(self.options)
+            self.window.show_view(menu_view)
 
     def on_update(self, delta_time):
         self.physics_engine.update()
         px_upd = self.player_sprite.update(delta_time)
+        if self.player_stats.update_arena(delta_time):
+            self.change_map(override = "arena_00")
 
         # NOTE: New left-right movement handler moved here
         # to fix all movement related bugs
@@ -385,9 +402,13 @@ class GameView(arcade.View):
                 method = 1
         )
 
-        if loadzone_collision: self.change_map(loadzone_collision)
+        if loadzone_collision:
+            self.change_map(sprites_coll = loadzone_collision)
 
         self.update_fade()
+
+        if len(self.scene["Enemy"]) == 0 and self.map_id == "arena_01":
+            self.spawn_enemies()
 
         # TODO: Refactor the collision code at a later date
         hit = None
@@ -419,6 +440,8 @@ class GameView(arcade.View):
                 enemy.update_text()
 
                 if enemy.health <= 0:
+                    self.player_stats.arena_kill()
+
                     self.player_stats.currency_1 += enemy.drop_curr1
                     self.player_stats.currency_2 += enemy.drop_curr2
                     self.player_stats.currency_3 += enemy.drop_curr3
@@ -455,9 +478,27 @@ class GameView(arcade.View):
 
         if self.player_stats.health <= 0: self.respawn(reset = True)
         elif hazard_collision: self.respawn(reset = False)
+    
+    def spawn_enemies(self):
+        if "Enemy Spawn" in self.scene:
+            self.scene["Enemy Spawn"].visible = False
+            for spawn in self.scene["Enemy Spawn"]:
+                enemy_id = spawn.properties["id"]
+
+                if enemy_id == "random_gnd":
+                    enemy_id = random.choice(ENEMY_GND)
+                if enemy_id == "random_air":
+                    enemy_id == random.choice(ENEMY_AIR)
+
+                load_enemy(
+                    id = enemy_id,
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y),
+                    target = self.player_sprite
+                )
 
     # handle scene change and spawn point set
-    def change_map(self, sprites_coll = None):
+    def change_map(self, sprites_coll = None, override = DEFAULT_MAP):
         if self.fade_out is None:
             try:
                 map_id = sprites_coll[0].properties["map_id"]
@@ -466,20 +507,28 @@ class GameView(arcade.View):
                     sprites_coll[0].position
                 )
                 else:
+                    if map_id == "hub_02" and self.map_id == "parkour_03":
+                        self.player_stats.end_parkour()
                     self.map_id = map_id
                     self.fade_out = 0
             except:
-                self.map_id = DEFAULT_MAP
+                self.map_id = override
                 self.fade_out = 0
     
     def respawn(self, reset):
         if reset:
             self.player_stats.health = self.player_stats.max_health
+
             self.death_text.text = "You died!"
             self.death_text.reset()
             self.death_text.update(0)
-        self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
 
+            self.player_stats.end_arena()
+            if self.map_id == "arena_01":
+                self.change_map(override = "arena_00")
+        
+        self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
+    
         self.scene["EffectDmg"].clear()
         self.scene["EffectFly"].clear()
         self.fade_in = 255

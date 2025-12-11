@@ -3,7 +3,7 @@ from entities.base_npc import BaseNpc
 from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
 from entities.enemies import IdleGround, IdleFlying, ChaserGround, ChaserFlying
 from core.shop import ShopItem
-from core.constants import DEFAULT_BG
+from core.constants import DEFAULT_BG, OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC
 import json
 
 def load_spawn(id):
@@ -139,3 +139,31 @@ def load_enemy(id, scene, position, target = None):
     finally:
         scene.add_sprite("Enemy", npc)
 
+def save_data(username, player_stats, operation):
+    try:
+        if operation == OP_LOAD_DT or operation == OP_SAVE_DT:
+            with open("../saves/data.json", "r") as file:
+                data = json.load(file)
+        else:
+            with open("../saves/scores.json", "r") as file:
+                data = json.load(file)
+        
+        if operation == OP_LOAD_DT:
+            player_stats.load_powers(data[username])
+    
+        if operation == OP_SAVE_DT:
+            # add/update data for current user
+            data[username] = player_stats.save_powers()
+            with open("../saves/data.json", "w") as file:
+                json.dump(data, file, indent = 4)
+        
+        if operation == OP_LOAD_SC:
+            player_stats.load_scores(data[username])
+        
+        if operation == OP_SAVE_SC:
+            data[username] = player_stats.save_scores()
+            with open("../saves/scores.json", "w") as file:
+                json.dump(data, file, indent = 4)
+
+    except Exception as e:
+        print(f"Error loading data: {e}")
