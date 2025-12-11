@@ -183,6 +183,7 @@ class PlayerStats():
         )
         
         if self.parkour_break or self.parkour_hiscore["hrs"] == -1:
+            self.parkour_break = True
             self.parkour_hiscore["hrs"] = self.parkour_score["hrs"]
             self.parkour_hiscore["min"] = self.parkour_score["min"]
             self.parkour_hiscore["sec"] = self.parkour_score["sec"]
@@ -203,7 +204,8 @@ class PlayerStats():
             self.arena_score["time"] > self.arena_hiscore["time"]
         )
 
-        if self.arena_break:
+        if self.arena_break or self.arena_hiscore["kill"] == -1:
+            self.arena_break = True
             self.arena_hiscore["kill"] = self.arena_score["kill"]
             self.arena_hiscore["time"] = self.arena_score["time"]
 

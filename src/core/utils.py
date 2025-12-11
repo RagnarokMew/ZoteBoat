@@ -3,7 +3,7 @@ from entities.base_npc import BaseNpc
 from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
 from entities.enemies import IdleGround, IdleFlying, ChaserGround, ChaserFlying
 from core.shop import ShopItem
-from core.constants import OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC
+from core.constants import DEFAULT_BG, OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC
 import json
 
 def load_spawn(id):
@@ -11,15 +11,31 @@ def load_spawn(id):
         with open("../assets/data/maps.json", "r") as file:
             data = json.load(file)
 
-        return (data[id]["spawn"])
+        return (data[id]["spawn"], data[id]["spawn"])
 
     except Exception as e:
         print(f"\033[91mCould not load next room:\033[93m {e}\033[0m")
         return []
 
+def load_bg(id, curr_bg):
+    base_path = "../assets/bg/"
+    if curr_bg is None:
+        curr_bg = arcade.load_texture(f"{base_path}{DEFAULT_BG}")
+    
+    try:
+        with open("../assets/data/maps.json", "r") as file:
+            new_bg = json.load(file)[id]["bg"]
+        
+        curr_bg = arcade.load_texture(f"{base_path}{new_bg}")
+    
+    # we expect this to fail often, since not all maps have a bg, so no error handling is needed
+    except: pass
+    
+    return curr_bg
+
 def load_npc(id, scene, position):
     try:
-        base_path = "../assets/sprites/"
+        base_path = "../assets/sprites/npc/"
         with open("../assets/data/npcs.json", "r") as file:
             data = json.load(file)
 
@@ -27,6 +43,8 @@ def load_npc(id, scene, position):
             scene = scene,
             id = id,
             sprite_path = f"{base_path}{data[id]["sprite_path"]}",
+            alt_sprite = f"{base_path}{data[id]["alt_sprite"]}",
+            anim = data[id]["anim"],
             position = position,
             scale = data[id]["scale"],
             name = data[id]["name"],
@@ -98,20 +116,20 @@ def load_enemy(id, scene, position, target = None):
             data = json.load(file)
 
         npc = enemies[data[id]["type"]](
-                scene=scene,
-                sprite_path=data[id]["sprite_path"],
-                target=target,
-                speed=data[id]["speed"],
-                wander_range=data[id]["wander_range"],
-                position=position,
-                scale=data[id]["scale"],
-                max_health=data[id]["max_health"],
-                damage=data[id]["damage"],
-                drop_curr1=data[id]["drop_curr1"],
-                drop_curr2=data[id]["drop_curr2"],
-                drop_curr3=data[id]["drop_curr3"],
-                drop_curr4=data[id]["drop_curr4"],
-                frame_duration=data[id]["frame_duration"]
+                scene = scene,
+                sprite_path = data[id]["sprite_path"],
+                target = target,
+                speed = data[id]["speed"],
+                wander_range = data[id]["wander_range"],
+                position = position,
+                scale = data[id]["scale"],
+                max_health = data[id]["max_health"],
+                damage = data[id]["damage"],
+                drop_curr1 = data[id]["drop_curr1"],
+                drop_curr2 = data[id]["drop_curr2"],
+                drop_curr3 = data[id]["drop_curr3"],
+                drop_curr4 = data[id]["drop_curr4"],
+                frame_duration = data[id]["frame_duration"]
             )
     except Exception as e:
         print(f"Error Load Enemy: {e}")
@@ -120,16 +138,6 @@ def load_enemy(id, scene, position, target = None):
         )
     finally:
         scene.add_sprite("Enemy", npc)
-
-def load_minigame(id):
-    try:
-        with open("../assets/data/maps.json", "r") as file:
-            data = json.load(file)
-        
-        return data[id]["minigame"]
-
-    except:
-        return None
 
 def save_data(username, player_stats, operation):
     try:

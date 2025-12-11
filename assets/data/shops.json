@@ -1,11 +1,15 @@
 {
-	"Example_Npc": [
+	"shop1_artisan": [
 		"Mask_1",
 		"Mask_2",
 		"Mask_3",
-		"Mask_4",
+		"Mask_4"
+	],
+	"shop2_warrior": [
 		"Nail_Upgrade_Kit_1",
-		"Nail_Upgrade_Kit_2",
+		"Nail_Upgrade_Kit_2"
+	],
+	"shop3_trader": [
 		"Wall_Jump",
 		"Double_Jump",
 		"Dash"

@@ -1,5 +1,7 @@
 import arcade
-from core.constants import RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING, P_ATTACK_COOLDOWN, P_WJUMP_SPEED, P_WJUMP_TIME, P_DASH_SPEED, P_DASH_TIME, P_DASH_COOLDOWN, PLAYER_JUMP_SPEED
+from core.constants import RIGHT_FACING, LEFT_FACING, UP_FACING, DOWN_FACING, SIDE_FACING,\
+    P_ATTACK_COOLDOWN, P_WJUMP_SPEED, P_WJUMP_TIME, P_DASH_SPEED, P_DASH_TIME, P_DASH_COOLDOWN, PLAYER_JUMP_SPEED
+from entities.effects import EffectDmg, EffectFly
 
 def load_texture_pair_h(path):
     return [
@@ -11,7 +13,7 @@ class PlayerSprite(arcade.Sprite):
 
     def __init__(self, scene, position = (0, 0), scale = 1.0):
         # TODO: Change temp asset to one of our own towards the end of development
-        self._load_textures(":resources:images/animated_characters/robot/robot")
+        self._load_textures("../assets/sprites/player")
 
         super().__init__(
             self.animations["idle"][0][0],
@@ -25,6 +27,8 @@ class PlayerSprite(arcade.Sprite):
         self.direction = RIGHT_FACING
         self.facing_direction = SIDE_FACING
 
+        self.dmg_effect = None
+        self.fly_effect = None
         self.current_state = "idle"
         self.cur_textures = self.animations["idle"]
         self.cur_tex_index = 0
@@ -72,6 +76,8 @@ class PlayerSprite(arcade.Sprite):
 
         elif phys.can_jump():
             phys.jump(PLAYER_JUMP_SPEED)
+            if phys.jumps_since_ground == 2:
+                self.fly_effect = EffectFly(self, self.scene)
 
     def dash(self):
         if self.stats.unlocks["Dash"] and self.dash_cooldown <= 0:
@@ -97,6 +103,10 @@ class PlayerSprite(arcade.Sprite):
                 phys.jumps_since_ground = max(
                     1, phys.jumps_since_ground - 1
                 )
+    
+    def get_hit(self, damage):
+        self.stats.health -= damage
+        self.dmg_effect = EffectDmg(parent = self, dmg_type = "player", scene = self.scene, scale = 1.2)
 
     def update(self, delta_time):
         # TODO: is this check necessary?
@@ -167,16 +177,16 @@ class PlayerSprite(arcade.Sprite):
         # wall climbing
 
         idle_textures = [
-            load_texture_pair_h(f"{base_path}_idle.png")
+            load_texture_pair_h(f"{base_path}/idle.png")
         ]
         walk_textures = [
-            load_texture_pair_h(f"{base_path}_walk{i}.png") for i in range(0,8)
+            load_texture_pair_h(f"{base_path}/walk_{i}.png") for i in range(0,5)
         ]
         jump_textures = [
-            load_texture_pair_h(f"{base_path}_jump.png")
+            load_texture_pair_h(f"{base_path}/jump.png")
         ]
         fall_textures = [
-            load_texture_pair_h(f"{base_path}_fall.png")
+            load_texture_pair_h(f"{base_path}/fall.png")
         ]
 
         self.animations = {
@@ -189,7 +199,7 @@ class PlayerSprite(arcade.Sprite):
 class PlayerAttack(arcade.Sprite):
 
     def __init__(self, scene, parent, scale=1.0):
-        self.attack_textures = self._load_textures("../assets/player/attack/")
+        self.attack_textures = self._load_textures("../assets/sprites/player/attack")
         self.cur_tex_index = 0
         super().__init__(
             self.attack_textures[self.cur_tex_index],
@@ -242,7 +252,7 @@ class PlayerAttack(arcade.Sprite):
 
     def _load_textures(self, base_path):
         textures = [
-            arcade.load_texture(f"{base_path}attack{i}.png") for i in range(2,4)
+            arcade.load_texture(f"{base_path}/attack_{i}.png") for i in range(0,2)
         ]
 
         return textures

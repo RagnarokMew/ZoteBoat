@@ -34,10 +34,12 @@ P_DASH_COOLDOWN = 0.35
 GRAVITY = 1
 PLAYER_MOVEMENT_SPEED = 5
 PLAYER_JUMP_SPEED = 20
+P_SLIDE = 5.5
 
 # --- Maps ---
-DEFAULT_MAP = "map_1"
+DEFAULT_MAP = "entry_00"
 DEFAULT_SPAWN = (200, 440)
+DEFAULT_BG = "fog.jpg"
 ENEMY_GND = [ "CrawlerIdle", "CrawlerChaser", "HuskIdle", "HuskChaser", "HuskBullyIdle", "HuskBullyChaser" ]
 ENEMY_AIR = [ "BlobbleIdle", "BlobbleChaser", "FlyIdle", "FlyChaser", "OblobbleIdle", "OblobbleChaser", "BuzzerIdle", "BuzzerChaser" ]
 

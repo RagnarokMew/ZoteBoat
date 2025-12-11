@@ -22,7 +22,7 @@ class MenuView(arcade.View):
             column_count = 1, row_count=5, horizontal_spacing=20, vertical_spacing=20
         )
 
-        self.background = arcade.load_texture("../assets/sprites/menu.jpg")
+        self.background = arcade.load_texture("../assets/bg/menu.jpg")
 
         self.grid.add(play_game_button, row = 0)
         self.grid.add(leader_board_button, row = 1)

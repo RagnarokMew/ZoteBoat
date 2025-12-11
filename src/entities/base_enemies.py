@@ -2,6 +2,7 @@ import arcade
 from arcade.color import BLACK
 from core.constants import GRAVITY, CELL_SIZE
 from entities.utils import load_texture_pair_h, count_files
+from entities.effects import EffectDmg
 
 class BaseEnemy(arcade.Sprite):
     def __init__(self, scene, sprite_path,
@@ -26,6 +27,7 @@ class BaseEnemy(arcade.Sprite):
         self.damage = damage
         self.max_health = max_health
         self.health = max_health
+        self.dmg_effect = None
         self.hp_text = arcade.Text(
             f"HP:{self.health}/{self.max_health}",
             x=self.center_x,
@@ -48,6 +50,11 @@ class BaseEnemy(arcade.Sprite):
 
         self.spawn_x, self.spawn_y = position
         self.ai_state = "idle"
+
+    def get_hit(self, damage, inv_time):
+        self.health -= damage
+        self.inv_time = inv_time
+        self.dmg_effect = EffectDmg(parent = self, scene = self.scene)
 
     def update_text(self):
         self.hp_text.text = f"HP:{self.health}/{self.max_health}"

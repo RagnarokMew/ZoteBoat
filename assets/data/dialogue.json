@@ -1,17 +1,69 @@
 {
-	"Example_Npc": [
-		"This is the first dialogue line of this npc",
-		"This is the second dialogue line of this npc",
-		"This is the last dialogue line of this npc"
+	"flav0_guide": [
+		"Hey, you... You're finally awake. You were trying to sail past our island, right?",
+		"I saw your boat-- I mean, your great ship, getting wrecked last night.",
+		"Well, I guess you'll be stuck here a while. I'm Gilbert, Watcher over this small town.",
+		"If you want to leave, you'll probably need our help. Don't worry, we'll do anything necessary. In fact, we may need your assistance as well.",
+		"You see, our town's been plagued by all sorts of nasty invaders, both wild bugs and plunderers. Maybe you could help us, if it's not too much to ask?",
+		"For now you should better head further inside, the others will be excited to meet you."
 	],
-
-	"Example_MG": [
-		"Hey there! Would you like to try my platforming challenge?\n(Z = accept, X = cancel)"
+	"flav0_sleepy": [
+		"*yawn* Oh, hello. Sorry, I must've dozed off...",
+		"Me? Name's Gertie. Pleased to meet you, Zote! That sure sounds like a tough name, haha.",
+		"So, you got shipwrecked here? And you want to leave?",
+		"I'd love it if you stayed here a bit longer, but I get it. I wouldn't want to be stuck somewhere far from home, either.",
+		"I don't think I can help you much, except for a tip: this island is kind of mean. So you should face your enemies meanly, too!",
+		"But... I believe in you! I can tell you're a mighty powerful type."
 	],
-	"Example_Scores": [
-		"You know... there were other adventurers who attempted this challenge before you.",
-		"Not all of them managed to get out, though.",
-		"Oh, you want to see your own score? Hmm, let's see...",
-		"NEW_HI_TEXT Your high-score is PARKOUR_TIME_HI; your last attempt was PARKOUR_TIME_CUR."
+	"flav1_sit": [
+		"Hello there... I'm Berthold. I used to be a warrior, just like you.",
+		"In fact, people admired my strength and skill so much, they even called me 'the Iron Mountain'.",
+		"I don't think I live up to that name anymore, these days...",
+		"...Maybe this island needs a new hero, and maybe it could be you."
+	],
+	"flav2_scheming": [
+		"What brings you here, bug? What do you seek? Hee hee...",
+		"Me? I am doing nothing suspicious, hee hee...",
+		"Now scram and let me think in peace! Never a quiet moment in these damned halls..."
+	],
+	"lb1_friend": [
+		"Heya! I'm Esther! The others told me a lot of great things about you!",
+		"Hmm, you seem like you'd enjoy a challenge from me. I love competitions between friends! So let me let you in on a secret.",
+		"D'you see that cave over there? It's huge and full of traps! I was barely able to explore a couple of rooms, but it's a lot of fun!",
+		"Oh, you've already passed through the cave? Well then, let's compare our times!",
+		"PARKOUR_SCORE_CHECK"
+	],
+	"lb2_tired": [
+		"Greetings, traveller-- Wait a minute, what are you doing here?",
+		"Shipwrecked? Ha! not surprising, coming from a weakling such as yourself.",
+		"As for me, I came here looking for a real challenge.",
+		"Of course that arena wasn't difficult for me at all, how insolent of you to say such a thing! I'm just tired after all this battling is all.",
+		"You've tried your nail in there, too? Alright then, let's see how well you did!",
+		"ARENA_SCORE_CHECK"
+	],
+	"mg1_challenger": [
+		"Ohoho, you thought I wouldn't notice you there, did ya? You can't catch me off guard, no sir.",
+		"I'm the fastest bug alive, Nuf the Nimble! Remember my name, for I've traveled the world to seek those who could challange me.",
+		"This cave was full of traps before I arrived, no doubt a challange by those who were expecting me. Hahaha, what fools, this was exactly what I was searching for!",
+		"Do you want to also check it out? Do be aware I made it harder, but that shouldn't be a challenge for any bug worth their feet.\n\n(Z to accept, X to decline)"
+	],
+	"mg2_guard": [
+		"Another blade wanders into this hall... A fool wandering to their death, or a warrior willing to test their mettle? Only time will tell...",
+		"I need no introduction, but you intrigue me so I'll make an exception. I am Ser Yvar, undefeated champion and caretaker of the Arena.",
+		"Have you also come to prove yourself, as many others have before you?\n\n(Z to accept, X to decline)"
+	],
+	"shop1_artisan": [
+		"A mask for the face... A face for the mask... no different, I say.",
+		"To create and to find are two sides of the same coin, yet El Arano's craft is eternal. Take a look and feast your eyes."
+	],
+	"shop2_warrior": [
+		"I, the Courageous Colewald, may look small, but despite my size I come from a renowned line of warriors.",
+		"Lately though, I've been doing less fighting and more taking care of weapons, making sure they stay sharp. Funny how things turn out, eh?",
+		"Anyways, if you want to become deadlier I'm your bug, but you'll have to part with your shinies for my services."
+	],
+	"shop3_trader": [
+		"I'm a wandering trader, a collector of mysteries, trinkets and wonderous artifacts. My name, Dorofey, is known throughout the whole world!",
+		"The trash-- I mean, the treasures I've collected throughout my travels are second to none. You are lucky that I'm even letting you see them!",
+		"But before you start perusing what I stole-- Uhh, I mean... Look, I don't do refunds, so don't even think about it, ok?"
 	]
 }

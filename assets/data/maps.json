@@ -1,21 +1,46 @@
 {
-    "template": {
-        "spawn": [ 0, 0 ],
-        "bg": ""
+    "entry_00": {
+        "spawn": [ 690, 520 ],
+        "bg": "shipwreck.jpg"
     },
-
-    "map_1": {
-        "spawn": [ 200, 440 ],
-        "bg": ""
+    "entry_01": {
+        "spawn": [ 440, 1420 ],
+        "bg": "shipwreck.jpg"
     },
-
-    "map_2": {
-        "spawn": [ 200, 300 ],
-        "bg": ""
+    "hub_00": {
+        "spawn": [ 1000, 800 ],
+        "bg": "fog.jpg"
     },
-
-    "map_3": {
-        "spawn": [ 200, 420 ],
-        "bg": ""
+    "hub_01": {
+        "spawn": [ 440, 800 ],
+        "bg": "fog.jpg"
+    },
+    "hub_02": {
+        "spawn": [ 450, 1300 ],
+        "bg": "fog.jpg"
+    },
+    "arena_00": {
+        "spawn": [ 480, 430 ],
+        "bg": "hall.png"
+    },
+    "arena_01": {
+        "spawn": [ 500, 1160 ],
+        "bg": "arena.png"
+    },
+    "parkour_00": {
+        "spawn": [ 500, 600 ],
+        "bg": "fog.jpg"
+    },
+    "parkour_01": {
+        "spawn": [ 480, 600 ],
+        "bg": "fog.jpg"
+    },
+    "parkour_02": {
+        "spawn": [ 440, 1200 ],
+        "bg": "fog.jpg"
+    },
+    "parkour_03": {
+        "spawn": [ 500, 1000 ],
+        "bg": "fog.jpg"
     }
 }

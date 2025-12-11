@@ -18,7 +18,7 @@ Once Tiled is run, you will be greeted by this screen:
 
 To begin, click `File > Open File or Project...` or `Ctrl+O` and open `zoteboat.tiled-project`. This file doesn't do much, except enable you to navigate the filesystem in the built-in panel on the left.
 
-Then, to create a new map for whatever area you want, click `New Map...` (or `File > New`) and save it under `assets/tilemaps` with the `.tmx` extension. The tile size should be 128x128 px. The map size can be infinite, since it doesn't affect performance, although you could restrain yourself if you want :)
+Then, to create a new map for whatever area you want, click `New Map...` (or `File > New`) and save it under `assets/tilemaps` with the `.tmx` extension. The tile size should be 128x128 px. The map size can be infinite while building it (which is recommended), but make sure to limit the map size before trying to play in it. To do so, go to `Map > Map Properties..` and uncheck the `Infinite` attribute.
 
 To move around the main view, use the scroll bars on the right and below (sadly, touchpad scrolling seems inconsistent). To zoom in/out, `Ctrl+scroll` will do the trick.
 
@@ -37,9 +37,12 @@ You may notice, while adding elements to a tileset, that sometimes, some tiles w
 You will notice that so far, all tiles will live on the same layer. To give our scene depth (and to later allow for special-purpose tiles), create a new *tile layer* by right-clicking on the upper-right panel, and selecting `New > Tile Layer`. The naming and order of the layers should be as follows:
 
 * Foreground
+* Background
 * Enemy Spawn <i style="font-size:11px;">&emsp;&emsp;(optional)</i>
+* Npc Spawn <i style="font-size:11px;">&ensp;&emsp;&emsp;&emsp;(optional)</i>
 * Load Zone
 * Wall Jump <i style="font-size:11px;">&emsp;&emsp;&emsp;&emsp;(optional)</i>
+* Hazard <i style="font-size:11px;">&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;(optional)</i>
 * Platforms
 
 Once you have your layers, click on the one you want to draw on, and start drawing the tiles.
@@ -49,13 +52,8 @@ Quite obviously, the `Platforms` layer contains the platforms: ground and walls.
 ## Specil Tiles
 
 ### Loadzones
-The `loadzone.tsx` file (or a similar one) will contain sprites for handling scene transitions. Technically, the sprites can be anything, as they will be hidden anyway. The only important part is having the following attributes:
 
-* `mapid` : name of the next room
-* `spawn_x` , `spawn_y` : spawn coordinates
-* `trans_x` , `trans_y` : transition speed (optional)
-
-These attributes should be of type `int`, with the exception of the first one, which is `string`. Importantly, the map name is ***the same*** as the tilemap file's name, without the `.tmx` extension.
+The `load.tsx` file (or a similar one) will contain sprites for handling scene transitions. Technically, the sprites can be anything, as they will be hidden anyway. The only important part is having the attribute `map_id`, representing the name of the next room. This name is ***the same*** as the tilemap file's name, without the `.tmx` extension.
 
 To create a new transition, simply add a new sprite to the set using the plus button: <img src="doc_img/new_load.png" style="padding: 1em">
 
@@ -65,11 +63,12 @@ Finally, place the tiles on the `Load Zone` layer of your map.
 
 ### Enemy Spawning
 
-The enemy spawn tiles are *very* similar to the transition tiles. The only exception is the attribute, which should be called `enemy_type` and be of type `string`. This will contain the name of the enemy to be spawned, which will be referenced in code.
+The enemy spawn tiles are very similar to the transition tiles. The only exception is the attribute, which should be called `enemy_type` and be of type `string`. This will contain the name of the enemy to be spawned, which will be referenced in code.
 
 ### Wall Jumping
 
-Lastly, wall jump tiles. There will be exactly two of these (left and right). There are no special properties or other information about these tiles, as there is no need to create any more besides the two. Just use them whenever needed! :)
+Lastly, wall jump tiles. There will be exactly two of these (left and right). There is no need to create any more besides the two, just place them next to a wall (on the `Wall Jump` layer) whenever needed! :)
+<img src="doc_img/wall_jump.png" style="padding: 1em">
 
 ## Ending Notes
 
