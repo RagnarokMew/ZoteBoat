@@ -22,7 +22,9 @@
 		"...Maybe this island needs a new hero, and maybe it could be you."
 	],
 	"flav2_scheming": [
-		"EVIL UGLY MF"
+		"Hehehe, what brings you here bug, what do you seek?",
+		"I for one am doing nothing suspicious, heh.",
+		"Now scram and let me think in peace."
 	],
 	"lb1_friend": [
 		"Heya! I'm Esther! The others told me a lot of great things about you!",
@@ -40,18 +42,28 @@
 		"ARENA_SCORE_CHECK"
 	],
 	"mg1_challenger": [
-		"race my racecourse"
+		"Ohoho, you thought I wouldn't notice you there, did ya? You can't catch me off guard no sir.",
+		"I'm the fastest bug alive, Nuf the Nimble! Remember my name, for I've traveled the world to seek those who could challange me.",
+		"This cave was full of traps before I arrived, no doubt a challange by those who were expecting me. Hahaha, what fools, this was exactly what I was searching for!",
+		"Do you want to also check it out? Do be aware I made it harder, but that shouldn't be a challenge for any bug worth their feet.\n(Z to accept, X to decline)"
 	],
 	"mg2_guard": [
-		"test your mettle bro"
+		"Another blade wanders into this hall... A fool wandering to their death, or a warrior willing to test their mettle? Only time will tell...",
+		"I need no introduction, but you intrigue me so I'll make an exception. I am Ser Yvar, undefeated champion and caretaker of the Arena.",
+		"Have you also come to prove yourself as many others have before you?\n(Z to accept, X to decline)"
 	],
 	"shop1_artisan": [
-		"im old!"
+		"A mask for a face, a face for the mask, no different I say.",
+		"To create and to find are two sides of the same coin, yet El Arano's craft is eternal. Take a look and feast your eyes."
 	],
 	"shop2_warrior": [
-		"im small!"
+		"I, the Courageous Colewald, may look small, but despite my size I come from a renowned line of warriors.",
+		"Lately though, I've been doing less fighting and more taking care of weapons, making sure they stay sharp. Funny how things turn out, eh?",
+		"Anyways, if you want to become deadlier I'm your bug, but you'll have to part with your shinies for my services."
 	],
 	"shop3_trader": [
-		"im russian!"
+		"I'm a wandering trader, a collector of mysteries, trinkets and wonderous artifacts. My name, Dorofey, is known throughout the whole world!",
+		"The trash-- I mean the treasures I've collected throughout my travels are second to none, you are lucky that I'm even letting you see them.",
+		"But before you start perusing what I stole-- Uhh I mean... Look I don't do refunds so don't even think about it, ok?"
 	]
 }
