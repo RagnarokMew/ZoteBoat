@@ -115,7 +115,17 @@ class DialogueMenu():
         try:
             next_text = self.content[self.text_index]
 
-            if stats is not None:
+            if stats is not None:                
+                next_text = next_text.replace("ARENA_SCORE_CHECK",
+                "NEW_HI_TEXT Your current score is ARENA_KILL_CUR kills in ARENA_TIME_CUR seconds, and your best is ARENA_KILL_HI in ARENA_TIME_HI."
+                if stats.arena_hiscore["kill"] != -1 else
+                "You liar! You've never even stepped foot in that arena, have you? Come back when you're a little, mmm... braver!")
+
+                next_text = next_text.replace("PARKOUR_SCORE_CHECK",
+                "NEW_HI_TEXT Your last attempt was PARKOUR_TIME_CUR, while your best run was PARKOUR_TIME_HI."
+                if stats.parkour_hiscore["hrs"] != -1 else
+                "Hey, listen! You almost tricked me there, but I know you haven't actually been in the cave. Don't worry though, your secret's safe with me! Return whenever you decide to give my challenge a go!")
+
                 next_text = next_text.replace("NEW_HI_TEXT",
                 "Wow, that's even better than before!" if stats.parkour_break or stats.arena_break
                 else "Well, you've had a great performance, but maybe you could do better next time.")
