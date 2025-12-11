@@ -76,12 +76,18 @@ TODO: screenshots and video links
 
 ## Team Contribution
 
+The whole team has worked very hard to bring ZoteBoat to the state it currently
+find itself in. The list below is of course non-exhaustive and we encourage
+anyone curious to explore the Commit History, PRs, GitHub and use `git blame`
+on the project files
+
 ### RagnarokMew (Stefan Simion 324CC)
 
 - application entrypoint
 - main menu
+  - leaderboard, credits, play, quit, options
 - json loading logic
-    - npc, dialogue, shop
+  - npc, dialogue, shop
 - show enemy hp logic
 - player hp, currencies
 - fading text class
@@ -98,11 +104,31 @@ TODO: screenshots and video links
 - player attack assets
 - enemy types data
 - npc dialogue data
+- npc shop data
 - item data
 
 ### Luxaks (Lucas Ciuca 324CC)
 
-TODO
+- advanced player movement
+  - dash, walljump, doublejump, pogo
+- parkour minigame
+- arena minigame
+- map changing logic
+- fade in / out logic
+- game saving & loading
+- player damaged effects
+- enemy damaged effects
+- player death effects
+- json spawn loading logic
+- enemy types data
+- npc dialogue data
+- item data
+- npc data
+- npc shop data
+- npc assets
+- player assets
+- map json data
+- tilemaps & tilesets
 
 ## Implementation Difficulties
 
