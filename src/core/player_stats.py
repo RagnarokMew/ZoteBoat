@@ -219,8 +219,8 @@ class PlayerStats():
             self.arena_hiscore["time"] = self.arena_score["time"]
 
     def update_arena(self, delta_time):
-        self.arena_timer = min(self.arena_timer + delta_time, 60)
-        if self.arena_start and self.arena_timer >= 60:
+        self.arena_timer = min(self.arena_timer + delta_time, 300)
+        if self.arena_start and self.arena_timer >= 300:
             self.end_arena()
             return True
         return False

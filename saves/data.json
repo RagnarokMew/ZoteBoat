@@ -22,15 +22,15 @@
         "mask_3": false,
         "mask_4": false,
         "hp": 5,
-        "nail_1": false,
+        "nail_1": true,
         "nail_2": false,
-        "dmg": 1,
-        "wall": false,
-        "dblj": false,
-        "dash": false,
-        "curr_1": 143,
-        "curr_2": 147,
-        "curr_3": 177,
-        "curr_4": 167
+        "dmg": 3,
+        "wall": true,
+        "dblj": true,
+        "dash": true,
+        "curr_1": 347,
+        "curr_2": 424,
+        "curr_3": 489,
+        "curr_4": 453
     }
 }

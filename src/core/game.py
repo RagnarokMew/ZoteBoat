@@ -408,6 +408,7 @@ class GameView(arcade.View):
         self.update_fade()
 
         if len(self.scene["Enemy"]) == 0 and self.map_id == "arena_01":
+            self.player_sprite.position = (500, 2200)
             self.spawn_enemies()
 
         # TODO: Refactor the collision code at a later date
