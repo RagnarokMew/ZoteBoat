@@ -3,16 +3,22 @@ from pyglet.graphics import Batch
 from core.constants import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
 
 class BaseNpc(arcade.Sprite):
-    def __init__(self, scene, id, sprite_path=":resources:/images/animated_characters/male_person/malePerson_idle.png", position=(128, 128), scale=1, name="NPC", title="Title", has_shop=False):
+    def __init__(self, scene, id,
+            sprite_path = ":resources:/images/animated_characters/male_person/malePerson_idle.png",
+            position = (128, 128), scale = 1, name = "NPC", title = "Title",
+            has_shop = False, has_game = False, game_map = None
+        ):
         super().__init__(
             sprite_path,
-            scale=scale
+            scale = scale
         )
 
         self.id = id
         self.name = name
         self.title = title
         self.has_shop = has_shop
+        self.has_game = has_game
+        self.game_map = game_map
         self.scene = scene
         self.center_x, self.center_y = position
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -23,16 +29,17 @@ class BaseNpc(arcade.Sprite):
         self.physics_engine.update()
 
 class DialogueMenu():
-    def __init__(self,
-                 id,
-                 content=["This is a dialogue text", "Another text"],
-                 npc_name="NPC_NAME",
-                 npc_title="NPC_TITLE",
-                 before_shop_interaction=False
-                 ):
+    def __init__(self, id,
+            content = ["This is a dialogue text", "Another text"],
+            npc_name = "NPC_NAME", npc_title = "NPC_TITLE",
+            before_shop_interaction = False, before_game = False, game_map = None
+        ):
         self.npc_id = id
         self.npc_name = npc_name
         self.before_shop_interation = before_shop_interaction
+        self.before_game = before_game
+        self.game_map = game_map
+        self.game_quit = False
         self.content = content
         self.text = None
         self.text_index = 0
@@ -102,12 +109,49 @@ class DialogueMenu():
             batch=self.batch
         )
 
-        self.next()
+        self.next(stats = None)
 
-    def next(self):
+    def next(self, stats):
         try:
+            next_text = self.content[self.text_index]
+
+            if stats is not None:                
+                next_text = next_text.replace("ARENA_SCORE_CHECK",
+                "NEW_HI_TEXT Your current score is ARENA_KILL_CUR kills in ARENA_TIME_CUR seconds, and your best is ARENA_KILL_HI in ARENA_TIME_HI."
+                if stats.arena_hiscore["kill"] != -1 else
+                "You liar! You've never even stepped foot in that arena, have you? Come back when you're a little, mmm... braver!")
+
+                next_text = next_text.replace("PARKOUR_SCORE_CHECK",
+                "NEW_HI_TEXT Your last attempt was PARKOUR_TIME_CUR, while your best run was PARKOUR_TIME_HI."
+                if stats.parkour_hiscore["hrs"] != -1 else
+                "Hey, listen! You almost tricked me there, but I know you haven't actually been in the cave. Don't worry though, your secret's safe with me! Return whenever you decide to give my challenge a go!")
+
+                next_text = next_text.replace("NEW_HI_TEXT",
+                "Wow, that's even better than before!" if stats.parkour_break or stats.arena_break
+                else "Well, you've had a great performance, but maybe you could do better next time.")
+
+                kill_cur = stats.arena_score["kill"]
+                time_cur = stats.arena_score["time"]
+                kill_hi = stats.arena_hiscore["kill"]
+                time_hi = stats.arena_hiscore["time"]
+
+                next_text = next_text.replace("ARENA_KILL_CUR", f"{kill_cur}")
+                next_text = next_text.replace("ARENA_TIME_CUR", f"{time_cur}")
+                next_text = next_text.replace("ARENA_KILL_HI", f"{kill_hi}")
+                next_text = next_text.replace("ARENA_TIME_HI", f"{time_hi}")
+
+                hrs_cur = stats.parkour_score["hrs"]
+                min_cur = stats.parkour_score["min"]
+                sec_cur = stats.parkour_score["sec"]
+                hrs_hi = stats.parkour_hiscore["hrs"]
+                min_hi = stats.parkour_hiscore["min"]
+                sec_hi = stats.parkour_hiscore["min"]
+
+                next_text = next_text.replace("PARKOUR_TIME_HI", f"{hrs_hi}:{min_hi}:{sec_hi}")
+                next_text = next_text.replace("PARKOUR_TIME_CUR", f"{hrs_cur}:{min_cur}:{sec_cur}")
+
             self.text = arcade.Text(
-                self.content[self.text_index],
+                next_text,
                 x=SCREEN_WIDTH // 6 + 24,
                 y=SCREEN_HEIGHT * 5 // 6 + 36,
                 color=arcade.color.WHITE,
@@ -122,6 +166,29 @@ class DialogueMenu():
         except:
             self.text = "Ok, bye"
             return False
+
+    def bye(self, accept):
+        if not self.game_quit:
+            self.game_quit = True
+            self.game_accept = accept
+
+            self.text = arcade.Text(
+                "I'll take you there right away." if accept else
+                "Alright then, good luck on your adventures.",
+                x=SCREEN_WIDTH // 6 + 24,
+                y=SCREEN_HEIGHT * 5 // 6 + 36,
+                color=arcade.color.WHITE,
+                font_size=14,
+                width=SCREEN_WIDTH * 2 // 3 - 48,
+                align="left",
+                multiline=True,
+                batch=self.batch
+            )
+
+            return (False, False)
+    
+        else:
+            return (True, self.game_accept)
 
     def draw(self):
         arcade.draw_rect_filled(

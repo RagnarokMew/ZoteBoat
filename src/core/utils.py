@@ -3,6 +3,7 @@ from entities.base_npc import BaseNpc
 from entities.base_enemies import GroundEnemy, FlyingEnemy, BaseEnemy
 from entities.enemies import IdleGround, IdleFlying, ChaserGround, ChaserFlying
 from core.shop import ShopItem
+from core.constants import OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC
 import json
 
 def load_spawn(id):
@@ -10,12 +11,7 @@ def load_spawn(id):
         with open("../assets/data/maps.json", "r") as file:
             data = json.load(file)
 
-        # TODO: possibly remove trans_x altogether
-        # this would make data[id]["speed"] a single element
-        # which can be placed directly in the returned tuple
-        (trans_x, trans_y) = data[id]["speed"]
-
-        return (data[id]["spawn"], trans_y)
+        return (data[id]["spawn"])
 
     except Exception as e:
         print(f"\033[91mCould not load next room:\033[93m {e}\033[0m")
@@ -36,13 +32,15 @@ def load_npc(id, scene, position):
             name = data[id]["name"],
             title = data[id]["title"],
             has_shop = data[id]["has_shop"],
-            )
+            has_game = data[id]["has_game"],
+            game_map = data[id]["game_map"]
+        )
     except Exception as e:
         npc = BaseNpc(scene)
         print(f"Error Load Npc: {e}")
     finally:
         scene.add_sprite("NPC", npc)
-        print(position)
+        print(f"{id}: {position}")
 
 def load_dialogue(id):
     try:
@@ -123,3 +121,41 @@ def load_enemy(id, scene, position, target = None):
     finally:
         scene.add_sprite("Enemy", npc)
 
+def load_minigame(id):
+    try:
+        with open("../assets/data/maps.json", "r") as file:
+            data = json.load(file)
+        
+        return data[id]["minigame"]
+
+    except:
+        return None
+
+def save_data(username, player_stats, operation):
+    try:
+        if operation == OP_LOAD_DT or operation == OP_SAVE_DT:
+            with open("../saves/data.json", "r") as file:
+                data = json.load(file)
+        else:
+            with open("../saves/scores.json", "r") as file:
+                data = json.load(file)
+        
+        if operation == OP_LOAD_DT:
+            player_stats.load_powers(data[username])
+    
+        if operation == OP_SAVE_DT:
+            # add/update data for current user
+            data[username] = player_stats.save_powers()
+            with open("../saves/data.json", "w") as file:
+                json.dump(data, file, indent = 4)
+        
+        if operation == OP_LOAD_SC:
+            player_stats.load_scores(data[username])
+        
+        if operation == OP_SAVE_SC:
+            data[username] = player_stats.save_scores()
+            with open("../saves/scores.json", "w") as file:
+                json.dump(data, file, indent = 4)
+
+    except Exception as e:
+        print(f"Error loading data: {e}")
