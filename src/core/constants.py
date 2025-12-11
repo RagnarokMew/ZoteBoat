@@ -37,6 +37,6 @@ PLAYER_JUMP_SPEED = 20
 P_SLIDE = 5.5
 
 # --- Maps ---
-DEFAULT_MAP = "parkour_01"
+DEFAULT_MAP = "hub_00"
 DEFAULT_SPAWN = (200, 440)
 DEFAULT_BG = "fog.jpg"

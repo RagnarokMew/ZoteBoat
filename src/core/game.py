@@ -34,6 +34,7 @@ class GameView(arcade.View):
         self.gui_camera = None
         self.health_text = None
         self.currency_text = None
+        self.death_text = None
 
         self.up_pressed = False
         self.down_pressed = False
@@ -47,7 +48,6 @@ class GameView(arcade.View):
 
         self.fade_out = None
         self.fade_in = None
-        self.next_room = True
 
         self.player_interaction_state = P_GAMEPLAY
         self.active_menu = None
@@ -78,11 +78,10 @@ class GameView(arcade.View):
             exit(1)
     
         self.player_sprite = player.PlayerSprite(
-            self.scene, self.player_spawn[0]
+            self.scene, self.player_spawn[1]
         )
         self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
-        self.player_sprite.change_y = self.player_spawn[1]
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite,
@@ -104,7 +103,7 @@ class GameView(arcade.View):
             self.scene["Enemy Spawn"].visible = False
             for spawn in self.scene["Enemy Spawn"]:
                 enemy_id = spawn.properties["id"]
-                if enemy_id is not "random": load_enemy(
+                if enemy_id != "random": load_enemy(
                     id = enemy_id,
                     scene = self.scene,
                     position = (spawn.center_x, spawn.center_y),
@@ -130,6 +129,7 @@ class GameView(arcade.View):
             font_size = 20,
             color = arcade.color.ALABAMA_CRIMSON
         )
+
         self.currency_text = FadingText(
             f"currency1: {self.player_stats.currency_1}\ncurrency2: {self.player_stats.currency_2}\ncurrency3: {self.player_stats.currency_3}\ncurrency4: {self.player_stats.currency_4}",
             x = 5,
@@ -138,14 +138,24 @@ class GameView(arcade.View):
             color = arcade.color.SAE
         )
         self.currency_text.duration = self.currency_text.trans_duration = 0
-
+        
+        self.death_text = FadingText(
+            "You died!",
+            x = SCREEN_WIDTH // 2 - 100,
+            y = SCREEN_HEIGHT // 2,
+            duration = 2,
+            font_size = 40,
+            color = arcade.color.CERISE
+        )
+        self.death_text.duration = self.death_text.trans_duration = 0
+        
     def update_fade(self):
         if self.fade_out is not None:
             self.fade_out += 10
             if self.fade_out > 255:
                 self.fade_out = None
                 self.fade_in = 255
-                if self.next_room: self.setup()
+                self.setup()
 
         if self.fade_in is not None:
             self.fade_in -= 5
@@ -170,8 +180,8 @@ class GameView(arcade.View):
         self.camera.use()
 
         arcade.draw_texture_rect(self.background, arcade.LBWH(
-            self.player_sprite.center_x - SCREEN_WIDTH // 2,
-            self.player_sprite.center_y - SCREEN_HEIGHT // 2,
+            self.camera.position[0] - SCREEN_WIDTH // 2,
+            self.camera.position[1] - SCREEN_HEIGHT // 2,
             SCREEN_WIDTH, SCREEN_HEIGHT
         ))
 
@@ -192,6 +202,8 @@ class GameView(arcade.View):
         self.draw_fading()
 
         self.health_text.draw()
+        if self.death_text:
+            self.death_text.draw()
         if self.currency_text:
             self.currency_text.draw()
 
@@ -359,6 +371,9 @@ class GameView(arcade.View):
         self.scene["EffectFly"].update(delta_time)
 
         self.camera.position = self.player_sprite.position
+        min_x = max(self.camera.position[0], self.player_spawn[0][0] + 200)
+        min_y = max(self.camera.position[1], self.player_spawn[0][1] - 50)
+        self.camera.position = arcade.Vec2(min_x, min_y + 50)
 
         loadzone_collision = arcade.check_for_collision_with_list(
                 self.player_sprite,
@@ -366,8 +381,7 @@ class GameView(arcade.View):
                 method = 1
         )
 
-        if loadzone_collision:
-            self.change_map(loadzone_collision)
+        if loadzone_collision: self.change_map(loadzone_collision)
 
         self.update_fade()
 
@@ -417,6 +431,9 @@ class GameView(arcade.View):
 
         if self.currency_text and self.player_interaction_state != P_SHOP:
             self.currency_text.update(delta_time)
+        
+        if self.death_text:
+            self.death_text.update(delta_time)
 
         hazard_collision = None
         if "Hazard" in self.scene:
@@ -425,25 +442,35 @@ class GameView(arcade.View):
             )
             if hazard_collision: self.player_sprite.get_hit(damage = 1)
 
-        if hazard_collision or self.player_stats.health <= 0:
-            self.respawn(reset = False)
+        if self.player_stats.health <= 0: self.respawn()
+        elif hazard_collision: self.respawn(reset = False)
 
-    # scene change handler (set new map id)
+    # handle scene change and spawn point set
     def change_map(self, sprites_coll = None):
         if self.fade_out is None:
-            self.fade_out = 0
-            self.next_room = True
             try:
-                self.map_id = sprites_coll[0].properties["map_id"]
+                map_id = sprites_coll[0].properties["map_id"]
+                if map_id == "spawn": self.player_spawn = (
+                    self.player_spawn[0],
+                    sprites_coll[0].position
+                )
+                else:
+                    self.map_id = map_id
+                    self.fade_out = 0
             except:
                 self.map_id = DEFAULT_MAP
+                self.fade_out = 0
     
     def respawn(self, reset = True):
-        if reset: self.player_stats.health = self.player_stats.max_health
+        if reset:
+            self.player_stats.health = self.player_stats.max_health
+            self.death_text.text = "You died!"
+            self.death_text.reset()
+            self.death_text.update(0)
         self.health_text.text = f"HP: {self.player_stats.health} / {self.player_stats.max_health}"
+
         self.scene["EffectDmg"].clear()
         self.scene["EffectFly"].clear()
-        self.player_sprite.position = self.player_spawn[0]
-        self.fade_out = 0
-        self.next_room = False
-        self.did_respawn = True
+        self.fade_in = 255
+
+        self.player_sprite.position = self.player_spawn[0 if reset else 1]

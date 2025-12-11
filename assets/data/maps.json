@@ -1,34 +1,56 @@
 {
-    "template": {
-        "spawn": [ 0, 0 ],
-        "speed": [ 0, 0 ],
-        "enemy": [],
-        "bg": ""
-    },
-    "map_1": {
-        "spawn": [ 200, 440 ],
-        "speed": [ 0, 0 ],
+    "entry_00": {
+        "spawn": [ 690, 520 ],
         "enemy": [],
         "bg": "shipwreck.jpg"
     },
-
-    "map_2": {
-        "spawn": [ 200, 300 ],
-        "speed": [ 0, 25 ],
-        "enemy": [
-            "Enemy"
-        ]
-    },
-
-    "map_3": {
-        "spawn": [ 200, 420 ],
-        "speed": [ 0, 0 ],
+    "entry_01": {
+        "spawn": [ 440, 1420 ],
         "enemy": [],
-        "bg": ""
+        "bg": "shipwreck.jpg"
+    },
+    "hub_00": {
+        "spawn": [ 1000, 800 ],
+        "enemy": [],
+        "bg": "fog.jpg"
+    },
+    "hub_01": {
+        "spawn": [ 0, 0 ],
+        "enemy": [],
+        "bg": "fog.jpg"
+    },
+    "hub_02": {
+        "spawn": [ 0, 0 ],
+        "enemy": [],
+        "bg": "fog.jpg"
+    },
+    "arena_00": {
+        "spawn": [ 0, 0 ],
+        "enemy": [],
+        "bg": "arena.png"
+    },
+    "arena_01": {
+        "spawn": [ 0, 0 ],
+        "enemy": [],
+        "bg": "arena.png"
+    },
+    "parkour_00": {
+        "spawn": [ 0, 0 ],
+        "enemy": [],
+        "bg": "fog.jpg"
     },
     "parkour_01": {
-        "spawn": [ 600, 600 ],
-        "speed": [ 0, 0 ],
+        "spawn": [ 480, 600 ],
+        "enemy": [],
+        "bg": "fog.jpg"
+    },
+    "parkour_02": {
+        "spawn": [ 0, 0 ],
+        "enemy": [],
+        "bg": "fog.jpg"
+    },
+    "parkour_03": {
+        "spawn": [ 0, 0 ],
         "enemy": [],
         "bg": "fog.jpg"
     }

@@ -4,12 +4,6 @@
  <tile id="1">
   <image source="../sprites/ground/stoneUp.png" width="128" height="128"/>
  </tile>
- <tile id="4">
-  <image source="../sprites/ground/stoneRampLeft.png" width="128" height="128"/>
- </tile>
- <tile id="5">
-  <image source="../sprites/ground/stoneRampRight.png" width="128" height="128"/>
- </tile>
  <tile id="6">
   <image source="../sprites/ground/stoneCenter.png" width="128" height="128"/>
  </tile>
@@ -22,9 +16,6 @@
  <tile id="9">
   <image source="../sprites/ground/stoneDown.png" width="128" height="128"/>
  </tile>
- <tile id="10">
-  <image source="../sprites/ground/spikes.png" width="128" height="128"/>
- </tile>
  <tile id="11">
   <image source="../sprites/ground/stonePeak.png" width="128" height="128"/>
   <objectgroup draworder="index" id="3">
@@ -32,5 +23,14 @@
     <polygon points="-0.0568182,9.22727 -63.913,128.043 64.087,128.043"/>
    </object>
   </objectgroup>
+ </tile>
+ <tile id="12">
+  <image source="../sprites/ground/spikes.png" width="128" height="128"/>
+ </tile>
+ <tile id="13">
+  <image source="../sprites/ground/spikesLeft.png" width="128" height="128"/>
+ </tile>
+ <tile id="14">
+  <image source="../sprites/ground/spikesRight.png" width="128" height="128"/>
  </tile>
 </tileset>

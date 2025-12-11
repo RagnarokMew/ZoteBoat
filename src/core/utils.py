@@ -11,12 +11,7 @@ def load_spawn(id):
         with open("../assets/data/maps.json", "r") as file:
             data = json.load(file)
 
-        # TODO: possibly remove trans_x altogether
-        # this would make data[id]["speed"] a single element
-        # which can be placed directly in the returned tuple
-        (trans_x, trans_y) = data[id]["speed"]
-
-        return (data[id]["spawn"], trans_y)
+        return (data[id]["spawn"], data[id]["spawn"])
 
     except Exception as e:
         print(f"\033[91mCould not load next room:\033[93m {e}\033[0m")
@@ -30,7 +25,7 @@ def load_bg(id, curr_bg):
     try:
         with open("../assets/data/maps.json", "r") as file:
             new_bg = json.load(file)[id]["bg"]
-
+        
         curr_bg = arcade.load_texture(f"{base_path}{new_bg}")
     
     # we expect this to fail often, since not all maps have a bg, so no error handling is needed
@@ -121,20 +116,20 @@ def load_enemy(id, scene, position, target = None):
             data = json.load(file)
 
         npc = enemies[data[id]["type"]](
-                scene=scene,
-                sprite_path=data[id]["sprite_path"],
-                target=target,
-                speed=data[id]["speed"],
-                wander_range=data[id]["wander_range"],
-                position=position,
-                scale=data[id]["scale"],
-                max_health=data[id]["max_health"],
-                damage=data[id]["damage"],
-                drop_curr1=data[id]["drop_curr1"],
-                drop_curr2=data[id]["drop_curr2"],
-                drop_curr3=data[id]["drop_curr3"],
-                drop_curr4=data[id]["drop_curr4"],
-                frame_duration=data[id]["frame_duration"]
+                scene = scene,
+                sprite_path = data[id]["sprite_path"],
+                target = target,
+                speed = data[id]["speed"],
+                wander_range = data[id]["wander_range"],
+                position = position,
+                scale = data[id]["scale"],
+                max_health = data[id]["max_health"],
+                damage = data[id]["damage"],
+                drop_curr1 = data[id]["drop_curr1"],
+                drop_curr2 = data[id]["drop_curr2"],
+                drop_curr3 = data[id]["drop_curr3"],
+                drop_curr4 = data[id]["drop_curr4"],
+                frame_duration = data[id]["frame_duration"]
             )
     except Exception as e:
         print(f"Error Load Enemy: {e}")

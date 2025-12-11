@@ -8,7 +8,7 @@
 		"sprite_path": "flav0_guide.png",
 		"alt_sprite": "",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.8
 	},
 	"flav0_sleepy": {
 		"name": "Gertie",
@@ -19,7 +19,7 @@
 		"sprite_path": "flav0_sleepy_0.png",
 		"alt_sprite": "flav0_sleepy_1.png",
 		"anim": false,
-		"scale": 0.5
+		"scale": 0.7
 	},
 	"flav1_sit": {
 		"name": "Berthold",
@@ -96,7 +96,7 @@
 		"sprite_path": "shop1_artisan_0.png",
 		"alt_sprite": "shop1_artisan_1.png",
 		"anim": true,
-		"scale": 0.2
+		"scale": 0.55
 	},
 	"shop2_warrior": {
 		"name": "Courageous Colewald",
