@@ -116,6 +116,18 @@ movement mechanics.
 
 ### Arcade Pixel Coordinates
 
-TODO
+Another hurdle we encountered was the way Arcade handles coordinates based on
+the pixel location on the map.
+
+This was an issue for drawing the shop menu where our implementation is dependent
+on rectangle sprites and text objects being drawn on their correct positions.
+Due to the lack of precise ways to put them in a Layout we were forced to rely
+on a UI centered Camera object which resulted in unmaintainable placement
+equations, should we have implemented a changeable screen resolution, despite
+attempts to rectify this by using constants such as the screen width & height.
+
+This also affected our tilemaps greatly as Tiled (the map editor recommended 
+for Arcade) uses a different coordinate / grid system compared to Arcade which
+forced us to play around with coordinates to get them right for loading.
 
 TODO: Any extra sections we wish to include
