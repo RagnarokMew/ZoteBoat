@@ -64,11 +64,11 @@ but we believe the user should be able to choose
 
 The control scheme matches the one of Hollow Knight being:
 
-- `WASD` - movement keys
+- `Arrow Keys` - movement keys
 - `Z` - jumping & double jumping & walljumping
 - `X` - attack
 - `C` - dash
-- `F5` - quit to main menu
+- `Esc` - quit to main menu
 
 ## Media
 
