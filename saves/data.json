@@ -11,10 +11,10 @@
         "wall": false,
         "dblj": false,
         "dash": false,
-        "curr_1": 27,
-        "curr_2": 30,
-        "curr_3": 36,
-        "curr_4": 36
+        "curr_1": 0,
+        "curr_2": 0,
+        "curr_3": 0,
+        "curr_4": 0
     },
     "Luke": {
         "mask_1": false,
