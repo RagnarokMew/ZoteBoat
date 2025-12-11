@@ -176,4 +176,13 @@ This also affected our tilemaps greatly as Tiled (the map editor recommended
 for Arcade) uses a different coordinate / grid system compared to Arcade which
 forced us to play around with coordinates to get them right for loading.
 
-TODO: Any extra sections we wish to include
+### Overly Ambitious Goals
+
+We were overly ambitious in our initial goals not considering in our original
+implementation plan. Some features needed rewriting, others took more time and
+research than anticipated and we thought of features that weren't originally
+planned. All of this threw us off schedule and we had to cut corners (the other
+2 minigames that were originally planned).
+
+Despite cutting 2 minigames we have achieved and learnt a lot about developing
+a project of this scope.
