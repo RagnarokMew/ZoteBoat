@@ -173,7 +173,7 @@ class DialogueMenu():
             self.game_accept = accept
 
             self.text = arcade.Text(
-                "Great! I'll get you there right away." if accept else
+                "I'll take you there right away." if accept else
                 "Alright then, good luck on your adventures.",
                 x=SCREEN_WIDTH // 6 + 24,
                 y=SCREEN_HEIGHT * 5 // 6 + 36,

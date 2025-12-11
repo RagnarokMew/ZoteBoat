@@ -1,7 +1,7 @@
 import arcade
 from entities import player
 from core.constants import GRAVITY, LEFT_FACING, PLAYER_MOVEMENT_SPEED, PLAYER_JUMP_SPEED, RIGHT_FACING, TILE_SCALING, UP_FACING, DOWN_FACING, SIDE_FACING, SCREEN_HEIGHT, DEFAULT_MAP, DEFAULT_SPAWN, P_GAMEPLAY, P_DIALOGUE, P_SHOP,\
-    OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC
+    OP_LOAD_DT, OP_SAVE_DT, OP_LOAD_SC, OP_SAVE_SC, ENEMY_GND, ENEMY_AIR
 from core.player_stats import PlayerStats
 from entities.base_enemies import GroundEnemy
 from entities.base_npc import BaseNpc, DialogueMenu
@@ -9,6 +9,7 @@ from ui.text import FadingText
 from core.shop import ShopMenu
 from core.utils import load_spawn, load_enemy, load_minigame,\
     load_npc, load_dialogue, load_shop_items, save_data
+import random
 
 class GameView(arcade.View):
 
@@ -82,23 +83,12 @@ class GameView(arcade.View):
             exit(1)
 
         self.player_sprite = player.PlayerSprite(
-            self.scene, player_spawn[0]
+            self.scene, player_spawn
         )
         self.player_sprite.stats = self.player_stats
         self.scene.add_sprite("Player", self.player_sprite)
-        self.player_sprite.change_y = player_spawn[1]
 
-        # TODO: improve enemy spawn in new file, merge ragnarokmew/base-enemies
-        try:
-            for spawn in self.scene["Enemy Spawn"]:
-                # TODO: Get enemy id based on enemy spawn sprite
-                load_enemy(
-                    id = "Example_Enemy_1",
-                    scene = self.scene,
-                    position = (spawn.center_x, spawn.center_y),
-                    target = self.player_sprite
-                )
-        except: pass
+        self.spawn_enemies()
 
         # TODO: Implement NPC spawn
         try:
@@ -320,7 +310,8 @@ class GameView(arcade.View):
     def on_update(self, delta_time):
         self.physics_engine.update()
         px_upd = self.player_sprite.update(delta_time)
-        self.player_stats.update(delta_time)
+        if self.player_stats.update_arena(delta_time):
+            self.change_map(override = "arena_00")
 
         # NOTE: New left-right movement handler moved here
         # to fix all movement related bugs
@@ -360,6 +351,9 @@ class GameView(arcade.View):
 
         self.update_fade()
 
+        if len(self.scene["Enemy"]) == 0 and self.map_id == "arena_01":
+            self.spawn_enemies()
+
         # TODO: Refactor the collision code at a later date
         hit = None
 
@@ -380,6 +374,8 @@ class GameView(arcade.View):
                 enemy.update_text()
 
                 if enemy.health <= 0:
+                    self.player_stats.arena_kill()
+
                     self.player_stats.currency_1 += enemy.drop_curr1
                     self.player_stats.currency_2 += enemy.drop_curr2
                     self.player_stats.currency_3 += enemy.drop_curr3
@@ -406,6 +402,24 @@ class GameView(arcade.View):
 
         if self.player_stats.health <= 0:
             self.respawn()
+    
+    def spawn_enemies(self):
+        try:
+            for spawn in self.scene["Enemy Spawn"]:
+                enemy_id = spawn.properties["id"]
+
+                if enemy_id == "random_gnd":
+                    enemy_id = random.choice(ENEMY_GND)
+                if enemy_id == "random_air":
+                    enemy_id == random.choice(ENEMY_AIR)
+
+                load_enemy(
+                    id = enemy_id,
+                    scene = self.scene,
+                    position = (spawn.center_x, spawn.center_y),
+                    target = self.player_sprite
+                )
+        except: pass
 
     # scene change handler (set new map id)
     def change_map(self, sprites_coll = None, override = DEFAULT_MAP):
@@ -419,6 +433,8 @@ class GameView(arcade.View):
     def respawn(self):
         self.player_stats.health = self.player_stats.max_health
         self.player_stats.end_arena()
+        if self.map_id == "arena_01":
+            self.change_map(override = "arena_00")
         self.setup()
 
 

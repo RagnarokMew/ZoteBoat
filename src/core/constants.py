@@ -38,6 +38,8 @@ PLAYER_JUMP_SPEED = 20
 # --- Maps ---
 DEFAULT_MAP = "map_1"
 DEFAULT_SPAWN = (200, 440)
+ENEMY_GND = [ "CrawlerIdle", "CrawlerChaser", "HuskIdle", "HuskChaser", "HuskBullyIdle", "HuskBullyChaser" ]
+ENEMY_AIR = [ "BlobbleIdle", "BlobbleChaser", "FlyIdle", "FlyChaser", "OblobbleIdle", "OblobbleChaser", "BuzzerIdle", "BuzzerChaser" ]
 
 # --- Data Operations ---
 OP_LOAD_DT = 1

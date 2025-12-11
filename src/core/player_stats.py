@@ -151,11 +151,13 @@ class PlayerStats():
         self.unlocks[upgrade] = False
     
     def init_minigame(self, minigame):
-        if minigame == "MG_1" and self.parkour_start is None:
+        if minigame == "parkour_00" and self.parkour_start is None:
             self.parkour_start = time.time()
             self.parkour_break = False
+        if minigame == "hub_01":
+            self.end_parkour()
         
-        if minigame == "MG_2":
+        if minigame == "arena_01":
             self.arena_start = True
             self.arena_timer = 0
             self.arena_score["kill"] = 0
@@ -205,10 +207,9 @@ class PlayerStats():
             self.arena_hiscore["kill"] = self.arena_score["kill"]
             self.arena_hiscore["time"] = self.arena_score["time"]
 
-
-
-
-    def update(self, delta_time):
+    def update_arena(self, delta_time):
         self.arena_timer = min(self.arena_timer + delta_time, 60)
         if self.arena_start and self.arena_timer >= 60:
             self.end_arena()
+            return True
+        return False

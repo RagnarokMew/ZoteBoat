@@ -1,33 +1,21 @@
 {
     "template": {
         "spawn": [ 0, 0 ],
-        "speed": [ 0, 0 ],
-        "enemy": [],
-        "npc": []
+        "bg": ""
     },
 
     "map_1": {
         "spawn": [ 200, 440 ],
-        "speed": [ 0, 0 ],
-        "enemy": [],
-        "npc": [
-            "Example_Npc"
-        ]
+        "bg": ""
     },
 
     "map_2": {
         "spawn": [ 200, 300 ],
-        "speed": [ 0, 25 ],
-        "enemy": [
-            "Enemy"
-        ],
-        "npc": []
+        "bg": ""
     },
 
     "map_3": {
         "spawn": [ 200, 420 ],
-        "speed": [ 0, 0 ],
-        "enemy": [],
-        "npc": []
+        "bg": ""
     }
 }
