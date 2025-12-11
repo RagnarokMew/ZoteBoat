@@ -13,18 +13,19 @@ import random
 
 class GameView(arcade.View):
 
-    def __init__(self, username):
+    def __init__(self, options):
         super().__init__()
 
-        # Temp Value for setting to show enemy hp:
-        self.show_enemy_hp = True
+        # Options is saved to bass it back to the main menu
+        self.options = options
+        self.show_enemy_hp = options["show_enemy_hp"]
+        self.username = options["username"]
 
         self.physics_engine = None
 
         self.player_texture = None
         self.player_sprite = None
 
-        self.username = username
         self.player_stats = PlayerStats()
         save_data(self.username, self.player_stats, OP_LOAD_DT)
         save_data(self.username, self.player_stats, OP_LOAD_SC)
@@ -302,10 +303,12 @@ class GameView(arcade.View):
             elif key == arcade.key.DOWN:
                 self.active_menu.next_item()
 
-        if key == arcade.key.F5:
+        if key == arcade.key.ESCAPE:
             save_data(self.username, self.player_stats, OP_SAVE_DT)
             save_data(self.username, self.player_stats, OP_SAVE_SC)
-            arcade.window_commands.close_window()
+            from core.main_menu import MenuView
+            menu_view = MenuView(self.options)
+            self.window.show_view(menu_view)
 
     def on_update(self, delta_time):
         self.physics_engine.update()
