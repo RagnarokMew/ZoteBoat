@@ -78,7 +78,27 @@ TODO: screenshots and video links
 
 ### RagnarokMew (Stefan Simion 324CC)
 
-TODO
+- application entrypoint
+- main menu
+- json loading logic
+    - npc, dialogue, shop
+- show enemy hp logic
+- player hp, currencies
+- fading text class
+- base enemies, enemies
+- enemy movement, ai, animations
+- npc dialogue system
+- npc shop system
+- basic player movement
+- player class, player attack mechanic & class
+- player animation, player attack animation
+- player stats
+- base game view
+- enemy assets
+- player attack assets
+- enemy types data
+- npc dialogue data
+- item data
 
 ### Luxaks (Lucas Ciuca 324CC)
 
