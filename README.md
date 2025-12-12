@@ -78,6 +78,13 @@ including a secret room accessible by wall-jumping.
 Video demos (YouTube):
 - [Demo 1](https://youtu.be/nekYXRX8OLQ)
 - [Demo 2](https://youtu.be/gecQ2yAiNaA)
+- [Demo 3](https://youtu.be/0tFsMtioXJ0)
+
+Gallery:
+
+![arena image](img/arena.jpg)
+![dorofey image](img/dorofey.jpg)
+![tiso image](img/tiso.jpg)
 
 ## Team Contribution
 
