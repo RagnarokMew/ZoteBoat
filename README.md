@@ -25,13 +25,21 @@ https://github.com/RagnarokMew/ZoteBoat
 
 ### Before you start
 
-Make sure that in the root of the project you have the following folders:
+Make sure that in the root of the project you have at least the following folders:
 
 - `src` - contains the source code of the app
 - `saves` - contains the save files of different users
 - `assets` - contains all the assets used by the game such as sprites and maps
 
-To run the game you need to go into the `src` folder and run `main.py`:
+Next, run
+
+```bash
+python -m venv .
+pip install -r requirements.txt
+```
+
+to install all of the needed dependencies. Lastly, to start the game
+you need to go into the `src` folder and run `main.py`:
 
 ```bash
 cd src
