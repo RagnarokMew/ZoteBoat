@@ -32,5 +32,22 @@
         "curr_2": 586,
         "curr_3": 654,
         "curr_4": 615
+    },
+    "RagnarokMew": {
+        "mask_1": false,
+        "mask_2": false,
+        "mask_3": false,
+        "mask_4": false,
+        "hp": 5,
+        "nail_1": true,
+        "nail_2": false,
+        "dmg": 3,
+        "wall": true,
+        "dblj": true,
+        "dash": true,
+        "curr_1": 0,
+        "curr_2": 0,
+        "curr_3": 0,
+        "curr_4": 0
     }
 }
