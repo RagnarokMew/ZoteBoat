@@ -45,9 +45,9 @@
         "wall": true,
         "dblj": true,
         "dash": true,
-        "curr_1": 0,
-        "curr_2": 0,
-        "curr_3": 0,
-        "curr_4": 0
+        "curr_1": 530,
+        "curr_2": 464,
+        "curr_3": 548,
+        "curr_4": 489
     }
 }
