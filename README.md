@@ -75,16 +75,19 @@ including a secret room accessible by wall-jumping.
 
 ## Media
 
-Video demos (YouTube):
-- [Demo 1](https://youtu.be/nekYXRX8OLQ)
-- [Demo 2](https://youtu.be/gecQ2yAiNaA)
-- [Demo 3](https://youtu.be/0tFsMtioXJ0)
+### Video demos (YouTube):
+- [Demo 1 (Intro)](https://youtu.be/nekYXRX8OLQ)
+- [Demo 2 (Combat)](https://youtu.be/gecQ2yAiNaA)
+- [Demo 3 (Gameplay)](https://youtu.be/0tFsMtioXJ0)
 
-Gallery:
+### Gallery:
 
-![arena image](img/arena.jpg)
 ![dorofey image](img/dorofey.jpg)
+![arano image](img/arano.jpg)
 ![tiso image](img/tiso.jpg)
+![arena enter image](img/arena.jpg)
+![arena inside image](img/inner.jpg)
+![parkour image](img/parkour.jpg)
 
 ## Team Contribution
 
