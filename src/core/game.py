@@ -237,10 +237,6 @@ class GameView(arcade.View):
                 self.down_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-        # manual reset switch (debug)
-        if key == arcade.key.R:
-            self.change_map()
-
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
             self.left_pressed = True
@@ -285,6 +281,14 @@ class GameView(arcade.View):
 
             if key == arcade.key.C:
                 self.dash_pressed = True
+
+            # DEBUG: quick warp to areas with shops
+            if key == arcade.key.F6:
+                self.change_map(override = "hub_00")
+            if key == arcade.key.F7:
+                self.change_map(override = "hub_02")
+            if key == arcade.key.F8:
+                self.change_map(override = "arena_00")
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
@@ -510,7 +514,7 @@ class GameView(arcade.View):
                 else:
                     if self.map_id == "parkour_03" and map_id == "hub_02":
                         self.player_stats.end_parkour()
-                    if self.map_id == "arena_01" and map_id == "arena_00":
+                    if self.map_id == "arena_01":
                         self.player_stats.end_arena(forfeit = True)
                     self.map_id = map_id
                     self.fade_out = 0
