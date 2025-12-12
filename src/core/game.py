@@ -36,6 +36,8 @@ class GameView(arcade.View):
         self.player_stats = PlayerStats()
         save_data(self.username, self.player_stats, OP_LOAD_DT)
         save_data(self.username, self.player_stats, OP_LOAD_SC)
+        # DEBUG: check if stats loaded correctly
+        # self.player_stats.print()
 
         self.tile_map = None
         self.scene = None
@@ -237,10 +239,6 @@ class GameView(arcade.View):
                 self.down_pressed = False
                 self.player_sprite.facing_direction = SIDE_FACING
 
-        # manual reset switch (debug)
-        if key == arcade.key.R:
-            self.change_map()
-
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
             self.left_pressed = True
@@ -285,6 +283,14 @@ class GameView(arcade.View):
 
             if key == arcade.key.C:
                 self.dash_pressed = True
+
+            # DEBUG: quick warp to areas with shops
+            if key == arcade.key.F6:
+                self.change_map(override = "hub_00")
+            if key == arcade.key.F7:
+                self.change_map(override = "hub_02")
+            if key == arcade.key.F8:
+                self.change_map(override = "arena_00")
 
         elif self.player_interaction_state == P_DIALOGUE:
             # NOTE: Not using match bc in docs we put Python >=3.9
@@ -408,6 +414,7 @@ class GameView(arcade.View):
         self.update_fade()
 
         if len(self.scene["Enemy"]) == 0 and self.map_id == "arena_01":
+            self.respawn(reset = False)
             self.spawn_enemies()
 
         # TODO: Refactor the collision code at a later date
@@ -488,7 +495,7 @@ class GameView(arcade.View):
                 if enemy_id == "random_gnd":
                     enemy_id = random.choice(ENEMY_GND)
                 if enemy_id == "random_air":
-                    enemy_id == random.choice(ENEMY_AIR)
+                    enemy_id = random.choice(ENEMY_AIR)
 
                 load_enemy(
                     id = enemy_id,
@@ -507,8 +514,10 @@ class GameView(arcade.View):
                     sprites_coll[0].position
                 )
                 else:
-                    if map_id == "hub_02" and self.map_id == "parkour_03":
+                    if self.map_id == "parkour_03" and map_id == "hub_02":
                         self.player_stats.end_parkour()
+                    if self.map_id == "arena_01":
+                        self.player_stats.end_arena(forfeit = True)
                     self.map_id = map_id
                     self.fade_out = 0
             except:

@@ -32,7 +32,7 @@ class BaseEnemy(arcade.Sprite):
             f"HP:{self.health}/{self.max_health}",
             x=self.center_x,
             y=self.center_y + 10,
-            color=arcade.color.BLACK,
+            color=arcade.color.BAKER_MILLER_PINK,
             font_size=15,
             anchor_x="center"
         )

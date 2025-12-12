@@ -32,7 +32,7 @@
         "bg": "fog.jpg"
     },
     "parkour_01": {
-        "spawn": [ 480, 600 ],
+        "spawn": [ 480, 575 ],
         "bg": "fog.jpg"
     },
     "parkour_02": {

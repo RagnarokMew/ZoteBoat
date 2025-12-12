@@ -313,7 +313,7 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
                 print(f"Exception loading arena scores: {e}")
 
             try:
-                parkour_list.sort(key = lambda val: (val[1][0], val[1][1], val[1][2]))
+                parkour_list.sort(key = lambda val: (val[1][0], val[1][1]))
                 parkour_list = parkour_list[:10]
 
                 names_list = []
@@ -322,7 +322,7 @@ class LeaderBoard(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
                 for scores in parkour_list:
                     if scores[1][0] != -1:
                         names_list.append(scores[0])
-                        scores_list.append(f"{scores[1][0]}h {scores[1][1]}min {scores[1][2]}s")
+                        scores_list.append(f"{scores[1][0]}min {scores[1][1]}s")
 
                 self.parkour_names = "\n".join(names_list)
                 self.parkour_scores = "\n".join(scores_list)
