@@ -80,6 +80,8 @@ including a secret room accessible by wall-jumping.
 - [Demo 2 (Combat)](https://youtu.be/gecQ2yAiNaA)
 - [Demo 3 (Gameplay)](https://youtu.be/0tFsMtioXJ0)
 
+*Note: the demos present a slightly older version, so some dialogue may be inaccurate.*
+
 ### Gallery:
 
 ![dorofey image](img/dorofey.jpg)
