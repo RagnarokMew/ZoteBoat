@@ -29,14 +29,12 @@ class PlayerStats():
         
         self.parkour_start = None
         self.parkour_score = {
-            "hrs": 0,
             "min": 0,
             "sec": 0
         }
         self.parkour_break = False  # if previous high score has been broken
         self.parkour_hiscore = {
-            "hrs": -1,              # default value: no attempts
-            "min": 0,
+            "min": -1,              # default value: no attempts
             "sec": 0
         }
 
@@ -98,9 +96,8 @@ class PlayerStats():
     
     def load_scores(self, scores):
         self.parkour_hiscore = {
-            "hrs": scores["parkour"][0],
-            "min": scores["parkour"][1],
-            "sec": scores["parkour"][2]
+            "min": scores["parkour"][0],
+            "sec": scores["parkour"][1]
         }
         self.arena_hiscore = {
             "kill": scores["arena"][0],
@@ -114,7 +111,6 @@ class PlayerStats():
                 self.arena_hiscore["time"]
             ],
             "parkour": [
-                self.parkour_hiscore["hrs"],
                 self.parkour_hiscore["min"],
                 self.parkour_hiscore["sec"]
             ]
@@ -139,6 +135,9 @@ class PlayerStats():
         print(self.currency_3)
         print(self.currency_4)
 
+        print(self.arena_hiscore)
+        print(self.parkour_hiscore)
+
     def increase_max_hp(self, amount):
         self.max_health += amount
         self.health = self.max_health
@@ -156,8 +155,6 @@ class PlayerStats():
         if minigame == "parkour_00" and self.parkour_start is None:
             self.parkour_start = time.time()
             self.parkour_break = False
-        if minigame == "hub_01":
-            self.end_parkour()
         
         if minigame == "arena_01":
             self.arena_start = True
@@ -172,21 +169,20 @@ class PlayerStats():
 
         parkour_end = time.gmtime(time.time() - self.parkour_start)
 
-        self.parkour_score["hrs"] = parkour_end.tm_hour
         self.parkour_score["min"] = parkour_end.tm_min
         self.parkour_score["sec"] = parkour_end.tm_sec
 
         self.parkour_start = None
 
-        self.parkour_break = (
-            self.parkour_score["hrs"] <= self.parkour_hiscore["hrs"] and
-            self.parkour_score["min"] <= self.parkour_hiscore["min"] and
-            self.parkour_score["sec"] <  self.parkour_hiscore["sec"]
-        )
-        
-        if self.parkour_break or self.parkour_hiscore["hrs"] == -1:
+        if self.parkour_score["min"] < self.parkour_hiscore["min"]:
             self.parkour_break = True
-            self.parkour_hiscore["hrs"] = self.parkour_score["hrs"]
+        elif self.parkour_score["min"] == self.parkour_hiscore["min"]:
+            self.parkour_break = self.parkour_score["sec"] <  self.parkour_hiscore["sec"]
+        else:
+            self.parkour_break = False
+        
+        if self.parkour_break or self.parkour_hiscore["min"] == -1:
+            self.parkour_break = True
             self.parkour_hiscore["min"] = self.parkour_score["min"]
             self.parkour_hiscore["sec"] = self.parkour_score["sec"]
     
@@ -208,10 +204,13 @@ class PlayerStats():
         self.arena_score["kill"] = self.new_kill
         self.arena_score["time"] = round(self.arena_timer, 2)
 
-        self.arena_break = (
-            self.arena_score["kill"] > self.arena_hiscore["kill"] or
-            self.arena_score["time"] > self.arena_hiscore["time"]
-        )
+        if self.arena_score["kill"] > self.arena_hiscore["kill"]:
+            self.arena_break = True
+        elif (self.arena_score["kill"] == self.arena_hiscore["kill"] and
+        self.arena_score["time"] > self.arena_hiscore["time"]):
+            self.arena_break = True
+        else:
+            self.arena_break = False
 
         if self.arena_break or self.arena_hiscore["kill"] == -1:
             self.arena_break = True

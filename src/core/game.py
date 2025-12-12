@@ -36,6 +36,8 @@ class GameView(arcade.View):
         self.player_stats = PlayerStats()
         save_data(self.username, self.player_stats, OP_LOAD_DT)
         save_data(self.username, self.player_stats, OP_LOAD_SC)
+        # DEBUG: check if stats loaded correctly
+        # self.player_stats.print()
 
         self.tile_map = None
         self.scene = None

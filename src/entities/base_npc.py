@@ -154,7 +154,7 @@ class DialogueMenu():
 
                 next_text = next_text.replace("PARKOUR_SCORE_CHECK",
                 "NEW_HI_TEXT Your last attempt was PARKOUR_TIME_CUR, while your best run was PARKOUR_TIME_HI."
-                if stats.parkour_hiscore["hrs"] != -1 else
+                if stats.parkour_hiscore["min"] != -1 else
                 "Hey, listen! You almost tricked me there, but I know you haven't actually been in the cave. Don't worry though, your secret's safe with me! Return whenever you decide to give my challenge a go!")
 
                 next_text = next_text.replace("NEW_HI_TEXT",
@@ -171,15 +171,13 @@ class DialogueMenu():
                 next_text = next_text.replace("ARENA_KILL_HI", f"{kill_hi}")
                 next_text = next_text.replace("ARENA_TIME_HI", f"{time_hi}")
 
-                hrs_cur = stats.parkour_score["hrs"]
                 min_cur = stats.parkour_score["min"]
                 sec_cur = stats.parkour_score["sec"]
-                hrs_hi = stats.parkour_hiscore["hrs"]
                 min_hi = stats.parkour_hiscore["min"]
-                sec_hi = stats.parkour_hiscore["min"]
+                sec_hi = stats.parkour_hiscore["sec"]
 
-                next_text = next_text.replace("PARKOUR_TIME_HI", f"{hrs_hi}:{min_hi}:{sec_hi}")
-                next_text = next_text.replace("PARKOUR_TIME_CUR", f"{hrs_cur}:{min_cur}:{sec_cur}")
+                next_text = next_text.replace("PARKOUR_TIME_HI", f"{min_hi}:{sec_hi}")
+                next_text = next_text.replace("PARKOUR_TIME_CUR", f"{min_cur}:{sec_cur}")
 
             self.text = arcade.Text(
                 next_text,
